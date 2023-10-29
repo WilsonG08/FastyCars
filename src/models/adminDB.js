@@ -33,6 +33,10 @@ const adminSchema = new Schema({
         type: Boolean, 
         default: false
     },
+    confirmEmail:{
+        type:Boolean,
+        default:false
+    },
     token:{
         type: String,
         default: null

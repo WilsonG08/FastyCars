@@ -1,15 +1,42 @@
 // Esta carpeta contiene los enrutadores de la aplicación. Los enrutadores se utilizan para mapear las URL a los controladores.
 
 import { Router } from 'express';
-const router =  Router();
+import {
+    login,
+    perfil,
+    registro,
+    confirmEmail,
+    listarChoferes,
+    listarPasajeros,
+    detallePasajero,
+    actualizarPerfil,
+    actualizarPassword,
+    recuperarPassword,
+    comprobarTokenPassword,
+    nuevoPassword
+} from '../controllers/pasajero_controllers.js'
+import verificarAutenticacion from '../middlewares/autenticacion_Admin.js'
 
 
-router.post('/registro', (req, res) => res.send("Registro del pasajero"));
+const router =  Router()
 
-router.post('/login', (req, res) => res.send("Login del pasajero"));
 
-router.get('/confirmar/:token', (req, res)=> res.send("Confirmar TOKEN"))
+router.post("/login", login);
+router.post("/registro", registro);
+router.get("/confimar/:token", confirmEmail);
+router.get("/pasajeros", listarPasajeros);
+// DUDA AQUI, QUIERO LISTAR LOS CHOFERES
+router.get("/pasajeros/chofer", listarChoferes);
+router.post("/recuperar-password", recuperarPassword);
+router.get("/recuperar-password/:token", comprobarTokenPassword);
+router.post("/nuevo-password/:token", nuevoPassword);
 
-router.get('/pasajero', (req, res)=> res.send("Confirmar TOKEN"))
+
+router.get("/perfil", verificarAutenticacion, perfil);
+router.put("/pasajero/actualizarpassword", verificarAutenticacion, actualizarPassword);
+router.get("/pasajero/:id", verificarAutenticacion, detallePasajero);
+router.put("/pasajero/:id", verificarAutenticacion, actualizarPerfil);
+
+export default router;
 
 
