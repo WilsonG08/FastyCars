@@ -8,7 +8,14 @@ dotenv.config();
 // Configuraciones
 app.set('port', process.env.PORT || 3000);
 app.use(cors());
+
+
+// Middlewares
 app.use(express.json());
+
+
+// Variables globales
+
 
 // Rutas
 app.get('/', (req, res) => {
@@ -16,13 +23,10 @@ app.get('/', (req, res) => {
 });
 
 // Usar el router de registro
-app.use('/api');
+//app.use('/api');
 
-// Resto de tus rutas
-
-app.listen(app.get('port'), () => {
-    console.log(`Server corre en ${app.get('port')}`);
-});
+// Manejo de una ruta no encontrda
+app.use((req, res) => res.status(404).send("Endpoint no encontrado - 404"))
 
 
 export default app;
