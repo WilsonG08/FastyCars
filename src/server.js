@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import registrationRouter from './routers/registration.js';
 
 const app = express();
 dotenv.config();
@@ -17,7 +16,7 @@ app.get('/', (req, res) => {
 });
 
 // Usar el router de registro
-app.use('/api', registrationRouter);
+app.use('/api');
 
 // Resto de tus rutas
 

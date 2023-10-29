@@ -109,3 +109,42 @@ const register = async (req, res) => {
 };
 
 export { register };
+
+
+============================================================================================================================================================
+============================================================================================================================================================
+
+
+src\routers\registrationRouter.js
+
+import express from 'express';
+//import { verify } from '../controllers/authenticationController.js'; // Importa la función de verificación desde el controlador
+
+const router = express.Router();
+
+// Ruta para verificar el código
+router.get('/verify', verify);
+
+export default router;
+
+
+============================================================================================================================================================
+============================================================================================================================================================
+
+
+src\routers\login.js
+
+
+import express from 'express';
+//import { login } from '../controllers/authenticationController.js'; // Importa la función de autenticación desde el controlador
+
+const router = express.Router();
+
+// Ruta para la autenticación (login)
+router.get('/login', login);
+
+export default router;
+
+
+============================================================================================================================================================
+============================================================================================================================================================
