@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
+import routerPasajeros from './routers/pasajero_routes.js'
+import routerChofer from './routers/chofer_router.js'
+
 // Inicializaciones
 const app = express();
 dotenv.config();
@@ -19,12 +22,8 @@ app.use(express.json());
 
 
 // Rutas
-app.get('/', (req, res) => {
-    res.send("Server on");
-});
-
-// Usar el router de registro
-//app.use('/api');
+app.use('/api', routerChofer);
+app.use('/api', routerPasajeros);
 
 // Manejo de una ruta no encontrda
 app.use((req, res) => res.status(404).send("Endpoint no encontrado - 404"))

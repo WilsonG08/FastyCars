@@ -15,7 +15,7 @@ import {
     comprobarTokenPassword,
     nuevoPassword
 } from '../controllers/pasajero_controllers.js'
-import verificarAutenticacion from '../middlewares/autenticacion_Admin.js'
+import verificarAutenticacion from '../middlewares/autenticacion_Pasajero.js'
 
 
 const router =  Router()
@@ -23,7 +23,7 @@ const router =  Router()
 
 router.post("/login", login);
 router.post("/registro", registro);
-router.get("/confimar/:token", confirmEmail);
+router.get("/confirmar/:token", confirmEmail);
 router.get("/pasajeros", listarPasajeros);
 // DUDA AQUI, QUIERO LISTAR LOS CHOFERES
 router.get("/pasajeros/chofer", listarChoferes);
