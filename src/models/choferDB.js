@@ -43,9 +43,9 @@ const choferSchema = new Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref: 'Administrador'
     },
-    isAdmin:{
-        type: Boolean,
-        default: false
+    rol:{
+        type: String,
+        default: "chofer"
     }
 },{
     timestamps: true

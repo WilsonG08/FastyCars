@@ -41,9 +41,9 @@ const adminSchema = new Schema({
         type: String,
         default: null
     },
-    isAdmin:{
-        type: Boolean,
-        default: true
+    rol:{
+        type: String,
+        default: "admin"
     }
 },{
     timestamps: true

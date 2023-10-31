@@ -41,14 +41,16 @@ const pasajeroSchema = new Schema({
         type: String,
         default: null
     },
-    isAdmin:{
-        type: Boolean,
-        default: false
+    rol:{
+        type: String,
+        default: "pasajero"
     }
 
 },{
     timestamps: true
 })
+
+// Probar el 1 o si no "1"
 
 // Metodo para cifrar el password del veterinario
 pasajeroSchema.methods.encrypPassword = async function ( password ){

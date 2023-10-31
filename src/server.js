@@ -5,6 +5,16 @@ import dotenv from 'dotenv';
 import routerPasajeros from './routers/pasajero_routes.js'
 import routerChofer from './routers/chofer_router.js'
 
+// desde aqui 
+/* import connection from './database.js';
+import mongoose from 'mongoose';
+import { administradors  } from './models/adminDB.js'
+const administradors = await Administrador.find(); 
+console.log(administradors)
+*/
+
+
+
 // Inicializaciones
 const app = express();
 dotenv.config();
@@ -22,6 +32,10 @@ app.use(express.json());
 
 
 // Rutas
+// pregunta para saber si es Admin o pasajero
+// para utiilizar con middleware
+// app.use('/api',verificarRol(["chofer"]) ,routerChofer);
+
 app.use('/api', routerChofer);
 app.use('/api', routerPasajeros);
 
