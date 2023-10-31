@@ -42,6 +42,10 @@ const choferSchema = new Schema({
     administrador:{
         type:mongoose.Schema.Types.ObjectId,
         ref: 'Administrador'
+    },
+    isAdmin:{
+        type: Boolean,
+        default: false
     }
 },{
     timestamps: true

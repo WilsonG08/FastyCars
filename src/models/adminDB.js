@@ -7,7 +7,7 @@ const adminSchema = new Schema({
     name:{
         type: String, 
         require: true,
-        trim: true
+        trim: true,
     },
     lastName:{
         type: String, 
@@ -40,8 +40,11 @@ const adminSchema = new Schema({
     token:{
         type: String,
         default: null
+    },
+    isAdmin:{
+        type: Boolean,
+        default: true
     }
-
 },{
     timestamps: true
 })

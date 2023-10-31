@@ -23,7 +23,7 @@ const sendMailToUser = async(userMail,token)=>{
     <hr>
     <a href="http://localhost:3000/api/confirmar/${token}">Clic para confirmar tu cuenta</a>
     <hr>
-    <footer>Grandote te da la Bienvenida!</footer>
+    <footer>Fast-Car te da la Bienvenida!</footer>
     `
     });
     console.log("Mensaje enviado satisfactoriamente: ", info.messageId);
@@ -41,7 +41,7 @@ const sendMailToRecoveryPassword = async(userMail,token)=>{
     <hr>
     <a href="http://localhost:5173/recuperar-password/${token}">Clic para reestablecer tu contraseña</a>
     <hr>
-    <footer>Grandote te da la Bienvenida!</footer>
+    <footer>Fast-Car te da la Bienvenida!</footer>
     `
     });
     console.log("Mensaje enviado satisfactoriamente: ", info.messageId);

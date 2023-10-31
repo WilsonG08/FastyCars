@@ -41,6 +41,10 @@ const pasajeroSchema = new Schema({
         type: String,
         default: null
     },
+    isAdmin:{
+        type: Boolean,
+        default: false
+    }
 
 },{
     timestamps: true

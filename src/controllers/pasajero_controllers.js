@@ -89,7 +89,7 @@ const listarChoferes = async (req, res) => {
 }
 
 const listarPasajeros = async (req, res) => {
-    res.status(200).json({res: "Lista de choferes registrados" })
+    res.status(200).json({res: "Lista de pasajeros registrados" })
 }
 
 
