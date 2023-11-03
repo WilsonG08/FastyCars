@@ -1,42 +1,43 @@
-import jwt from 'jsonwebtoken'
-import Administrador from '../models/adminDB.js'
+import jwt from "jsonwebtoken";
+import Administrador from "../models/adminDB.js";
+import Pasajero from "../models/pasajeroDB.js";
+import Chofer from "../models/choferDB.js";
 
+const verificarAutenticacion = async (req, res, next) => {
+    if (!req.headers.authorization) {
+        return res
+            .status(401)
+            .json({ msg: "Lo sentimos, debes proporcionar un token" });
+    }
 
-const verificarAutentificacion = async (req, res, next) => {
-
-    if (!req.headers.authorization) return res.status(404).json({ msg: "Lo sentimos, debes proprocionar un token" })
-
-    const { authorization } = req.headers
+    const { authorization } = req.headers;
 
     try {
-        const { id, rol } = jwt.verify(authorization.split(' ')[1], process.env.JWT_SECRET)
-        
+        const { id, rol } = jwt.verify(
+            authorization.split(" ")[1],
+            process.env.JWT_SECRET
+        );
+
         if (rol === "administrador") {
-            // Agrega el código para consultar la base de datos del administrador aquí
-            req.administradorBDD = await Administrador.findById(id).lean().select("-password");
+            req.administradorBDD = await Administrador.findById(id)
+                .lean()
+                .select("-password");
             req.rol = "administrador";
         } else if (rol === "pasajero") {
-            // Agrega el código para consultar la base de datos del pasajero aquí
             req.pasajeroBDD = await Pasajero.findById(id).lean().select("-password");
             req.rol = "pasajero";
         } else if (rol === "chofer") {
-            // Agrega el código para consultar la base de datos del chofer aquí            
             req.choferBDD = await Chofer.findById(id).lean().select("-password");
             req.rol = "chofer";
         } else {
-            // Si el rol no coincide con ninguno de los roles definidos
-            return res.status(404).json({ msg: "Rol no válido" });
+            return res.status(401).json({ msg: "Rol no válido" });
         }
-        
-        next()
-        
+
+        next();
     } catch (error) {
-        const e = new Error("Formato del token no valido")
-
-        return res.status(404).json({ msg: e.message })
+        console.error(error); // Registra el error en el servidor, no lo expongas al cliente
+        return res.status(401).json({ msg: "Error de autenticación" });
     }
-}
+};
 
-
-
-export default verificarAutentificacion
+export default verificarAutenticacion;

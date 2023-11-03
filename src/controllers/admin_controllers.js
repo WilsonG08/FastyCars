@@ -142,10 +142,10 @@ const actualizarPerfil = async (req, res) => {
         }
     }
 
-    administradorBDD.name = req.body.name
-    administradorBDD.lastName = req.body.lastName
-    administradorBDD.email = req.body.email
-    administradorBDD.phone = req.body.phone
+    administradorBDD.name = req.body.name || administradorBDD?.name
+    administradorBDD.lastName = req.body.lastName || administradorBDD?.lastName
+    administradorBDD.email = req.body.email || administradorBDD?.email
+    administradorBDD.phone = req.body.phone || administradorBDD?.phone
 
     await administradorBDD.save()
 
