@@ -7,7 +7,7 @@ import {
     eliminarChofer
 } from "../controllers/chofer_controllers.js"
 
-import verificarAutentificacion from "../middlewares/autenticacion_Admin.js";
+import verificarAutentificacion from "../middlewares/autenticacion.js";
 
 const router = Router();
 

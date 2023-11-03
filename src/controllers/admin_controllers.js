@@ -26,7 +26,7 @@ const registro = async (req, res) => {
 }
 
 
-const confirmarEmail = async (req, res) => {
+const confirmEmail = async (req, res) => {
     if(!(req.params.token)) return res.status(400).json({msg: "Lo sentimos, no se puede validar la cuenta"})
 
     const administradorBDD =  await Administrador.findOne({token: req.params.token})
@@ -35,7 +35,7 @@ const confirmarEmail = async (req, res) => {
     
     administradorBDD.token = null
     
-    administradorBDD.confirmarEmail = true
+    administradorBDD.confirmEmail = true
     
     await administradorBDD.save()
 
@@ -50,7 +50,7 @@ const login = async(req, res) => {
 
     const administradorBDD = await Administrador.findOne({email}).select("-status -__v -token -updatedAt -createdAt")
 
-    if(administradorBDD?.confirmarEmail==false) return res.status(403).json({msg: "Lo sentimos, debs de verificar su cuenta"})
+    if(administradorBDD?.confirmEmail==false) return res.status(403).json({msg: "Lo sentimos, debs de verificar su cuenta"})
 
     if(!administradorBDD) return res.status(404).json({msg: "Lo sentimo, el administrador no se encuentra resgistrado"})
 
@@ -58,7 +58,8 @@ const login = async(req, res) => {
 
     if(!verificarPassword) return res.status(404).json({msg: "Lo sentimos, el password no es el correcto"})
 
-    const token = generarJWT(administradorBDD._id)
+    // Asignacion del ROL
+    const token = generarJWT(administradorBDD._id,"administrador")
 
     const { name, lastname, phone, _id } = administradorBDD
 
@@ -75,7 +76,7 @@ const login = async(req, res) => {
 
 const perfil = (req, res) =>{
     delete req.administradorBDD.token
-    delete req.administradorBDD.confirmarEmail
+    delete req.administradorBDD.confirmEmail
     delete req.administradorBDD.createdAt
     delete req.administradorBDD.updateAt
     delete req.administradorBDD.__v
@@ -227,7 +228,7 @@ const nuevoPassword = async (req, res) => {
 
 export {
     registro,
-    confirmarEmail,
+    confirmEmail,
     login,
     perfil,
     listarChoferes,

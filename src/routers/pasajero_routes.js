@@ -15,7 +15,7 @@ import {
     comprobarTokenPassword,
     nuevoPassword
 } from '../controllers/pasajero_controllers.js'
-import verificarAutenticacion from '../middlewares/autenticacion_Pasajero.js'
+import verificarAutenticacion from '../middlewares/autenticacion.js'
 
 
 const router =  Router()

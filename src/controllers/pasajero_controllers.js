@@ -18,7 +18,7 @@ const login = async(req, res) => {
 
     if( !verificarPassword ) return res.status(404).json({msg: "Lo sentimos, el password no es correcto"})
 
-    const token = generarJWT(pasajeroBDD._id)
+    const token = generarJWT(pasajeroBDD._id,"pasajero")
 
     const { name, lastname, phone, _id } = pasajeroBDD
 
