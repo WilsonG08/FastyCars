@@ -2,7 +2,7 @@ import Chofer from '../models/choferDB.js'
 import mongoose from 'mongoose';
 
 const listarchoferes = async(req, res) =>{
-    const chofer = await Chofer.find({estado:true}).where('administrador').equals(req.administradorBDD).select("-createdAt  -updateAt").populate('administrador', '_id name lastName')
+    const chofer = await Chofer.find({estado:true}).where('Chofer').equals(req.choferBDD).select("-createdAt  -updateAt").populate('Chofer', '_id name lastName')
     
     res.status(200).json(chofer)
 }
@@ -18,17 +18,35 @@ const detalleChofer =  async( req, res ) =>{
 }
 
 
-const registrarChofer = async( req, res ) => {
-    if ( Object.values(req.body).includes("")) return res.status(400).json({msg: "Lo sentimos, debes llenar todos los campos"})
+const loginChofer = async (req, res) => {
+    const { email, password } = req.body;
 
-    const nuevoChofer = new Chofer(req.body)
+    if (Object.values(req.body).includes("")) return res.status(404).json({ msg: "Lo sentimos, debes llenar todos los campos" });
 
-    nuevoChofer.administrador=req.body.id
+    const choferBDD = await Chofer.findOne({ email }).select("-status -__v -token -updatedAt -createdAt");
 
-    await nuevoChofer.save()
+    if (choferBDD?.confirmEmail == false) return res.status(403).json({ msg: "Lo sentimos, debs de verificar su cuenta" });
 
-    res.status(200).json({msg: "Registro exitoso del chofer"})
-}
+    if (!choferBDD) return res.status(404).json({msg: "Lo sentimo, el Chofer no se encuentra resgistrado"});
+
+    const verificarPassword = await choferBDD.matchPassword(password);
+
+    if (!verificarPassword) return res.status(404).json({ msg: "Lo sentimos, el password no es el correcto" });
+
+    // Asignacion del ROL
+    const token = generarJWT(choferBDD._id, "Chofer");
+
+    const { choferName, choferLastName, phone, _id } = choferBDD;
+
+    res.status(200).json({
+        token,
+        choferName,
+        choferLastName,
+        phone,
+        _id,
+        email: choferBDD.email,
+    });
+};
 
 
 const actualizarChofer = async (req, res) => {
@@ -36,7 +54,7 @@ const actualizarChofer = async (req, res) => {
 
     if( Object.values(req.body).includes("")) return res.status(400).json({msg: "Lo sentimos, debes llenar todos los campos"})
 
-    if( !mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({msg:`Lo sentimos, no existe el administrador ${id}`})
+    if( !mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({msg:`Lo sentimos, no existe el Chofer ${id}`})
 
     await Chofer.findByIdAndUpdate(req.params.id,req.body)
 
@@ -44,13 +62,29 @@ const actualizarChofer = async (req, res) => {
 }
 
 
+const confirmEmail = async (req,res) => {
+    if( !(req.params.token) ) return res.status(400).json({msg: "Lo sentimos, no se puede validar la cuenta"})
+
+    const choferBDD = await Chofer.findOne({token:req.params.token})
+
+    if( !choferBDD?.token ) return res.status(404).json({msg: "La cuenta ya ha sido confirmada CHOER"})
+
+    choferBDD.token = null
+
+    choferBDD.confirmEmail = true
+
+    await choferBDD.save()
+
+    res.status(200).json({msg: "Token cofirmado, ya puedes iniciar sesion! CHOFER"})
+}
+
 // esta funcion no tiene que ir 
 const eliminarChofer = async(req, res) => {
     const { id } = req.params
 
     if( Object.values(req.body).includes("")) return res.status(400).json({msg: "Lo sentimos, debes llenar todos los campos"})
 
-    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg: `Lo sentimos, no existe el administrador ${id}`})
+    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg: `Lo sentimos, no existe el Chofer ${id}`})
 
     // duda, no va esta linea
     const { salida } = req.body
@@ -63,8 +97,9 @@ const eliminarChofer = async(req, res) => {
 export {
     listarchoferes,
     detalleChofer,
-    registrarChofer,
+    loginChofer,
     actualizarChofer,
-    eliminarChofer
+    eliminarChofer,
+    confirmEmail
 }
 
