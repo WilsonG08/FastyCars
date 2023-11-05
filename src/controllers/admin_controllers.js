@@ -1,125 +1,125 @@
-import Administrador from '../models/adminDB.js';
-import { sendMailToUser, sendMailToRecoveryPassword } from '../config/nodemailer.js'
-import generarJWT from '../helpers/crearJWT.js'
-import mongoose from 'mongoose';
+import Administrador from "../models/adminDB.js";
+import Chofer from "../models/choferDB.js";
+import generarJWT from "../helpers/crearJWT.js";
+import mongoose from "mongoose";
+import {
+    sendMailToRecoveryPassword,
+    sendMailToUserAdmin,
+    sendMailToUserChofer,
+} from "../config/nodemailer.js";
 
 const registro = async (req, res) => {
-    const { email, password } = req.body
+    const { email, password } = req.body;
 
-    if (Object.values(req.body).includes("")) return res.status(400).jsoon({msg: "Lo sentimos, debes llenar todos los campos"})
+    if (Object.values(req.body).includes("")) return res.status(400).jsoon({ msg: "Lo sentimos, debes llenar todos los campos" });
 
-    const verificarEmailBDD = await Administrador.findOne({email})
+    const verificarEmailBDD = await Administrador.findOne({ email });
 
-    if(verificarEmailBDD) return res.status(400).json({msg: "Lo sentimos, el email ya se encuentra registrado"})
+    if (verificarEmailBDD) return res.status(400).json({ msg: "Lo sentimos, el email ya se encuentra registrado" });
 
-    const nuevoAdmin = new Administrador(req.body)
+    const nuevoAdmin = new Administrador(req.body);
 
-    nuevoAdmin.password = await nuevoAdmin.encrypPassword(password)
+    nuevoAdmin.password = await nuevoAdmin.encrypPassword(password);
 
-    const token = nuevoAdmin.crearToken()
+    const token = nuevoAdmin.crearToken();
 
-    await sendMailToUser(email, token)
+    await sendMailToUserAdmin(email, token);
 
-    await nuevoAdmin.save()
+    await nuevoAdmin.save();
 
-    res.status(200).json({msg: "REvisa tu correo electronico para confirmar tu cuenta"})
-}
-
+    res.status(200).json({
+        msg: "REvisa tu correo electronico para confirmar tu cuenta ADMIN",
+    });
+};
 
 const confirmEmail = async (req, res) => {
-    if(!(req.params.token)) return res.status(400).json({msg: "Lo sentimos, no se puede validar la cuenta"})
+    if (!req.params.token) return res.status(400).json({ msg: "Lo sentimos, no se puede validar la cuenta" });
 
-    const administradorBDD =  await Administrador.findOne({token: req.params.token})
+    const administradorBDD = await Administrador.findOne({token: req.params.token});
 
-    if(!(administradorBDD?.token)) return res.status(404).json({msg: "La cuenta ya ha sido confirmada"})
-    
-    administradorBDD.token = null
-    
-    administradorBDD.confirmEmail = true
-    
-    await administradorBDD.save()
+    if (!administradorBDD?.token)return res.status(404).json({ msg: "La cuenta ya ha sido confirmada ADMIN" });
 
-    res.status(200).json({msg: "TOken de administrador confirmado, ya puedes iniciar sesión"})
-}
+    administradorBDD.token = null;
 
+    administradorBDD.confirmEmail = true;
 
-const login = async(req, res) => {
-    const { email, password } = req.body
+    await administradorBDD.save();
 
-    if(Object.values(req.body).includes("")) return res.status(404).json({msg: "Lo sentimos, debes llenar todos los campos"})
+    res.status(200).json({
+        msg: "Token de administrador confirmado, ya puedes iniciar sesión",
+    });
+};
 
-    const administradorBDD = await Administrador.findOne({email}).select("-status -__v -token -updatedAt -createdAt")
+const login = async (req, res) => {
+    const { email, password } = req.body;
 
-    if(administradorBDD?.confirmEmail==false) return res.status(403).json({msg: "Lo sentimos, debs de verificar su cuenta"})
+    if (Object.values(req.body).includes("")) return res.status(404).json({ msg: "Lo sentimos, debes llenar todos los campos" });
 
-    if(!administradorBDD) return res.status(404).json({msg: "Lo sentimo, el administrador no se encuentra resgistrado"})
+    const administradorBDD = await Administrador.findOne({ email }).select("-status -__v -token -updatedAt -createdAt");
 
-    const verificarPassword = await administradorBDD.matchPassword(password)
+    if (administradorBDD?.confirmEmail == false) return res.status(403).json({ msg: "Lo sentimos, debs de verificar su cuenta" });
 
-    if(!verificarPassword) return res.status(404).json({msg: "Lo sentimos, el password no es el correcto"})
+    if (!administradorBDD) return res.status(404).json({msg: "Lo sentimo, el administrador no se encuentra resgistrado"});
+
+    const verificarPassword = await administradorBDD.matchPassword(password);
+
+    if (!verificarPassword) return res.status(404).json({ msg: "Lo sentimos, el password no es el correcto" });
 
     // Asignacion del ROL
-    const token = generarJWT(administradorBDD._id,"administrador")
+    const token = generarJWT(administradorBDD._id, "administrador");
 
-    const { name, lastname, phone, _id } = administradorBDD
+    const { adminName, adminLastName, phone, _id } = administradorBDD;
 
     res.status(200).json({
         token,
-        name,
-        lastname,
+        adminName,
+        adminLastName,
         phone,
         _id,
-        email:administradorBDD.email
-    })
-}
+        email: administradorBDD.email,
+    });
+};
 
-
-const perfil = (req, res) =>{
-    delete req.administradorBDD.token
-    delete req.administradorBDD.confirmEmail
-    delete req.administradorBDD.createdAt
-    delete req.administradorBDD.updateAt
-    delete req.administradorBDD.__v
-    res.status(200).json(req.administradorBDD)
-}
-
+const perfil = (req, res) => {
+    delete req.administradorBDD.token;
+    delete req.administradorBDD.confirmEmail;
+    delete req.administradorBDD.createdAt;
+    delete req.administradorBDD.updateAt;
+    delete req.administradorBDD.__v;
+    res.status(200).json(req.administradorBDD);
+};
 
 const listarChoferes = (req, res) => {
-    res.status(200).json({res: 'Lista de choferes registrados'})
-}
+    res.status(200).json({ res: "Lista de choferes registrados" });
+};
 
 const listarpasajeros = (req, res) => {
-    res.status(200).json({res:'Lista de pasajeros registrados'})
-}
-
+    res.status(200).json({ res: "Lista de pasajeros registrados" });
+};
 
 const detalleChofer = async (req, res) => {
-    const { id } = req.params
+    const { id } = req.params;
 
-    if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({msg: `Lo sentimos, debe ser un id válido`});
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: `Lo sentimos, debe ser un id válido` });
 
-    const administradorBDD = await  Administrador.findById(id).select("-password")
+    const administradorBDD = await Administrador.findById(id).select("-password");
 
-    if(!administradorBDD) return res.status(404).json({mgs: `Lo sentimos, no existe el chofer ${id}`})
+    if (!administradorBDD) return res.status(404).json({ mgs: `Lo sentimos, no existe el chofer ${id}` });
 
-    res.status(200).json({msg: administradorBDD})
-
-}
-
+    res.status(200).json({ msg: administradorBDD });
+};
 
 const detallePasjero = async (req, res) => {
-    const { id } = req.params
+    const { id } = req.params;
 
-    if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({msg: `Lo sentimos, debe ser un id válido`});
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: `Lo sentimos, debe ser un id válido` });
 
-    const administradorBDD = await  Administrador.findById(id).select("-password")
+    const administradorBDD = await Administrador.findById(id).select("-password");
 
-    if(!administradorBDD) return res.status(404).json({mgs: `Lo sentimos, no existe el chofer ${id}`})
+    if (!administradorBDD) return res.status(404).json({ mgs: `Lo sentimos, no existe el chofer ${id}` });
 
-    res.status(200).json({msg: administradorBDD})
-
-}
-
+    res.status(200).json({ msg: administradorBDD });
+};
 
 const actualizarPerfil = async (req, res) => {
     const { id } = req.params
@@ -142,15 +142,15 @@ const actualizarPerfil = async (req, res) => {
         }
     }
 
-    administradorBDD.name = req.body.name || administradorBDD?.name
-    administradorBDD.lastName = req.body.lastName || administradorBDD?.lastName
+    administradorBDD.adminName = req.body.adminName || administradorBDD?.adminName
+    administradorBDD.adminLastName = req.body.adminLastName || administradorBDD?.adminLastName
     administradorBDD.email = req.body.email || administradorBDD?.email
     administradorBDD.phone = req.body.phone || administradorBDD?.phone
 
     await administradorBDD.save()
 
     res.status(200).json({msg: "Perfil actualizado correctamente"})
-}
+};
 
 
 const actualizarPassword = async (req,res) =>{
@@ -190,7 +190,6 @@ const recuperarPassword = async(re, res) => {
     res.status(200).json({msg: "Revisa tu correo electronico para reestablecer tu cuenta"})
 }
 
-
 const comprobarTokenPassword = async (req, res) => {
     if(!(res.params.token)) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
 
@@ -225,6 +224,41 @@ const nuevoPassword = async (req, res) => {
 }
 
 
+const registrarChofer = async (req, res) => {
+
+    // Verifica si el usuario autenticado es un administrador
+    if (req.rol !== 'administrador') return res.status(403).json({ msg: 'Acceso no autorizado' });
+    
+    const { email, password } = req.body;
+
+    // Verifica que todos los campos estén llenos
+    let choferName = req.body.choferName;
+    let choferLastName = req.body.choferName;
+
+    if (!choferName || !choferLastName || !email || !password) {
+        return res
+            .status(400)
+            .json({
+                msg: "Debes llenar los campos nombre, apellido, correo electrónico y contraseña",
+            });
+    }
+
+    const verificarEmailBDDChofer = await Chofer.findOne({ email });
+
+    if (verificarEmailBDDChofer) return res.status(400).json({msg: "Lo sentimos, el correo electrónico ya se encuentra registrado del chofer",});
+
+    const nuevoChofer = new Chofer(req.body)
+
+    nuevoChofer.password = await nuevoChofer.encrypPassword(password);
+
+    const token = nuevoChofer.crearToken();
+
+    await sendMailToUserChofer(email, token);
+
+    await nuevoChofer.save();
+
+    res.status(200).json({msg: "REvisa tu correo electronico para confirmar tu cuenta chofer"});
+};
 
 export {
     registro,
@@ -239,6 +273,6 @@ export {
     actualizarPassword,
     recuperarPassword,
     comprobarTokenPassword,
-    nuevoPassword
-}
-
+    nuevoPassword,
+    registrarChofer,
+};

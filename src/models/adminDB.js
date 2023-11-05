@@ -4,12 +4,12 @@ import { Schema, model } from "mongoose";
 import bcrypt from "bcryptjs";
 
 const adminSchema = new Schema({
-    name:{
+    adminName:{
         type: String, 
         require: true,
         trim: true,
     },
-    lastName:{
+    adminLastName:{
         type: String, 
         require: true,
         trim: true
@@ -26,7 +26,7 @@ const adminSchema = new Schema({
     },
     phone:{
         type: String, 
-        //require: true,
+        require: true,
         trim: true
     },
     confirmPhone:{
