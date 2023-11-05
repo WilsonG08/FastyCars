@@ -39,4 +39,3 @@ router.put("/pasajero/:id", verificarAutenticacion, actualizarPerfil);
 
 export default router;
 
-

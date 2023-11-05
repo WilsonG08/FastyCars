@@ -4,7 +4,8 @@ import {
     detalleChofer,
     registrarChofer,
     actualizarChofer,
-    eliminarChofer
+    eliminarChofer,
+    confirmEmail
 } from "../controllers/chofer_controllers.js"
 
 import verificarAutentificacion from "../middlewares/autenticacion.js";
@@ -15,7 +16,8 @@ router.get("/chofer", verificarAutentificacion, listarchoferes);
 router.get("/chofer/:id", verificarAutentificacion, detalleChofer);
 router.post("/chofer/registro", verificarAutentificacion, registrarChofer);
 router.put("/chofer", verificarAutentificacion, actualizarChofer);
-router.delete("/chofer/eliminar/:id", verificarAutentificacion, eliminarChofer)
+router.delete("/chofer/eliminar/:id", verificarAutentificacion, eliminarChofer);
+router.get("/chofer/confirmar/:token", confirmEmail);
 
 export default router;
 
