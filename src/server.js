@@ -5,15 +5,6 @@ import dotenv from 'dotenv';
 import routerPasajeros from './routers/pasajero_routes.js'
 import routerChofer from './routers/chofer_router.js'
 
-// desde aqui 
-/* import connection from './database.js';
-import mongoose from 'mongoose';
-import { administradors  } from './models/adminDB.js'
-const administradors = await Administrador.find(); 
-console.log(administradors)
-*/
-
-
 
 // Inicializaciones
 const app = express();
