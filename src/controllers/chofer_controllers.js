@@ -61,10 +61,6 @@ const confirmEmail = async (req,res) => {
 }
 
 
-const listarChoferes = async (req, res) => {
-    res.status(200).json({res: "Lista de choferes registrados" })
-}
-
 const listarPasajeros = async (req, res) => {
     res.status(200).json({res: "Lista de pasajeros registrados" })
 }
@@ -189,9 +185,7 @@ const nuevoPassword = async (req, res) => {
 export {
     login,
     perfil,
-    registro,
     confirmEmail,
-    listarChoferes,
     listarPasajeros,
     detallePasajero,
     actualizarPerfil,

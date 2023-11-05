@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import routerPasajeros from './routers/pasajero_routes.js'
 import routerChofer from './routers/chofer_router.js'
+import routerAdmin from './routers/admin_router.js'
 
 
 // Inicializaciones
@@ -29,6 +30,7 @@ app.use(express.json());
 
 app.use('/api', routerChofer);
 app.use('/api', routerPasajeros);
+app.use('/api', routerAdmin);
 
 // Manejo de una ruta no encontrda
 app.use((req, res) => res.status(404).send("Endpoint no encontrado - 404"))
