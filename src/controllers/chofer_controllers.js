@@ -1,105 +1,202 @@
-import Chofer from '../models/choferDB.js'
-import mongoose from 'mongoose';
+import Pasajero from '../models/pasajeroDB.js'
+import { sendMailToUser, sendMailToRecoveryPassword } from "../config/nodemailer.js"
+import generarJWT from "../helpers/crearJWT.js"
+import mongoose from "mongoose";
 
-const listarchoferes = async(req, res) =>{
-    const chofer = await Chofer.find({estado:true}).where('Chofer').equals(req.choferBDD).select("-createdAt  -updateAt").populate('Chofer', '_id name lastName')
-    
-    res.status(200).json(chofer)
-}
+const login = async(req, res) => {
+    const { email, password } = req.body
 
-const detalleChofer =  async( req, res ) =>{
-    const { id } = req.params
+    if( Object.values(req.body).includes("") ) return res.status(404).json({msg: "Lo sentimos, debes llenar todos los campos"})
 
-    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg: `Lo sentimos, no existe el chofer ${id}`});
+    const pasajeroBDD = await Pasajero.findOne({email}).select("-status -__v -token -updatedAt -createdAt")
 
-    const chofer = await Chofer.findById(id).select("-createdAt -updatedAt -__v").populate('administrdor','_id name lastName')
-    
-    res.status(200).json(chofer)
-}
+    if( pasajeroBDD?.confirmEmail === false ) return res.status(403).json({msg: "Lo sentimos, debe verificar su cuenta"})
 
+    if ( !pasajeroBDD ) return res.status(404).json({msg: "Lo sentimos, el usuario no se encuentra regitrado"})
 
-const loginChofer = async (req, res) => {
-    const { email, password } = req.body;
+    const verificarPassword = await pasajeroBDD.matchPassword(password)
 
-    if (Object.values(req.body).includes("")) return res.status(404).json({ msg: "Lo sentimos, debes llenar todos los campos" });
+    if( !verificarPassword ) return res.status(404).json({msg: "Lo sentimos, el password no es correcto"})
 
-    const choferBDD = await Chofer.findOne({ email }).select("-status -__v -token -updatedAt -createdAt");
+    const token = generarJWT(pasajeroBDD._id,"pasajero")
 
-    if (choferBDD?.confirmEmail == false) return res.status(403).json({ msg: "Lo sentimos, debs de verificar su cuenta" });
-
-    if (!choferBDD) return res.status(404).json({msg: "Lo sentimo, el Chofer no se encuentra resgistrado"});
-
-    const verificarPassword = await choferBDD.matchPassword(password);
-
-    if (!verificarPassword) return res.status(404).json({ msg: "Lo sentimos, el password no es el correcto" });
-
-    // Asignacion del ROL
-    const token = generarJWT(choferBDD._id, "Chofer");
-
-    const { choferName, choferLastName, phone, _id } = choferBDD;
+    const { pasajeroName, pasajeroLastName, phone, _id } = pasajeroBDD
 
     res.status(200).json({
         token,
-        choferName,
-        choferLastName,
+        pasajeroName,
+        pasajeroLastName,
         phone,
         _id,
-        email: choferBDD.email,
-    });
-};
+        email:pasajeroBDD.email
+    })
+}
 
 
-const actualizarChofer = async (req, res) => {
-    const { id } = req.params
+const perfil = (req, res) => {
+    delete req.pasajeroBDD.token
+    delete req.pasajeroBDD.confirmEmail
+    delete req.pasajeroBDD.createAt
+    delete req.pasajeroBDD.updateAt
+    delete req.pasajeroBDD.__v
 
-    if( Object.values(req.body).includes("")) return res.status(400).json({msg: "Lo sentimos, debes llenar todos los campos"})
-
-    if( !mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({msg:`Lo sentimos, no existe el Chofer ${id}`})
-
-    await Chofer.findByIdAndUpdate(req.params.id,req.body)
-
-    res.status(200).json({msg: "Actualizacion exitosa del chofer"})
+    res.status(200).json(req.pasajeroBDD)
 }
 
 
 const confirmEmail = async (req,res) => {
     if( !(req.params.token) ) return res.status(400).json({msg: "Lo sentimos, no se puede validar la cuenta"})
 
-    const choferBDD = await Chofer.findOne({token:req.params.token})
+    const pasajeroBDD = await Pasajero.findOne({token:req.params.token})
 
-    if( !choferBDD?.token ) return res.status(404).json({msg: "La cuenta ya ha sido confirmada CHOER"})
+    if( !pasajeroBDD?.token ) return res.status(404).json({msg: "La cuenta ya ha sido confirmada PASAJERO"})
 
-    choferBDD.token = null
+    pasajeroBDD.token = null
 
-    choferBDD.confirmEmail = true
+    pasajeroBDD.confirmEmail = true
 
-    await choferBDD.save()
+    await pasajeroBDD.save()
 
-    res.status(200).json({msg: "Token cofirmado, ya puedes iniciar sesion! CHOFER"})
+    res.status(200).json({msg: "Token cofirmado, ya puedes iniciar sesion!"})
 }
 
-// esta funcion no tiene que ir 
-const eliminarChofer = async(req, res) => {
+
+const listarChoferes = async (req, res) => {
+    res.status(200).json({res: "Lista de choferes registrados" })
+}
+
+const listarPasajeros = async (req, res) => {
+    res.status(200).json({res: "Lista de pasajeros registrados" })
+}
+
+
+const detallePasajero = async (req, res) => {
     const { id } = req.params
 
-    if( Object.values(req.body).includes("")) return res.status(400).json({msg: "Lo sentimos, debes llenar todos los campos"})
+    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg: `Lo sentimos, debe ser un Id vlaido: ${id}`})
 
-    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg: `Lo sentimos, no existe el Chofer ${id}`})
+    const pasajeroBDD = await Pasajero.findOne(id).select("-password")
 
-    // duda, no va esta linea
-    const { salida } = req.body
+    if( !pasajeroBDD ) return res.status(404).json({msg: `Lo sentimos, no existe el pasajero con el ID: ${id}`})
 
-    await Chofer.findByIdAndUpdate(req.params.id,{salida: Date.parse(salida),estado:false})
-
-    res.status(200).json({msg: "Fecha de salida"})
+    res.status(200).json({msg: pasajeroBDD})
 }
+
+const actualizarPerfil = async (req, res) => {
+    const { id } = req.params
+
+    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg: `Lo sentimos, debe ser un id válido: ${id}`})
+
+    if( Object.values(req.body).includes("") ) return res.status(400).json({msg: "Lo sentimos, debs de llenar todos los campos"})
+
+    const pasajeroBDD = await Pasajero.findById(id)
+
+    if( !pasajeroBDD ) return res.status(404).json({msg: `Lo sentimos, no existe el administrador ${id}`})
+
+    if(pasajeroBDD.email != req.body.email )
+    {
+        const pasajeroBDDMail = await Pasajero.findOne({email:req.body.email})
+
+        if( pasajeroBDDMail)
+        {
+            return res.status(404).json({msg: "Lo sentimos, el correo ya se encuentra registrado"})
+        }
+    }
+
+    pasajeroBDD.pasajeroName = req.body.pasajeroName
+    pasajeroBDD.pasajeroLastName = req.body.pasajeroLastName
+    pasajeroBDD.email = req.body.email
+    pasajeroBDD.phone = req.body.phone
+
+    await pasajeroBDD.save()
+
+    res.status(200).json({msg: "Perfil del pasajero actualizado correctamente!"})
+}
+
+
+const actualizarPassword = async (req, res) => {
+    const pasajeroBDD = await Pasajero.findById(req.pasajeroBDD._id)
+
+    if( !pasajeroBDD ) return res.status(404).json({msg:`Lo sentimos, no existe el pasajero: ${id}`})
+
+    const verificarPassword = await pasajeroBDD.matchPassword(req.body.passwordactual)
+
+    if( !verificarPassword ) return res.status(404).json({msg: "Lo sentimos, el password actual no es el correcto"})
+
+    pasajeroBDD.password = await pasajeroBDD.encrypPassword(req.body.passwordnuevo)
+
+    await pasajeroBDD.save()
+
+    res.status(200).json({msg: "Password actualizado correctamente"})
+}
+
+
+const recuperarPassword = async(req, res) => {
+    const { email } = req.body
+
+    if(Object.values(req.body).includes(""))  return res.status(404).json({msg: "Lo sentimos, debes de llenar todos los campos"})
+
+    const pasajeroBDD = await Pasajero.findOne({email})
+
+    if( !pasajeroBDD ) return res.status(404).json({msg: "Lo sentimos, el usuario no se encuentra registrado"})
+
+    const token = pasajeroBDD.crearToken()
+
+    pasajeroBDD.token = token
+
+    await sendMailToRecoveryPassword(email, token)
+
+    await pasajeroBDD.save()
+
+    res.status(200).json({msg: "REvisa tu correo electronico para restablecer tu cuenta"})
+}
+
+
+const comprobarTokenPassword = async (req, res) => {
+    if( !(res.params.token)) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
+
+    const pasajeroBDD = await Pasajero.findOne({token:req.params.token})
+
+    if(pasajeroBDD?.token !== req.params.token) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuentaa"})
+
+    await pasajeroBDD.save()
+
+    res.status(200).json({msg: "Token confirmado, ya puedes crear tu nuevo password"})
+}
+
+
+const nuevoPassword = async (req, res) => {
+    const { password, confirmPassword } = req.body
+
+    if( Object.values(req.body).includes("") ) return res.status(404).json({msg: "Lo sentimos, debs llenar todos los campos"})
+
+    if( password != confirmPassword ) return res.status(404).json({msg: "Lo sentimos, los password no coinciden"})
+
+    const pasajeroBDD = await Pasajero.findOne({token:req.params.token})
+
+    if( pasajeroBDD?.token !== req.params.token) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
+
+    pasajeroBDD.token = null
+
+    pasajeroBDD.password = await pasajeroBDD.encrypPassword(password)
+
+    await pasajeroBDD.save()
+
+    res.status(200).json({msg: "Felicidades, ya puedes iniciar sesion con tu nuevo password"})
+}
+
 
 export {
-    listarchoferes,
-    detalleChofer,
-    loginChofer,
-    actualizarChofer,
-    eliminarChofer,
-    confirmEmail
+    login,
+    perfil,
+    registro,
+    confirmEmail,
+    listarChoferes,
+    listarPasajeros,
+    detallePasajero,
+    actualizarPerfil,
+    actualizarPassword,
+    recuperarPassword,
+    comprobarTokenPassword,
+    nuevoPassword
 }
-
