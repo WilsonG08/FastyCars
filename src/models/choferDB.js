@@ -1,13 +1,13 @@
 import mongoose, { Schema, model } from "mongoose";
-//import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs"
 
 const choferSchema = new Schema({
-    name:{
+    choferName:{
         type: String, 
         require: true,
         trim: true
     },
-    lastName:{
+    choferLastName:{
         type: String, 
         require: true,
         trim: true
@@ -24,7 +24,7 @@ const choferSchema = new Schema({
     },
     phone:{
         type: String, 
-        //require: true,
+        require: true,
         trim: true
     },
     status:{
@@ -51,7 +51,7 @@ const choferSchema = new Schema({
     timestamps: true
 })
 
-/* // Metodo para cifrar el password del chofer
+// Metodo para cifrar el password del chofer
 choferSchema.methods.encrypPassword = async function(password){
     const salt = await bcrypt.genSalt(10)
     const passwordEncryp = await bcrypt.hash(password, salt)
@@ -60,15 +60,15 @@ choferSchema.methods.encrypPassword = async function(password){
 
 // Metodo para verrificar si el password ingresado es el mismo dela BDD
 choferSchema.methods.matchPassword = async function(password){
-    const response =  await bcrypt.compare(password,this.password)
+    const response =  await bcrypt.compare(password, this.password)
     return response
 }
 
 // Metodo para crear un token
 
 choferSchema.methods.crearToken = function(){
-    const tokenGenerado = this,token =Math.random().toString(36).slice(2)
+    const tokenGenerado = this.token = Math.random().toString(36).slice(2);
     return tokenGenerado
-} */
+}
 
 export default model('Chofer', choferSchema)

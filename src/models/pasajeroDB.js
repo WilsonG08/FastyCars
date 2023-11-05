@@ -4,12 +4,12 @@ import { Schema, model } from "mongoose";
 import bcrypt from "bcryptjs";
 
 const pasajeroSchema = new Schema({
-    name:{
+    pasajeroName:{
         type: String, 
         require: true,
         trim: true
     },
-    lastName:{
+    pasajeroLastName:{
         type: String, 
         require: true,
         trim: true
@@ -26,7 +26,7 @@ const pasajeroSchema = new Schema({
     },
     phone:{
         type: String, 
-        //require: true,
+        require: true,
         trim: true
     },
     confirmPhone:{
