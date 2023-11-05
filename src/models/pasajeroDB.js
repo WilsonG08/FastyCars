@@ -26,7 +26,7 @@ const pasajeroSchema = new Schema({
     },
     phone:{
         type: String, 
-        require: true,
+        //require: true,
         trim: true
     },
     confirmPhone:{

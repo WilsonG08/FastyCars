@@ -20,12 +20,12 @@ const login = async(req, res) => {
 
     const token = generarJWT(pasajeroBDD._id,"pasajero")
 
-    const { name, lastname, phone, _id } = pasajeroBDD
+    const { pasajeroName, pasajeroLastName, phone, _id } = pasajeroBDD
 
     res.status(200).json({
         token,
-        name,
-        lastname,
+        pasajeroName,
+        pasajeroLastName,
         phone,
         _id,
         email:pasajeroBDD.email
@@ -63,7 +63,7 @@ const registro = async (req, res) => {
 
     await nuevoPasajero.save()
 
-    res.status(200).json({msg: "Revisa tu correo electronico para confirmar tu cuenta"})
+    res.status(200).json({msg: "Revisa tu correo electronico para confirmar tu cuenta PASAJERO"})
 }
 
 
@@ -72,7 +72,7 @@ const confirmEmail = async (req,res) => {
 
     const pasajeroBDD = await Pasajero.findOne({token:req.params.token})
 
-    if( !pasajeroBDD?.token ) return res.status(404).json({msg: "La cuenta ya ha sido confirmada"})
+    if( !pasajeroBDD?.token ) return res.status(404).json({msg: "La cuenta ya ha sido confirmada PASAJERO"})
 
     pasajeroBDD.token = null
 
@@ -126,8 +126,8 @@ const actualizarPerfil = async (req, res) => {
         }
     }
 
-    pasajeroBDD.name = req.body.name
-    pasajeroBDD.lastName = req.body.lastName
+    pasajeroBDD.pasajeroName = req.body.pasajeroName
+    pasajeroBDD.pasajeroLastName = req.body.pasajeroLastName
     pasajeroBDD.email = req.body.email
     pasajeroBDD.phone = req.body.phone
 
