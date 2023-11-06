@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer"
 import dotenv from 'dotenv'
-import Chofer from '../models/choferDB.js'
 dotenv.config()
 
 // Creación del transporter
