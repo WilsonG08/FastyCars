@@ -1,5 +1,6 @@
 import Chofer from '../models/choferDB.js'
 import mongoose from 'mongoose';
+import generarJWT from "../helpers/crearJWT.js";
 
 const listarchoferes = async(req, res) =>{
     const chofer = await Chofer.find({estado:true}).where('Chofer').equals(req.choferBDD).select("-createdAt  -updateAt").populate('Chofer', '_id name lastName')
@@ -34,7 +35,7 @@ const loginChofer = async (req, res) => {
     if (!verificarPassword) return res.status(404).json({ msg: "Lo sentimos, el password no es el correcto" });
 
     // Asignacion del ROL
-    const token = generarJWT(choferBDD._id, "Chofer");
+    const token = generarJWT(choferBDD._id, "chofer");
 
     const { choferName, choferLastName, phone, _id } = choferBDD;
 
