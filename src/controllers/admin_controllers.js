@@ -2,6 +2,9 @@ import Administrador from "../models/adminDB.js";
 import Chofer from "../models/choferDB.js";
 import generarJWT from "../helpers/crearJWT.js";
 import mongoose from "mongoose";
+import Pasajero from '../models/pasajeroDB.js'
+
+
 import {
     sendMailToRecoveryPassword,
     sendMailToUserAdmin,
@@ -89,13 +92,41 @@ const perfil = (req, res) => {
     res.status(200).json(req.administradorBDD);
 };
 
+
+/* 
 const listarChoferes = (req, res) => {
     res.status(200).json({ res: "Lista de choferes registrados" });
 };
 
+*/
+
+const listarChoferes = async (req, res) => {
+    try {
+        const choferes = await Chofer.find({}, 'choferName choferLastName email phone rol'); // Especifica los campos que deseas recuperar
+
+        res.status(200).json(choferes);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al listar los choferes' });
+    }
+};
+
+
+/* 
 const listarpasajeros = (req, res) => {
     res.status(200).json({ res: "Lista de pasajeros registrados" });
+}; */
+
+const listarpasajeros = async (req, res) => {
+    try {
+        const pasajeros = await Pasajero.find({}, 'pasajeroName pasajeroLastName email phone rol'); // Especifica los campos que deseas recuperar
+
+        res.status(200).json(pasajeros);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al listar los pasajeros' });
+    }
 };
+
+
 
 const detalleChofer = async (req, res) => {
     const { id } = req.params;

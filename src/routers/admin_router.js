@@ -23,18 +23,23 @@ import verificarAutenticacion from '../middlewares/autenticacion.js'
 const router =  Router()
 
 
-router.post("/admin/login", login);
 router.post("/admin/registro", registro);
+router.post("/admin/login", login);
 router.get("/admin/confirmar/:token", confirmEmail);
-router.get("/admin/pasajeros", listarpasajeros);
-// DUDA AQUI, QUIERO LISTAR LOS CHOFERES
-router.get("/admin/pasajeros/chofer", listarChoferes);
+
+// BIEN
+router.post("/admin/registrar-chofer", verificarAutenticacion, registrarChofer);
+router.get("/admin/lista-choferes",verificarAutenticacion, listarChoferes);
+router.get("/admin/lista-pasajeros", listarpasajeros);
+
+
+
+
+// FALTA PROBAR
 router.post("/admin/recuperar-password", recuperarPassword);
 router.get("/admin/recuperar-password/:token", comprobarTokenPassword);
 router.post("/admin/nuevo-password/:token", nuevoPassword);
 
-// chofer
-router.post("/admin/registrar-chofer", verificarAutenticacion, registrarChofer);
 
 
 router.get("/admin/perfil", verificarAutenticacion, perfil);
