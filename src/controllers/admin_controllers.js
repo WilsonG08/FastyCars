@@ -9,9 +9,9 @@ import {
 } from "../config/nodemailer.js";
 
 const registro = async (req, res) => {
-    const { email, password } = req.body;
+    const { adminName, adminLastName, email, password, phone } = req.body
 
-    if (Object.values(req.body).includes("")) return res.status(400).jsoon({ msg: "Lo sentimos, debes llenar todos los campos" });
+    if (!adminName || !adminLastName || !email || !password || !phone) return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
 
     const verificarEmailBDD = await Administrador.findOne({ email });
 
@@ -28,7 +28,7 @@ const registro = async (req, res) => {
     await nuevoAdmin.save();
 
     res.status(200).json({
-        msg: "REvisa tu correo electronico para confirmar tu cuenta ADMIN",
+        msg: "Revisa tu correo electronico para confirmar tu cuenta ADMIN",
     });
 };
 
@@ -229,19 +229,11 @@ const registrarChofer = async (req, res) => {
     // Verifica si el usuario autenticado es un administrador
     if (req.rol !== 'administrador') return res.status(403).json({ msg: 'Acceso no autorizado' });
     
-    const { email, password } = req.body;
+    const { choferName, choferLastName, email, password, phone } = req.body
 
-    // Verifica que todos los campos estén llenos
-    let choferName = req.body.choferName;
-    let choferLastName = req.body.choferName;
-
-    if (!choferName || !choferLastName || !email || !password) {
-        return res
-            .status(400)
-            .json({
-                msg: "Debes llenar los campos nombre, apellido, correo electrónico y contraseña",
-            });
-    }
+    
+    if (!choferName || !choferLastName || !email || !password || !phone) return res.status(400).json({msg: "Debes llenar los campos nombre, apellido, correo electrónico y contraseña",});
+    
 
     const verificarEmailBDDChofer = await Chofer.findOne({ email });
 
@@ -259,6 +251,8 @@ const registrarChofer = async (req, res) => {
 
     res.status(200).json({msg: "REvisa tu correo electronico para confirmar tu cuenta chofer"});
 };
+
+
 
 export {
     registro,

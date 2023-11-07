@@ -6,27 +6,27 @@ import bcrypt from "bcryptjs";
 const adminSchema = new Schema({
     adminName:{
         type: String, 
-        require: true,
+        required: true,
         trim: true,
     },
     adminLastName:{
         type: String, 
-        require: true,
+        required: true,
         trim: true
     },
     email:{
         type: String, 
-        require: true,
+        required: true,
         trim: true
     },
     password:{
         type: String, 
-        require: true,
+        required: true,
         trim: true
     },
     phone:{
         type: String, 
-        require: true,
+        required: true,
         trim: true
     },
     confirmPhone:{

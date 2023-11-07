@@ -44,14 +44,15 @@ const perfil = (req, res) => {
 }
 
 
+
 const registro = async (req, res) => {
-    const { email, password } = req.body
+    const { pasajeroName, pasajeroLastName, email, password, phone } = req.body
     
-    if( Object.values(req.body).includes("") ) return res.status(400).json({msg: "Lo sentimos, debes llenar todos los campos"})
+    if (!pasajeroName || !pasajeroLastName || !email || !password || !phone) return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
 
     const verificarEmailBDD = await Pasajero.findOne({email})
 
-    if( verificarEmailBDD ) return res.status(400).json({msg: "Lo sentimos, el email ya se encuentra registrado"})
+    if(verificarEmailBDD) return res.status(400).json({msg: "Lo sentimos, el email ya se encuentra registrado"})
 
     const nuevoPasajero = new Pasajero(req.body)
 
@@ -59,12 +60,13 @@ const registro = async (req, res) => {
 
     const token = nuevoPasajero.crearToken()
 
-    await sendMailToUser(email, token)
+    await sendMailToUser(email,token)
 
     await nuevoPasajero.save()
 
     res.status(200).json({msg: "Revisa tu correo electronico para confirmar tu cuenta PASAJERO"})
 }
+
 
 
 const confirmEmail = async (req,res) => {

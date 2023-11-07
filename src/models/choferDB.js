@@ -4,32 +4,28 @@ import bcrypt from "bcryptjs"
 const choferSchema = new Schema({
     choferName:{
         type: String, 
-        require: true,
+        required: true,
         trim: true
     },
     choferLastName:{
         type: String, 
-        require: true,
+        required: true,
         trim: true
     },
     email:{
         type: String, 
-        require: true,
+        required: true,
         trim: true
     },
     password:{
         type: String, 
-        require: true,
+        required: true,
         trim: true
     },
     phone:{
         type: String, 
-        require: true,
+        required: true,
         trim: true
-    },
-    status:{
-        type: Boolean,
-        default: null
     },
     token:{
         type: String,

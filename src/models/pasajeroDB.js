@@ -6,27 +6,27 @@ import bcrypt from "bcryptjs";
 const pasajeroSchema = new Schema({
     pasajeroName:{
         type: String, 
-        require: true,
+        required: true,
         trim: true
     },
     pasajeroLastName:{
         type: String, 
-        require: true,
+        required: true,
         trim: true
     },
     email:{
         type: String, 
-        require: true,
+        required: true,
         trim: true
     },
     password:{
         type: String, 
-        require: true,
+        required: true,
         trim: true
     },
     phone:{
-        type: String, 
-        //require: true,
+        type: Number, 
+        required: true,
         trim: true
     },
     confirmPhone:{
@@ -50,7 +50,6 @@ const pasajeroSchema = new Schema({
     timestamps: true
 })
 
-// Probar el 1 o si no "1"
 
 // Metodo para cifrar el password del veterinario
 pasajeroSchema.methods.encrypPassword = async function ( password ){
