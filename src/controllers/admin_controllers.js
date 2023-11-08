@@ -9,6 +9,7 @@ import {
     sendMailToRecoveryPassword,
     sendMailToUserAdmin,
     sendMailToUserChofer,
+    sendMailToRecoveryPasswordAdmin
 } from "../config/nodemailer.js";
 
 const registro = async (req, res) => {
@@ -201,8 +202,8 @@ const actualizarPassword = async (req,res) =>{
 }
 
 
-const recuperarPassword = async(re, res) => {
-    const { email } = req.body
+const recuperarPassword = async(req, res) => {
+    const { email } = req.body;
 
     if( Object.values(req.body).includes("")) return res.status(404).json({msg: "Lo sentimos, debes llenar todos los campos"})
 
@@ -214,7 +215,7 @@ const recuperarPassword = async(re, res) => {
 
     administradorBDD.token = token
 
-    await sendMailToRecoveryPassword(email, token)
+    await sendMailToRecoveryPasswordAdmin(email, token)
 
     await administradorBDD.save()
 
@@ -222,7 +223,7 @@ const recuperarPassword = async(re, res) => {
 }
 
 const comprobarTokenPassword = async (req, res) => {
-    if(!(res.params.token)) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
+    if(!(req.params.token)) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
 
     const administradorBDD = await Administrador.findOne({token:req.params.token})
 
@@ -235,6 +236,7 @@ const comprobarTokenPassword = async (req, res) => {
 
 
 const nuevoPassword = async (req, res) => {
+
     const { password, confirmpassword } = req.body
     
     if(Object.values(req.body).includes("")) return res.status(404).json({msg: "Lo sentimos, debes llenar todos los campos"})

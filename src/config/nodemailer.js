@@ -80,9 +80,29 @@ const sendMailToRecoveryPassword = async(userMail,token)=>{
     console.log("Mensaje enviado satisfactoriamente: ", info.messageId);
 }
 
+
+
+const sendMailToRecoveryPasswordAdmin = async(userMail,token)=>{
+    let info = await transport.sendMail({
+    from: 'admin@vet.com',
+    to: userMail,
+    subject: "Correo para reestablecer tu contraseña",
+    html: `
+    <h1>Sistema de gestión - ADMIN (FAST-CAR 🏁 🚗🚘)</h1>
+    <hr>
+    <a href=${process.env.URL_BACKEND}/admin/recuperar-password/${token}>Clic para reestablecer tu contraseña</a>
+    <hr>
+    <footer>Fast-Car te da la Bienvenida!</footer>
+    `
+    });
+    console.log("Mensaje enviado satisfactoriamente: ", info.messageId);
+}
+
+
 export {
     sendMailToUser,
     sendMailToUserAdmin,
     sendMailToUserChofer,
-    sendMailToRecoveryPassword
+    sendMailToRecoveryPassword,
+    sendMailToRecoveryPasswordAdmin
 }

@@ -31,13 +31,13 @@ router.get("/admin/confirmar/:token", confirmEmail);
 router.post("/admin/registrar-chofer", verificarAutenticacion, registrarChofer);
 router.get("/admin/lista-choferes",verificarAutenticacion, listarChoferes);
 router.get("/admin/lista-pasajeros", listarpasajeros);
+router.post("/admin/recuperar-password", recuperarPassword);
+router.get("/admin/recuperar-password/:token", comprobarTokenPassword);
 
 
 
 
 // FALTA PROBAR
-router.post("/admin/recuperar-password", recuperarPassword);
-router.get("/admin/recuperar-password/:token", comprobarTokenPassword);
 router.post("/admin/nuevo-password/:token", nuevoPassword);
 
 
