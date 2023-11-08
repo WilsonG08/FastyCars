@@ -33,16 +33,13 @@ router.get("/admin/lista-choferes",verificarAutenticacion, listarChoferes);
 router.get("/admin/lista-pasajeros", listarpasajeros);
 router.post("/admin/recuperar-password", recuperarPassword);
 router.get("/admin/recuperar-password/:token", comprobarTokenPassword);
+router.post("/admin/nuevo-password/:token", nuevoPassword);
+router.get("/admin/perfil", verificarAutenticacion, perfil);
 
 
 
 
 // FALTA PROBAR
-router.post("/admin/nuevo-password/:token", nuevoPassword);
-
-
-
-router.get("/admin/perfil", verificarAutenticacion, perfil);
 router.put("/admin/pasajero/actualizarpassword", verificarAutenticacion, actualizarPassword);
 router.get("/admin/pasajero/:id", verificarAutenticacion, detallePasjero);
 router.put("/admin/pasajero/:id", verificarAutenticacion, actualizarPerfil);

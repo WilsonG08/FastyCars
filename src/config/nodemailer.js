@@ -37,7 +37,7 @@ const sendMailToUserChofer = async(userMail,token)=>{
     html: `
     <h1>Sistema de gestión - CHOFER (FAST-CAR 🏁 🚗🚘)</h1>
     <hr>
-    <a href=${process.env.URL_BACKEND}/chofer/confirmar/${token}>Clic para confirmar tu cuenta</a>
+    <a href=${process.env.URL_BACKEND}chofer/confirmar/${token}>Clic para confirmar tu cuenta</a>
     <hr>
     <footer>Fast-Car te da la Bienvenida!</footer>
     `
@@ -54,7 +54,7 @@ const sendMailToUserAdmin = async(userMail,token)=>{
     html: `
     <h1>Sistema de gestión - ADMIN  (FAST-CAR 🏁 🚗🚘)</h1>
     <hr>
-    <a href=${process.env.URL_BACKEND}/admin/confirmar/${token}>Clic para confirmar tu cuenta</a>
+    <a href=${process.env.URL_BACKEND}admin/confirmar/${token}>Clic para confirmar tu cuenta</a>
     <hr>
     <footer>Fast-Car te da la Bienvenida!</footer>
     `
@@ -90,7 +90,7 @@ const sendMailToRecoveryPasswordAdmin = async(userMail,token)=>{
     html: `
     <h1>Sistema de gestión - ADMIN (FAST-CAR 🏁 🚗🚘)</h1>
     <hr>
-    <a href=${process.env.URL_BACKEND}/admin/recuperar-password/${token}>Clic para reestablecer tu contraseña</a>
+    <a href=${process.env.URL_BACKEND}admin/recuperar-password/${token}>Clic para reestablecer tu contraseña</a>
     <hr>
     <footer>Fast-Car te da la Bienvenida!</footer>
     `
