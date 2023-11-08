@@ -85,7 +85,7 @@ const confirmEmail = async (req,res) => {
     res.status(200).json({msg: "Token cofirmado, ya puedes iniciar sesion!"})
 }
 
-
+// ojo estas funciones, se ddebe cambiar
 const listarChoferes = async (req, res) => {
     res.status(200).json({res: "Lista de choferes registrados" })
 }
@@ -178,7 +178,7 @@ const recuperarPassword = async(req, res) => {
 
 
 const comprobarTokenPassword = async (req, res) => {
-    if( !(res.params.token)) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
+    if( !(req.params.token)) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
 
     const pasajeroBDD = await Pasajero.findOne({token:req.params.token})
 
@@ -191,11 +191,11 @@ const comprobarTokenPassword = async (req, res) => {
 
 
 const nuevoPassword = async (req, res) => {
-    const { password, confirmPassword } = req.body
+    const { password, confirmpassword } = req.body
 
     if( Object.values(req.body).includes("") ) return res.status(404).json({msg: "Lo sentimos, debs llenar todos los campos"})
 
-    if( password != confirmPassword ) return res.status(404).json({msg: "Lo sentimos, los password no coinciden"})
+    if( password != confirmpassword ) return res.status(404).json({msg: "Lo sentimos, los password no coinciden"})
 
     const pasajeroBDD = await Pasajero.findOne({token:req.params.token})
 

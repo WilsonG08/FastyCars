@@ -141,6 +141,8 @@ const detalleChofer = async (req, res) => {
     res.status(200).json({ msg: administradorBDD });
 };
 
+
+
 const detallePasjero = async (req, res) => {
     const { id } = req.params;
 
@@ -186,6 +188,7 @@ const actualizarPerfil = async (req, res) => {
 
 
 const actualizarPassword = async (req,res) =>{
+    
     const administradorBDD = await Administrador.findById(req.administradorBDD._id)
 
     if(!administradorBDD) return res.status(404).json({msg: `Lo sentimos, no existe el administrador ${id}`})

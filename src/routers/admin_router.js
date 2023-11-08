@@ -35,12 +35,13 @@ router.post("/admin/recuperar-password", recuperarPassword);
 router.get("/admin/recuperar-password/:token", comprobarTokenPassword);
 router.post("/admin/nuevo-password/:token", nuevoPassword);
 router.get("/admin/perfil", verificarAutenticacion, perfil);
+router.put("/admin/actualizarpassword", verificarAutenticacion, actualizarPassword);
 
 
 
 
 // FALTA PROBAR
-router.put("/admin/pasajero/actualizarpassword", verificarAutenticacion, actualizarPassword);
+// esta de que me puede servir ?
 router.get("/admin/pasajero/:id", verificarAutenticacion, detallePasjero);
 router.put("/admin/pasajero/:id", verificarAutenticacion, actualizarPerfil);
 

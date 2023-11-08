@@ -24,16 +24,21 @@ const router =  Router()
 router.post("/login", login);
 router.post("/registro", registro);
 router.get("/confirmar/:token", confirmEmail);
-router.get("/pasajeros", listarPasajeros);
-// DUDA AQUI, QUIERO LISTAR LOS CHOFERES
-router.get("/pasajeros/chofer", listarChoferes);
 router.post("/recuperar-password", recuperarPassword);
 router.get("/recuperar-password/:token", comprobarTokenPassword);
 router.post("/nuevo-password/:token", nuevoPassword);
-
-
-router.get("/perfil", verificarAutenticacion, perfil);
 router.put("/pasajero/actualizarpassword", verificarAutenticacion, actualizarPassword);
+router.get("/perfil", verificarAutenticacion, perfil);
+
+
+
+
+
+// DUDA AQUI, QUIERO LISTAR LOS CHOFERES
+
+router.get("/pasajeros", listarPasajeros);
+router.get("/pasajeros/chofer", listarChoferes);
+
 router.get("/pasajero/:id", verificarAutenticacion, detallePasajero);
 router.put("/pasajero/:id", verificarAutenticacion, actualizarPerfil);
 
