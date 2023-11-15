@@ -62,9 +62,15 @@ choferSchema.methods.matchPassword = async function(password){
 
 // Metodo para crear un token
 
-choferSchema.methods.crearToken = function(){
+/* choferSchema.methods.crearToken = function(){
     const tokenGenerado = this.token = Math.random().toString(36).slice(2);
     return tokenGenerado
-}
+} */
+
+choferSchema.methods.crearToken = function () {
+    const tokenGenerado = Math.random().toString(36).slice(2);
+    this.token = tokenGenerado; // Almacena el token en el campo 'token' del modelo
+    return tokenGenerado;
+};
 
 export default model('Chofer', choferSchema)

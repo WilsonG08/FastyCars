@@ -65,9 +65,16 @@ pasajeroSchema.methods.matchPassword =  async function( password ) {
 }
 
 // Metodo para crear un token
-pasajeroSchema.methods.crearToken = function(){
+/* pasajeroSchema.methods.crearToken = function(){
     const tokenGenerado = this.token = Math.random().toString(36).slice(2)
     return tokenGenerado
-}
+} */
+
+
+pasajeroSchema.methods.crearToken = function () {
+    const tokenGenerado = Math.random().toString(36).slice(2);
+    this.token = tokenGenerado; // Almacena el token en el campo 'token' del modelo
+    return tokenGenerado;
+};
 
 export default model('Pasajero', pasajeroSchema);
