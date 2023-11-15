@@ -39,9 +39,9 @@ const registro = async (req, res) => {
 const confirmEmail = async (req, res) => {
     if (!req.params.token) return res.status(400).json({ msg: "Lo sentimos, no se puede validar la cuenta" });
 
-    const administradorBDD = await Administrador.findOne({token: req.params.token});
+    const administradorBDD = await Administrador.findOne({ token: req.params.token });
 
-    if (!administradorBDD?.token)return res.status(404).json({ msg: "La cuenta ya ha sido confirmada ADMIN" });
+    if (!administradorBDD?.token) return res.status(404).json({ msg: "La cuenta ya ha sido confirmada ADMIN" });
 
     administradorBDD.token = null;
 
@@ -63,7 +63,7 @@ const login = async (req, res) => {
 
     if (administradorBDD?.confirmEmail == false) return res.status(403).json({ msg: "Lo sentimos, debs de verificar su cuenta" });
 
-    if (!administradorBDD) return res.status(404).json({msg: "Lo sentimo, el administrador no se encuentra resgistrado"});
+    if (!administradorBDD) return res.status(404).json({ msg: "Lo sentimo, el administrador no se encuentra resgistrado" });
 
     const verificarPassword = await administradorBDD.matchPassword(password);
 
@@ -155,16 +155,19 @@ const detallePasjero = async (req, res) => {
     res.status(200).json({ msg: administradorBDD });
 };
 
+
+/* 
+
 const actualizarPerfil = async (req, res) => {
     const { id } = req.params
 
-    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg:`Lo sentimos, debe ser un id válido`});
+    //if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg:`Lo sentimos, debe ser un id válido`});
 
-    if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
+//    if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
 
     const administradorBDD = await Administrador.findById(id)
 
-    if(!administradorBDD) return res.status(404).json({msg: `Lo sentimos, no existe el administrador ${id}`})
+//    if(!administradorBDD) return res.status(404).json({msg: `Lo sentimos, no existe el administrador ${id}`})
 
     if(administradorBDD.email != req.body.email)
     {
@@ -178,41 +181,75 @@ const actualizarPerfil = async (req, res) => {
 
     administradorBDD.adminName = req.body.adminName || administradorBDD?.adminName
     administradorBDD.adminLastName = req.body.adminLastName || administradorBDD?.adminLastName
-    administradorBDD.email = req.body.email || administradorBDD?.email
-    administradorBDD.phone = req.body.phone || administradorBDD?.phone
+    //administradorBDD.email = req.body.email || administradorBDD?.email
+    //administradorBDD.phone = req.body.phone || administradorBDD?.phone
 
     await administradorBDD.save()
 
     res.status(200).json({msg: "Perfil actualizado correctamente"})
 };
 
+ */
 
-const actualizarPassword = async (req,res) =>{
-    
+
+
+const actualizarPerfil = async (req, res) => {
+    try {
+        // Obtiene el ID del usuario que inició sesión
+        const usuarioActual = req.administradorBDD;
+
+        // Actualiza la información del perfil
+        const administradorBDD = await Administrador.findByIdAndUpdate(
+            usuarioActual._id,
+            {
+                adminName: req.body.adminName || usuarioActual.adminName,
+                adminLastName: req.body.adminLastName || usuarioActual.adminLastName
+            },
+            {
+                new: true,
+            }
+        );
+
+        // Genera y almacena un nuevo token
+        administradorBDD.crearToken();
+        await administradorBDD.save();
+
+        res.status(200).json({ msg: "Perfil actualizado correctamente", administradorBDD });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al actualizar el perfil" });
+    }
+};
+
+
+
+
+const actualizarPassword = async (req, res) => {
+
     const administradorBDD = await Administrador.findById(req.administradorBDD._id)
 
-    if(!administradorBDD) return res.status(404).json({msg: `Lo sentimos, no existe el administrador ${id}`})
+    if (!administradorBDD) return res.status(404).json({ msg: `Lo sentimos, no existe el administrador ${id}` })
 
     const verificarPassword = await administradorBDD.matchPassword(req.body.passwordactual)
 
-    if(!verificarPassword) return res.status(404).json({msg: "Lo sentimos, el password actual no es el correcto"})
-    
+    if (!verificarPassword) return res.status(404).json({ msg: "Lo sentimos, el password actual no es el correcto" })
+
     administradorBDD.password = await administradorBDD.encrypPassword(req.body.passwordnuevo)
 
     await administradorBDD.save()
 
-    res.status(200).json({msg: "Password actualizado correctamente!"})
+    res.status(200).json({ msg: "Password actualizado correctamente!" })
 }
 
 
-const recuperarPassword = async(req, res) => {
+const recuperarPassword = async (req, res) => {
     const { email } = req.body;
 
-    if( Object.values(req.body).includes("")) return res.status(404).json({msg: "Lo sentimos, debes llenar todos los campos"})
+    if (Object.values(req.body).includes("")) return res.status(404).json({ msg: "Lo sentimos, debes llenar todos los campos" })
 
-    const administradorBDD = await Administrador.findOne({email})
+    const administradorBDD = await Administrador.findOne({ email })
 
-    if(!administradorBDD) return res.status(404).json({msg: "Lo sentimos, el usuario no se encuentra registrado"})
+    if (!administradorBDD) return res.status(404).json({ msg: "Lo sentimos, el usuario no se encuentra registrado" })
 
     const token = administradorBDD.crearToken()
 
@@ -222,33 +259,33 @@ const recuperarPassword = async(req, res) => {
 
     await administradorBDD.save()
 
-    res.status(200).json({msg: "Revisa tu correo electronico para reestablecer tu cuenta"})
+    res.status(200).json({ msg: "Revisa tu correo electronico para reestablecer tu cuenta" })
 }
 
 const comprobarTokenPassword = async (req, res) => {
-    if(!(req.params.token)) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
+    if (!(req.params.token)) return res.status(404).json({ msg: "Lo sentimos, no se puede validar la cuenta" })
 
-    const administradorBDD = await Administrador.findOne({token:req.params.token})
+    const administradorBDD = await Administrador.findOne({ token: req.params.token })
 
-    if(administradorBDD?.token !== req.params.token) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
+    if (administradorBDD?.token !== req.params.token) return res.status(404).json({ msg: "Lo sentimos, no se puede validar la cuenta" })
 
     await administradorBDD.save()
 
-    res.status(200).json({msg: "Token confirmado, ya puedes crear tu nuevo password"})
+    res.status(200).json({ msg: "Token confirmado, ya puedes crear tu nuevo password" })
 }
 
 
 const nuevoPassword = async (req, res) => {
 
     const { password, confirmpassword } = req.body
-    
-    if(Object.values(req.body).includes("")) return res.status(404).json({msg: "Lo sentimos, debes llenar todos los campos"})
 
-    if( password != confirmpassword) return res.status(404).json({msg: "Lo sentimos, los passwords no coinciden!"})
+    if (Object.values(req.body).includes("")) return res.status(404).json({ msg: "Lo sentimos, debes llenar todos los campos" })
 
-    const administradorBDD = await Administrador.findOne({token:req.params.token})
+    if (password != confirmpassword) return res.status(404).json({ msg: "Lo sentimos, los passwords no coinciden!" })
 
-    if( administradorBDD?.token !== req.params.token ) return res.status(404).json({msg: "LO sentimos, no se puede validar la cuenta"})
+    const administradorBDD = await Administrador.findOne({ token: req.params.token })
+
+    if (administradorBDD?.token !== req.params.token) return res.status(404).json({ msg: "LO sentimos, no se puede validar la cuenta" })
 
     administradorBDD.token = null
 
@@ -256,7 +293,7 @@ const nuevoPassword = async (req, res) => {
 
     await administradorBDD.save()
 
-    res.status(200).json({msg: "Felicidades, ya puedes iniciar sesion con tu nuevo password"})
+    res.status(200).json({ msg: "Felicidades, ya puedes iniciar sesion con tu nuevo password" })
 }
 
 
@@ -264,16 +301,16 @@ const registrarChofer = async (req, res) => {
 
     // Verifica si el usuario autenticado es un administrador
     if (req.rol !== 'administrador') return res.status(403).json({ msg: 'Acceso no autorizado' });
-    
+
     const { choferName, choferLastName, email, password, phone } = req.body
 
-    
-    if (!choferName || !choferLastName || !email || !password || !phone) return res.status(400).json({msg: "Debes llenar los campos nombre, apellido, correo electrónico y contraseña",});
-    
+
+    if (!choferName || !choferLastName || !email || !password || !phone) return res.status(400).json({ msg: "Debes llenar los campos nombre, apellido, correo electrónico y contraseña", });
+
 
     const verificarEmailBDDChofer = await Chofer.findOne({ email });
 
-    if (verificarEmailBDDChofer) return res.status(400).json({msg: "Lo sentimos, el correo electrónico ya se encuentra registrado del chofer",});
+    if (verificarEmailBDDChofer) return res.status(400).json({ msg: "Lo sentimos, el correo electrónico ya se encuentra registrado del chofer", });
 
     const nuevoChofer = new Chofer(req.body)
 
@@ -285,7 +322,7 @@ const registrarChofer = async (req, res) => {
 
     await nuevoChofer.save();
 
-    res.status(200).json({msg: "REvisa tu correo electronico para confirmar tu cuenta chofer"});
+    res.status(200).json({ msg: "REvisa tu correo electronico para confirmar tu cuenta chofer" });
 };
 
 

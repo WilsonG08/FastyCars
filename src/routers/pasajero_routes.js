@@ -35,7 +35,6 @@ router.get("/perfil", verificarAutenticacion, perfil);
 
 
 // DUDA AQUI, QUIERO LISTAR LOS CHOFERES
-
 router.get("/pasajeros", listarPasajeros);
 router.get("/pasajeros/chofer", listarChoferes);
 

@@ -17,7 +17,7 @@ const sendMailToUser = async(userMail,token)=>{
     let info = await transport.sendMail({
     from: 'admin@vet.com',
     to: userMail,
-    subject: "Verifica tu cuenta de correo electrónico",
+    subject: "Confirma la autenticidad de tu dirección de correo electrónico.",
     html: `
     <h1>Sistema de gestión (FAST-CAR 🏁 🚗🚘)</h1>
     <hr>
@@ -33,7 +33,7 @@ const sendMailToUserChofer = async(userMail,token)=>{
     let info = await transport.sendMail({
     from: 'admin@vet.com',
     to: userMail,
-    subject: "Verifica tu cuenta de correo electrónico",
+    subject: "Confirma la autenticidad de tu dirección de correo electrónico.",
     html: `
     <h1>Sistema de gestión - CHOFER (FAST-CAR 🏁 🚗🚘)</h1>
     <hr>
@@ -50,7 +50,7 @@ const sendMailToUserAdmin = async(userMail,token)=>{
     let info = await transport.sendMail({
     from: 'admin@vet.com',
     to: userMail,
-    subject: "Verifica tu cuenta de correo electrónico",
+    subject: "Confirma la autenticidad de tu dirección de correo electrónico.",
     html: `
     <h1>Sistema de gestión - ADMIN  (FAST-CAR 🏁 🚗🚘)</h1>
     <hr>

@@ -63,9 +63,17 @@ adminSchema.methods.matchPassword =  async function( password ) {
 }
 
 // Metodo para crear un token
-adminSchema.methods.crearToken = function(){
+/* adminSchema.methods.crearToken = function(){
     const tokenGenerado = this.token = Math.random().toString(36).slice(2)
     return tokenGenerado
-}
+} */
+
+// Metodo para crear un token
+adminSchema.methods.crearToken = function () {
+    const tokenGenerado = Math.random().toString(36).slice(2);
+    this.token = tokenGenerado; // Almacena el token en el campo 'token' del modelo
+    return tokenGenerado;
+};
+
 
 export default model('Administrador', adminSchema);

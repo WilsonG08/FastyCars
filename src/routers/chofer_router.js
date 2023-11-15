@@ -20,6 +20,7 @@ router.get("/chofer/confirmar/:token", confirmEmail);
 // acrualizar datos del chofer
 
 
+
 // Probar lo que me sirve
 router.get("/chofer/:id", verificarAutentificacion, detalleChofer);
 router.put("/chofer", verificarAutentificacion, actualizarChofer);
