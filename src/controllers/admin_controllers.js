@@ -297,6 +297,8 @@ const nuevoPassword = async (req, res) => {
 }
 
 
+
+/* 
 const registrarChofer = async (req, res) => {
 
     // Verifica si el usuario autenticado es un administrador
@@ -324,6 +326,87 @@ const registrarChofer = async (req, res) => {
 
     res.status(200).json({ msg: "REvisa tu correo electronico para confirmar tu cuenta chofer" });
 };
+
+ */
+
+
+const registrarChofer = async (req, res) => {
+    // Verify if the authenticated user is an administrator
+    if (req.rol !== 'administrador') return res.status(403).json({ msg: 'Acceso no autorizado' });
+
+    const {
+        choferName, choferLastName, cedula, email, password, phone, numeroAsientos,
+        placaVehiculo, marcaVehiculo, modeloVehiculo, anioVehiculo, colorVehiculo,
+    } = req.body;
+
+    if (
+        !choferName ||
+        !choferLastName ||
+        !email ||
+        !password ||
+        !phone ||
+        !cedula ||
+        isNaN(numeroAsientos) ||
+        !Number.isInteger(numeroAsientos) ||  // Verifica si es un número entero
+        numeroAsientos < 1 ||
+        numeroAsientos > 4
+    ) {
+        return res.status(400).json({
+            msg: 'Debes llenar todos los campos: nombre, apellido, correo electrónico, contraseña, número de teléfono y número de asientos (debe ser un número entero entre 1 y 4)',
+        });
+    }
+
+
+
+    // Validación de cedula
+    if (!req.body.cedula) {
+        return res.status(400).json({ msg: "El campo 'cedula' es obligatorio" });
+    }
+
+    // Validar la información del vehículo
+    if (!placaVehiculo || !marcaVehiculo || !modeloVehiculo || !anioVehiculo || !colorVehiculo) {
+        return res.status(400).json({
+            msg: 'Debes llenar todos los campos de información del vehículo: placa, marca, modelo, año y color',
+        });
+    }
+
+    // Verificar la inscripción de vehículos duplicados
+    const existingChoferWithPlate = await Chofer.findOne({ placaVehiculo });
+    if (existingChoferWithPlate) {
+        return res.status(400).json({
+            msg: 'La placa del vehículo ya está registrada para otro chofer',
+        });
+    }
+
+    const verificarEmailBDDChofer = await Chofer.findOne({ email });
+
+    if (verificarEmailBDDChofer) {
+        return res.status(400).json({
+            msg: 'Lo sentimos, el correo electrónico ya se encuentra registrado para otro chofer',
+        });
+    }
+
+    const nuevoChofer = new Chofer(req.body);
+
+    nuevoChofer.password = await nuevoChofer.encrypPassword(password);
+
+    const token = nuevoChofer.crearToken();
+
+    //await sendMailToUserChofer(email, token);
+
+    try {
+        await sendMailToUserChofer(email, token);
+    } catch (error) {
+        console.error('Error enviando correo electrónico de confirmación:', error);
+    }
+
+    await nuevoChofer.save();
+
+    res.status(200).json({
+        msg: 'Revisa tu correo electrónico para confirmar tu cuenta de chofer',
+    });
+};
+
 
 
 
