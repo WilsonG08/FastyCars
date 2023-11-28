@@ -52,7 +52,7 @@ const sendMailToUserAdmin = async(userMail,token)=>{
     to: userMail,
     subject: "Confirma la autenticidad de tu dirección de correo electrónico.",
     html: `
-    <h1>Sistema de gestión - ADMIN  (FAST-CAR 🏁 🚗🚘)</h1>
+    <h1>Sistema de gestión - ADMINNISTRADOR  (FAST-CAR 🏁 🚗🚘)</h1>
     <hr>
     <a href=${process.env.URL_BACKEND}admin/confirmar/${token}>Clic para confirmar tu cuenta</a>
     <hr>
@@ -88,7 +88,7 @@ const sendMailToRecoveryPasswordAdmin = async(userMail,token)=>{
     to: userMail,
     subject: "Correo para reestablecer tu contraseña",
     html: `
-    <h1>Sistema de gestión - ADMIN (FAST-CAR 🏁 🚗🚘)</h1>
+    <h1>Sistema de gestión - ADMINNISTRADOR (FAST-CAR 🏁 🚗🚘)</h1>
     <hr>
     <a href=${process.env.URL_BACKEND}admin/recuperar-password/${token}>Clic para reestablecer tu contraseña</a>
     <hr>

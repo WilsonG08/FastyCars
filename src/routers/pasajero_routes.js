@@ -5,7 +5,7 @@ import {
     login,
     perfil,
     registro,
-    confirmEmail,
+    confirmcorreo,
     listarChoferes,
     listarPasajeros,
     detallePasajero,
@@ -22,8 +22,8 @@ const router =  Router()
 
 
 router.post("/login", login);
-router.post("/registro", registro);
-router.get("/confirmar/:token", confirmEmail);
+router.post("/register", registro);
+router.get("/confirmar/:token", confirmcorreo);
 router.post("/recuperar-password", recuperarPassword);
 router.get("/recuperar-password/:token", comprobarTokenPassword);
 router.post("/nuevo-password/:token", nuevoPassword);

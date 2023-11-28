@@ -4,13 +4,13 @@ import generarJWT from "../helpers/crearJWT.js"
 import mongoose from "mongoose";
 
 const login = async(req, res) => {
-    const { email, password } = req.body
+    const { correo, password } = req.body
 
     if( Object.values(req.body).includes("") ) return res.status(404).json({msg: "Lo sentimos, debes llenar todos los campos"})
 
-    const pasajeroBDD = await Pasajero.findOne({email}).select("-status -__v -token -updatedAt -createdAt")
+    const pasajeroBDD = await Pasajero.findOne({correo}).select("-status -__v -token -updatedAt -createdAt")
 
-    if( pasajeroBDD?.confirmEmail === false ) return res.status(403).json({msg: "Lo sentimos, debe verificar su cuenta"})
+    if( pasajeroBDD?.confirmcorreo === false ) return res.status(403).json({msg: "Lo sentimos, debe verificar su cuenta"})
 
     if ( !pasajeroBDD ) return res.status(404).json({msg: "Lo sentimos, el usuario no se encuentra regitrado"})
 
@@ -20,22 +20,22 @@ const login = async(req, res) => {
 
     const token = generarJWT(pasajeroBDD._id,"pasajero")
 
-    const { pasajeroName, pasajeroLastName, phone, _id } = pasajeroBDD
+    const { pasajeroNombre, pasajeroApellido, phone, _id } = pasajeroBDD
 
     res.status(200).json({
         token,
-        pasajeroName,
-        pasajeroLastName,
+        pasajeroNombre,
+        pasajeroApellido,
         phone,
         _id,
-        email:pasajeroBDD.email
+        correo:pasajeroBDD.correo
     })
 }
 
 
 const perfil = (req, res) => {
     delete req.pasajeroBDD.token
-    delete req.pasajeroBDD.confirmEmail
+    delete req.pasajeroBDD.confirmcorreo
     delete req.pasajeroBDD.createAt
     delete req.pasajeroBDD.updateAt
     delete req.pasajeroBDD.__v
@@ -46,13 +46,13 @@ const perfil = (req, res) => {
 
 
 const registro = async (req, res) => {
-    const { pasajeroName, pasajeroLastName, email, password, phone } = req.body
+    const { pasajeroNombre, pasajeroApellido, correo, password, phone } = req.body
     
-    if (!pasajeroName || !pasajeroLastName || !email || !password || !phone) return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
+    if (!pasajeroNombre || !pasajeroApellido || !correo || !password || !phone) return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
 
-    const verificarEmailBDD = await Pasajero.findOne({email})
+    const verificarcorreoBDD = await Pasajero.findOne({correo})
 
-    if(verificarEmailBDD) return res.status(400).json({msg: "Lo sentimos, el email ya se encuentra registrado"})
+    if(verificarcorreoBDD) return res.status(400).json({msg: "Lo sentimos, el correo ya se encuentra registrado"})
 
     const nuevoPasajero = new Pasajero(req.body)
 
@@ -60,7 +60,7 @@ const registro = async (req, res) => {
 
     const token = nuevoPasajero.crearToken()
 
-    await sendMailToUser(email,token)
+    await sendMailToUser(correo,token)
 
     await nuevoPasajero.save()
 
@@ -69,16 +69,16 @@ const registro = async (req, res) => {
 
 
 
-const confirmEmail = async (req,res) => {
+const confirmcorreo = async (req,res) => {
     if( !(req.params.token) ) return res.status(400).json({msg: "Lo sentimos, no se puede validar la cuenta"})
 
     const pasajeroBDD = await Pasajero.findOne({token:req.params.token})
 
-    if( !pasajeroBDD?.token ) return res.status(404).json({msg: "La cuenta ya ha sido confirmada PASAJERO"})
+    if( !pasajeroBDD?.token ) return res.status(404).json({msg: "La cuenta ya ha sido confirmada como PASAJERO"})
 
     pasajeroBDD.token = null
 
-    pasajeroBDD.confirmEmail = true
+    pasajeroBDD.confirmcorreo = true
 
     await pasajeroBDD.save()
 
@@ -118,9 +118,9 @@ const actualizarPerfil = async (req, res) => {
 
     if( !pasajeroBDD ) return res.status(404).json({msg: `Lo sentimos, no existe el administrador ${id}`})
 
-    if(pasajeroBDD.email != req.body.email )
+    if(pasajeroBDD.correo != req.body.correo )
     {
-        const pasajeroBDDMail = await Pasajero.findOne({email:req.body.email})
+        const pasajeroBDDMail = await Pasajero.findOne({correo:req.body.correo})
 
         if( pasajeroBDDMail)
         {
@@ -128,9 +128,9 @@ const actualizarPerfil = async (req, res) => {
         }
     }
 
-    pasajeroBDD.pasajeroName = req.body.pasajeroName
-    pasajeroBDD.pasajeroLastName = req.body.pasajeroLastName
-    pasajeroBDD.email = req.body.email
+    pasajeroBDD.pasajeroNombre = req.body.pasajeroNombre
+    pasajeroBDD.pasajeroApellido = req.body.pasajeroApellido
+    pasajeroBDD.correo = req.body.correo
     pasajeroBDD.phone = req.body.phone
 
     await pasajeroBDD.save()
@@ -157,11 +157,11 @@ const actualizarPassword = async (req, res) => {
 
 
 const recuperarPassword = async(req, res) => {
-    const { email } = req.body
+    const { correo } = req.body
 
     if(Object.values(req.body).includes(""))  return res.status(404).json({msg: "Lo sentimos, debes de llenar todos los campos"})
 
-    const pasajeroBDD = await Pasajero.findOne({email})
+    const pasajeroBDD = await Pasajero.findOne({correo})
 
     if( !pasajeroBDD ) return res.status(404).json({msg: "Lo sentimos, el usuario no se encuentra registrado"})
 
@@ -169,7 +169,7 @@ const recuperarPassword = async(req, res) => {
 
     pasajeroBDD.token = token
 
-    await sendMailToRecoveryPassword(email, token)
+    await sendMailToRecoveryPassword(correo, token)
 
     await pasajeroBDD.save()
 
@@ -215,7 +215,7 @@ export {
     login,
     perfil,
     registro,
-    confirmEmail,
+    confirmcorreo,
     listarChoferes,
     listarPasajeros,
     detallePasajero,

@@ -1,4 +1,4 @@
-import Chofer from '../models/choferDB.js'
+import Chofer from '../models/conductorDB.js'
 import mongoose from 'mongoose';
 import generarJWT from "../helpers/crearJWT.js";
 
@@ -20,13 +20,13 @@ const detalleChofer =  async( req, res ) =>{
 
 
 const loginChofer = async (req, res) => {
-    const { email, password } = req.body;
+    const { correo, password } = req.body;
 
     if (Object.values(req.body).includes("")) return res.status(404).json({ msg: "Lo sentimos, debes llenar todos los campos" });
 
-    const choferBDD = await Chofer.findOne({ email }).select("-status -__v -token -updatedAt -createdAt");
+    const choferBDD = await Chofer.findOne({ correo }).select("-status -__v -token -updatedAt -createdAt");
 
-    if (choferBDD?.confirmEmail == false) return res.status(403).json({ msg: "Lo sentimos, debs de verificar su cuenta" });
+    if (choferBDD?.confirmcorreo == false) return res.status(403).json({ msg: "Lo sentimos, debs de verificar su cuenta" });
 
     if (!choferBDD) return res.status(404).json({msg: "Lo sentimo, el Chofer no se encuentra resgistrado"});
 
@@ -37,15 +37,15 @@ const loginChofer = async (req, res) => {
     // Asignacion del ROL
     const token = generarJWT(choferBDD._id, "chofer");
 
-    const { choferName, choferLastName, phone, _id } = choferBDD;
+    const { conductorNombre, conductorApellido, phone, _id } = choferBDD;
 
     res.status(200).json({
         token,
-        choferName,
-        choferLastName,
+        conductorNombre,
+        conductorApellido,
         phone,
         _id,
-        email: choferBDD.email,
+        correo: choferBDD.correo,
     });
 };
 
@@ -63,20 +63,20 @@ const actualizarChofer = async (req, res) => {
 }
 
 
-const confirmEmail = async (req,res) => {
+const confirmcorreo = async (req,res) => {
     if( !(req.params.token) ) return res.status(400).json({msg: "Lo sentimos, no se puede validar la cuenta"})
 
     const choferBDD = await Chofer.findOne({token:req.params.token})
 
-    if( !choferBDD?.token ) return res.status(404).json({msg: "La cuenta ya ha sido confirmada CHOER"})
+    if( !choferBDD?.token ) return res.status(404).json({msg: "La cuenta ya ha sido confirmada CHOFER"})
 
     choferBDD.token = null
 
-    choferBDD.confirmEmail = true
+    choferBDD.confirmcorreo = true
 
     await choferBDD.save()
 
-    res.status(200).json({msg: "Token cofirmado, ya puedes iniciar sesion! CHOFER"})
+    res.status(200).json({msg: "Token cofirmado, ya puedes iniciar sesion querido CHOFER"})
 }
 
 // esta funcion no tiene que ir 
@@ -101,6 +101,6 @@ export {
     loginChofer,
     actualizarChofer,
     eliminarChofer,
-    confirmEmail
+    confirmcorreo
 }
 

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import Administrador from "../models/adminDB.js";
 import Pasajero from "../models/pasajeroDB.js";
-import Chofer from "../models/choferDB.js";
+import Chofer from "../models/conductorDB.js";
 
 const verificarAutenticacion = async (req, res, next) => {
     if (!req.headers.authorization) {

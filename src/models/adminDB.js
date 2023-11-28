@@ -4,17 +4,17 @@ import { Schema, model } from "mongoose";
 import bcrypt from "bcryptjs";
 
 const adminSchema = new Schema({
-    adminName:{
+    adminNombre:{
         type: String, 
         required: true,
         trim: true,
     },
-    adminLastName:{
+    adminApellido:{
         type: String, 
         required: true,
         trim: true
     },
-    email:{
+    correo:{
         type: String, 
         required: true,
         trim: true
@@ -29,11 +29,7 @@ const adminSchema = new Schema({
         required: true,
         trim: true
     },
-    confirmPhone:{
-        type: Boolean, 
-        default: false
-    },
-    confirmEmail:{
+    confirmcorreo:{
         type:Boolean,
         default:false
     },
@@ -43,7 +39,7 @@ const adminSchema = new Schema({
     },
     rol:{
         type: String,
-        default: "admin"
+        default: "Admin"
     }
 },{
     timestamps: true
