@@ -12,7 +12,7 @@ const login = async(req, res) => {
 
     if( pasajeroBDD?.confirmEmail === false ) return res.status(403).json({msg: "Lo sentimos, debe verificar su cuenta"})
 
-    if ( !pasajeroBDD ) return res.status(404).json({msg: "Lo sentimos, el usuario no se encuentra regitrado"})
+    if ( !pasajeroBDD ) return res.status(404).json({result:false,msg: "Lo sentimos, el usuario no se encuentra regitrado"})
 
     const verificarPassword = await pasajeroBDD.matchPassword(password)
 
@@ -20,14 +20,16 @@ const login = async(req, res) => {
 
     const token = generarJWT(pasajeroBDD._id,"pasajero")
 
-    const { pasajeroNombre, pasajeroApellido, phone, _id } = pasajeroBDD
+    const { pasajeroNombre, pasajeroApellido, phone, _id, rol } = pasajeroBDD
 
     res.status(200).json({
+        result:true,
         token,
         pasajeroNombre,
         pasajeroApellido,
         phone,
         _id,
+        rol,
         correo:pasajeroBDD.correo
     })
 }

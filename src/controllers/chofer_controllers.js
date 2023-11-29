@@ -28,7 +28,7 @@ const loginChofer = async (req, res) => {
 
     if (choferBDD?.confirmEmail == false) return res.status(403).json({ msg: "Lo sentimos, debs de verificar su cuenta" });
 
-    if (!choferBDD) return res.status(404).json({msg: "Lo sentimo, el Chofer no se encuentra resgistrado"});
+    if (!choferBDD) return res.status(404).json({result:false,msg: "Lo sentimo, el Chofer no se encuentra resgistrado"});
 
     const verificarPassword = await choferBDD.matchPassword(password);
 
@@ -37,14 +37,16 @@ const loginChofer = async (req, res) => {
     // Asignacion del ROL
     const token = generarJWT(choferBDD._id, "chofer");
 
-    const { conductorNombre, conductorApellido, phone, _id } = choferBDD;
+    const { conductorNombre, conductorApellido, phone, _id, rol } = choferBDD;
 
     res.status(200).json({
+        result:true,
         token,
         conductorNombre,
         conductorApellido,
         phone,
         _id,
+        rol,
         correo: choferBDD.correo,
     });
 };
