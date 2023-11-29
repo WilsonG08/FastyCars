@@ -67,7 +67,7 @@ const conductorSchema = new Schema(
             type: String,
             default: false,
         },
-        confirmcorreo: {
+        confirmEmail: {
             type: Boolean,
             default: false,
         },

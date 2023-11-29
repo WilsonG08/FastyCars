@@ -29,7 +29,7 @@ const adminSchema = new Schema({
         required: true,
         trim: true
     },
-    confirmcorreo:{
+    confirmEmail:{
         type:Boolean,
         default:false
     },
