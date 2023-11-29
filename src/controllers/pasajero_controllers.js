@@ -10,7 +10,7 @@ const login = async(req, res) => {
 
     const pasajeroBDD = await Pasajero.findOne({correo}).select("-status -__v -token -updatedAt -createdAt")
 
-    if( pasajeroBDD?.confirmcorreo === false ) return res.status(403).json({msg: "Lo sentimos, debe verificar su cuenta"})
+    if( pasajeroBDD?.confirmEmail === false ) return res.status(403).json({msg: "Lo sentimos, debe verificar su cuenta"})
 
     if ( !pasajeroBDD ) return res.status(404).json({msg: "Lo sentimos, el usuario no se encuentra regitrado"})
 
@@ -35,7 +35,7 @@ const login = async(req, res) => {
 
 const perfil = (req, res) => {
     delete req.pasajeroBDD.token
-    delete req.pasajeroBDD.confirmcorreo
+    delete req.pasajeroBDD.confirmEmail
     delete req.pasajeroBDD.createAt
     delete req.pasajeroBDD.updateAt
     delete req.pasajeroBDD.__v
@@ -69,7 +69,7 @@ const registro = async (req, res) => {
 
 
 
-const confirmcorreo = async (req,res) => {
+const confirmEmail = async (req,res) => {
     if( !(req.params.token) ) return res.status(400).json({msg: "Lo sentimos, no se puede validar la cuenta"})
 
     const pasajeroBDD = await Pasajero.findOne({token:req.params.token})
@@ -78,7 +78,7 @@ const confirmcorreo = async (req,res) => {
 
     pasajeroBDD.token = null
 
-    pasajeroBDD.confirmcorreo = true
+    pasajeroBDD.confirmEmail = true
 
     await pasajeroBDD.save()
 
@@ -215,7 +215,7 @@ export {
     login,
     perfil,
     registro,
-    confirmcorreo,
+    confirmEmail,
     listarChoferes,
     listarPasajeros,
     detallePasajero,

@@ -36,7 +36,7 @@ const registro = async (req, res) => {
     });
 };
 
-const confirmcorreo = async (req, res) => {
+const confirmEmail = async (req, res) => {
     if (!req.params.token) return res.status(400).json({ msg: "Lo sentimos, no se puede validar la cuenta" });
 
     const administradorBDD = await Administrador.findOne({ token: req.params.token });
@@ -45,7 +45,7 @@ const confirmcorreo = async (req, res) => {
 
     administradorBDD.token = null;
 
-    administradorBDD.confirmcorreo = true;
+    administradorBDD.confirmEmail = true;
 
     await administradorBDD.save();
 
@@ -61,7 +61,7 @@ const login = async (req, res) => {
 
     const administradorBDD = await Administrador.findOne({ correo }).select("-status -__v -token -updatedAt -createdAt");
 
-    if (administradorBDD?.confirmcorreo == false) return res.status(403).json({ msg: "Lo sentimos, debs de verificar su cuenta" });
+    if (administradorBDD?.confirmEmail == false) return res.status(403).json({ msg: "Lo sentimos, debs de verificar su cuenta" });
 
     if (!administradorBDD) return res.status(404).json({ msg: "Lo sentimo, el administrador no se encuentra resgistrado" });
 
@@ -86,7 +86,7 @@ const login = async (req, res) => {
 
 const perfil = (req, res) => {
     delete req.administradorBDD.token;
-    delete req.administradorBDD.confirmcorreo;
+    delete req.administradorBDD.confirmEmail;
     delete req.administradorBDD.createdAt;
     delete req.administradorBDD.updateAt;
     delete req.administradorBDD.__v;
@@ -412,7 +412,7 @@ const registrarChofer = async (req, res) => {
 
 export {
     registro,
-    confirmcorreo,
+    confirmEmail,
     login,
     perfil,
     listarChoferes,

@@ -26,7 +26,7 @@ const loginChofer = async (req, res) => {
 
     const choferBDD = await Chofer.findOne({ correo }).select("-status -__v -token -updatedAt -createdAt");
 
-    if (choferBDD?.confirmcorreo == false) return res.status(403).json({ msg: "Lo sentimos, debs de verificar su cuenta" });
+    if (choferBDD?.confirmEmail == false) return res.status(403).json({ msg: "Lo sentimos, debs de verificar su cuenta" });
 
     if (!choferBDD) return res.status(404).json({msg: "Lo sentimo, el Chofer no se encuentra resgistrado"});
 
@@ -63,7 +63,7 @@ const actualizarChofer = async (req, res) => {
 }
 
 
-const confirmcorreo = async (req,res) => {
+const confirmEmail = async (req,res) => {
     if( !(req.params.token) ) return res.status(400).json({msg: "Lo sentimos, no se puede validar la cuenta"})
 
     const choferBDD = await Chofer.findOne({token:req.params.token})
@@ -72,7 +72,7 @@ const confirmcorreo = async (req,res) => {
 
     choferBDD.token = null
 
-    choferBDD.confirmcorreo = true
+    choferBDD.confirmEmail = true
 
     await choferBDD.save()
 
@@ -101,6 +101,6 @@ export {
     loginChofer,
     actualizarChofer,
     eliminarChofer,
-    confirmcorreo
+    confirmEmail
 }
 

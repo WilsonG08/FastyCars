@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import {
     registro,
-    confirmcorreo,
+    confirmEmail,
     login,
     perfil,
     listarChoferes,
@@ -25,7 +25,7 @@ const router =  Router()
 
 router.post("/admin/register", registro);
 router.post("/admin/login", login);
-router.get("/admin/confirmar/:token", confirmcorreo);
+router.get("/admin/confirmar/:token", confirmEmail);
 
 // BIEN
 router.post("/admin/registrar-chofer", verificarAutenticacion, registrarChofer);

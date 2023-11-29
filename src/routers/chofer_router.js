@@ -5,7 +5,7 @@ import {
     loginChofer,
     actualizarChofer,
     eliminarChofer,
-    confirmcorreo
+    confirmEmail
 } from "../controllers/chofer_controllers.js"
 
 import verificarAutentificacion from "../middlewares/autenticacion.js";
@@ -13,7 +13,7 @@ import verificarAutentificacion from "../middlewares/autenticacion.js";
 const router = Router();
 
 router.post("/chofer/login", loginChofer);
-router.get("/chofer/confirmar/:token", confirmcorreo);
+router.get("/chofer/confirmar/:token", confirmEmail);
 
 
 // aqui falta el perfil del chofer
