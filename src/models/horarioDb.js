@@ -1,4 +1,7 @@
 
+import { Schema, model } from "mongoose";
+
+
 const turnoSchema = new Schema(
     {
         nombreTurno: {

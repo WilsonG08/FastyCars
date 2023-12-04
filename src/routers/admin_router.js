@@ -18,6 +18,11 @@ import {
 } from '../controllers/admin_controllers.js'
 import verificarAutenticacion from '../middlewares/autenticacion.js'
 
+import {
+    registrarHorario,
+    registrarRuta
+} from '../controllers/rutas_horarios_admin.js'
+
 
 const router =  Router()
 
@@ -46,6 +51,12 @@ router.put("/admin/actualizar", verificarAutenticacion, actualizarPerfil);
 // LISTAR CHOFERES Y PASASJEROS REGISTRADOS
 router.get("/admin/lista-choferes",verificarAutenticacion, listarChoferes);
 router.get("/admin/lista-pasajeros", listarpasajeros);
+
+
+// REGISTRAR RUTA Y HORARIO
+router.post("/admin/registro-horario", verificarAutenticacion, registrarHorario);
+router.post("/admin/registro-ruta", verificarAutenticacion, registrarRuta);
+
 
 
 
