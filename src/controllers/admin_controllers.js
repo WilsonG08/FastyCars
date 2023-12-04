@@ -1,5 +1,5 @@
 import Administrador from "../models/adminDB.js";
-import Chofer from "../models/conductorDB.js";
+import Conductor from "../models/conductorDB.js";
 import generarJWT from "../helpers/crearJWT.js";
 import mongoose from "mongoose";
 import Pasajero from '../models/pasajeroDB.js'
@@ -371,14 +371,14 @@ const registrarChofer = async (req, res) => {
     }
 
     // Verificar la inscripción de vehículos duplicados
-    const existingChoferWithPlate = await Chofer.findOne({ placaVehiculo });
+    const existingChoferWithPlate = await Conductor.findOne({ placaVehiculo });
     if (existingChoferWithPlate) {
         return res.status(400).json({
             msg: 'La placa del vehículo ya está registrada para otro chofer',
         });
     }
 
-    const verificarcorreoBDDChofer = await Chofer.findOne({ correo });
+    const verificarcorreoBDDChofer = await Conductor.findOne({ correo });
 
     if (verificarcorreoBDDChofer) {
         return res.status(400).json({
@@ -386,7 +386,7 @@ const registrarChofer = async (req, res) => {
         });
     }
 
-    const nuevoChofer = new Chofer(req.body);
+    const nuevoChofer = new Conductor(req.body);
 
     nuevoChofer.password = await nuevoChofer.encrypPassword(password);
 

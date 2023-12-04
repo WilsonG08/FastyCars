@@ -77,7 +77,7 @@ const conductorSchema = new Schema(
         },
         rol: {
             type: String,
-            default: "Conductor",
+            default: "conductor",
         },
     },
     {

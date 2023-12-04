@@ -24,7 +24,7 @@ const router =  Router()
 
 
 router.post("/admin/register", registro);
-router.post("/admin/login", login);
+//router.post("/admin/login", login);
 router.get("/admin/confirmar/:token", confirmEmail);
 
 // BIEN

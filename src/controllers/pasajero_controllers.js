@@ -1,8 +1,13 @@
 import Pasajero from '../models/pasajeroDB.js'
+import Administrador from '../models/adminDB.js'
+import Conductor from '../models/conductorDB.js'
+
 import { sendMailToUser, sendMailToRecoveryPassword } from "../config/nodemailer.js"
 import generarJWT from "../helpers/crearJWT.js"
 import mongoose from "mongoose";
 
+
+/* 
 const login = async(req, res) => {
     const { correo, password } = req.body
 
@@ -33,6 +38,48 @@ const login = async(req, res) => {
         correo:pasajeroBDD.correo
     })
 }
+ */
+
+const login = async(req, res) => {
+    const { correo, password } = req.body
+
+    if( Object.values(req.body).includes("") ) return res.status(404).json({msg: "Lo sentimos, debes llenar todos los campos"})
+
+    let usuarioBDD = await Administrador.findOne({correo}).select("-status -__v -token -updatedAt -createdAt");
+
+    if (!usuarioBDD) {
+        usuarioBDD = await Conductor.findOne({correo}).select("-status -__v -token -updatedAt -createdAt");
+    }
+
+    if (!usuarioBDD) {
+        usuarioBDD = await Pasajero.findOne({correo}).select("-status -__v -token -updatedAt -createdAt");
+    }
+
+    if( usuarioBDD?.confirmEmail === false ) return res.status(403).json({msg: "Lo sentimos, debe verificar su cuenta"})
+
+    if ( !usuarioBDD ) return res.status(404).json({result:false,msg: "Lo sentimos, el usuario no se encuentra regitrado"})
+
+    const verificarPassword = await usuarioBDD.matchPassword(password)
+
+    if( !verificarPassword ) return res.status(404).json({msg: "Lo sentimos, el password no es correcto"})
+
+    const token = generarJWT(usuarioBDD._id, usuarioBDD.rol)
+
+    const { nombre, apellido, phone, _id, rol } = usuarioBDD
+
+    res.status(200).json({
+        result:true,
+        token,
+        nombre,
+        apellido,
+        phone,
+        _id,
+        rol,
+        correo:usuarioBDD.correo
+    })
+}
+
+
 
 
 const perfil = (req, res) => {

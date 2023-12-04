@@ -39,7 +39,7 @@ const adminSchema = new Schema({
     },
     rol:{
         type: String,
-        default: "Admin"
+        default: "administrador"
     }
 },{
     timestamps: true

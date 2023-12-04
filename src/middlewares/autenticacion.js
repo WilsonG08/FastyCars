@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import Administrador from "../models/adminDB.js";
 import Pasajero from "../models/pasajeroDB.js";
-import Chofer from "../models/conductorDB.js";
+import Conductor from "../models/conductorDB.js";
 
 const verificarAutenticacion = async (req, res, next) => {
     if (!req.headers.authorization) {
@@ -26,9 +26,9 @@ const verificarAutenticacion = async (req, res, next) => {
         } else if (rol === "pasajero") {
             req.pasajeroBDD = await Pasajero.findById(id).lean().select("-password");
             req.rol = "pasajero";
-        } else if (rol === "chofer") {
-            req.choferBDD = await Chofer.findById(id).lean().select("-password");
-            req.rol = "chofer";
+        } else if (rol === "conductor") {
+            req.choferBDD = await Conductor.findById(id).lean().select("-password");
+            req.rol = "conductor";
         } else {
             return res.status(401).json({ msg: "Rol no válido" });
         }

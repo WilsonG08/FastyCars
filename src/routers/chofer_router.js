@@ -12,7 +12,7 @@ import verificarAutentificacion from "../middlewares/autenticacion.js";
 
 const router = Router();
 
-router.post("/chofer/login", loginChofer);
+//router.post("/chofer/login", loginChofer);
 router.get("/chofer/confirmar/:token", confirmEmail);
 
 
