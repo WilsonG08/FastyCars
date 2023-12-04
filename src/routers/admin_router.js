@@ -4,7 +4,6 @@ import { Router } from 'express';
 import {
     registro,
     confirmEmail,
-    login,
     perfil,
     listarChoferes,
     listarpasajeros,
@@ -23,27 +22,31 @@ import verificarAutenticacion from '../middlewares/autenticacion.js'
 const router =  Router()
 
 
+//REGISTRO
 router.post("/admin/register", registro);
-//router.post("/admin/login", login);
+router.post("/admin/registrar-chofer", verificarAutenticacion, registrarChofer);
+
+// CONFIRMAR CORREO
 router.get("/admin/confirmar/:token", confirmEmail);
 
-// BIEN
-router.post("/admin/registrar-chofer", verificarAutenticacion, registrarChofer);
-router.get("/admin/lista-choferes",verificarAutenticacion, listarChoferes);
-router.get("/admin/lista-pasajeros", listarpasajeros);
+// RECUPERAR CONTRASEÑA
 router.post("/admin/recuperar-password", recuperarPassword);
 router.get("/admin/recuperar-password/:token", comprobarTokenPassword);
+
+// ACTUALIZAR CONTRASEÑA
 router.post("/admin/nuevo-password/:token", nuevoPassword);
-router.get("/admin/perfil", verificarAutenticacion, perfil);
 router.put("/admin/actualizarpassword", verificarAutenticacion, actualizarPassword);
+
+// VIZUALIZAR PERFIL
+router.get("/admin/perfil", verificarAutenticacion, perfil);
+
+// ACTUALIZAR PERFIL
 router.put("/admin/actualizar", verificarAutenticacion, actualizarPerfil);
 
+// LISTAR CHOFERES Y PASASJEROS REGISTRADOS
+router.get("/admin/lista-choferes",verificarAutenticacion, listarChoferes);
+router.get("/admin/lista-pasajeros", listarpasajeros);
 
-
-
-// FALTA PROBAR
-// esta de que me puede servir ?
-// router.get("/admin/pasajero/:id", verificarAutenticacion, detallePasjero);
 
 
 export default router;

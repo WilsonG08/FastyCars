@@ -20,20 +20,29 @@ import verificarAutenticacion from '../middlewares/autenticacion.js'
 
 const router =  Router()
 
-
-router.post("/login", login);
+// REGISTRO
 router.post("/register", registro);
+
+// LOGIN DE LOS 3 PERFILES
+router.post("/login", login);
+
+// CONFIRMAR CORREO
 router.get("/confirmar/:token", confirmEmail);
+
+// RECUPERAR CONTRASEÑA
 router.post("/recuperar-password", recuperarPassword);
 router.get("/recuperar-password/:token", comprobarTokenPassword);
+
+// ACTUALIZAR CONTRASEÑA
 router.post("/nuevo-password/:token", nuevoPassword);
 router.put("/pasajero/actualizarpassword", verificarAutenticacion, actualizarPassword);
+
+// VISUALIZAR PERFIL
 router.get("/perfil", verificarAutenticacion, perfil);
 
 
 
-
-
+// AUN ME FALTA VER
 // DUDA AQUI, QUIERO LISTAR LOS CHOFERES
 router.get("/pasajeros", listarPasajeros);
 router.get("/pasajeros/chofer", listarChoferes);

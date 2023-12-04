@@ -19,39 +19,6 @@ const detalleChofer =  async( req, res ) =>{
 }
 
 
-const loginChofer = async (req, res) => {
-    const { correo, password } = req.body;
-
-    if (Object.values(req.body).includes("")) return res.status(404).json({ msg: "Lo sentimos, debes llenar todos los campos" });
-
-    const choferBDD = await Chofer.findOne({ correo }).select("-status -__v -token -updatedAt -createdAt");
-
-    if (choferBDD?.confirmEmail == false) return res.status(403).json({ msg: "Lo sentimos, debs de verificar su cuenta" });
-
-    if (!choferBDD) return res.status(404).json({result:false,msg: "Lo sentimo, el Chofer no se encuentra resgistrado"});
-
-    const verificarPassword = await choferBDD.matchPassword(password);
-
-    if (!verificarPassword) return res.status(404).json({ msg: "Lo sentimos, el password no es el correcto" });
-
-    // Asignacion del ROL
-    const token = generarJWT(choferBDD._id, "chofer");
-
-    const { conductorNombre, conductorApellido, phone, _id, rol } = choferBDD;
-
-    res.status(200).json({
-        result:true,
-        token,
-        conductorNombre,
-        conductorApellido,
-        phone,
-        _id,
-        rol,
-        correo: choferBDD.correo,
-    });
-};
-
-
 const actualizarChofer = async (req, res) => {
     const { id } = req.params
 
@@ -100,7 +67,6 @@ const eliminarChofer = async(req, res) => {
 export {
     listarchoferes,
     detalleChofer,
-    loginChofer,
     actualizarChofer,
     eliminarChofer,
     confirmEmail

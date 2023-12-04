@@ -78,7 +78,7 @@ const conductorSchema = new Schema(
         rol: {
             type: String,
             default: "conductor",
-        },
+        },        
     },
     {
         timestamps: true,
