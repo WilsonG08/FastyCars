@@ -2,25 +2,6 @@ import Horario from '../models/horarioDb.js';
 import Ruta from '../models/rutaDB.js';
 import mongoose from 'mongoose';
 
-const registrarHorario = async (req, res) => {
-    
-    const { nombreTurno, horaTurno } = req.body
-
-    if( !nombreTurno || !horaTurno) return res.status(400).json({msg: "Lo sentimos, debes llenar todos los campos"})
-
-    const nuevoHorario = new Horario(req.body);
-
-    try {
-        await nuevoHorario.save();
-        res.status(200).json({
-            msg: "Horario registrada con exito"
-        });
-    } catch (error) {
-        res.status(500).json({msg: "Hubo un error al registrar el horario", error});
-    }
-};
-
-
 
 const registrarRuta = async (req, res) => {
     const { origen, destino } = req.body;
@@ -127,6 +108,95 @@ const eliminarRuta = async (req, res) => {
 };
 
 
+const registrarHorario = async (req, res) => {
+    const { nombreTurno, horaTurno } = req.body;
+
+    if (!nombreTurno || !horaTurno) {
+        return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
+    }
+
+    try {
+        // Verificar si ya existe un horario con el mismo nombre
+        const horarioExistente = await Horario.findOne({ nombreTurno });
+
+        if (horarioExistente) {
+            return res.status(400).json({ msg: "El horario ya está registrado" });
+        }
+
+        // Crear el nuevo horario
+        const nuevoHorario = new Horario(req.body);
+
+        // Guardar el nuevo horario
+        await nuevoHorario.save();
+
+        res.status(200).json({
+            msg: "Horario registrado con éxito"
+        });
+    } catch (error) {
+        res.status(500).json({ msg: "Hubo un error al registrar el horario", error });
+    }
+};
+
+
+const actualizarHorario = async (req, res) => {
+    try {
+        const { nombreTurno, horaTurno  } = req.body;
+
+        // Verificar si los campos obligatorios están presentes
+        if (!nombreTurno || !horaTurno) {
+            return res.status(400).json({ msg: "Los campos 'nombre' y 'hora' son obligatorios" });
+        }
+
+        // Verificar si el ID es válido
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ msg: "ID de horario no válido" });
+        }
+
+        // Verificar si ya existe otro horario con el mismo nombre
+        const horarioExistentePorNombre = await Horario.findOne({ _id: { $ne: req.params.id }, nombreTurno });
+
+        // Verificar si ya existe otro horario con la misma hora
+        const horarioExistentePorHora = await Horario.findOne({ _id: { $ne: req.params.id }, horaTurno });
+
+        if (horarioExistentePorNombre || horarioExistentePorHora) {
+            return res.status(400).json({ msg: "Ya existe un horario con el mismo nombre o con la misma hora" });
+        }
+
+        // Actualizar el horario por ID, solo actualizando nombre y hora
+        await Horario.findByIdAndUpdate(req.params.id, { nombreTurno, horaTurno });
+
+        res.status(200).json({ msg: "Horario actualizado con éxito" });
+    } catch (error) {
+        console.error("Error al actualizar el horario:", error);
+        res.status(500).json({ msg: "Hubo un error al actualizar el horario", error });
+    }
+};
+
+
+
+const obtenerHorarios = async (req, res) => {
+    try {
+        const horarios = await Horario.find();
+        res.status(200).json(horarios);
+    } catch (error) {
+        res.status(500).json({ msg: "Hubo un error al obtener los horarios", error });
+    }
+};
+
+const eliminarHorario = async (req, res) => {
+    try {
+        // Verificar si el ID es válido
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ msg: "ID de horario no válido" });
+        }
+
+        await Horario.findByIdAndDelete(req.params.id);
+        res.status(200).json({ msg: "Horario eliminado con éxito" });
+    } catch (error) {
+        res.status(500).json({ msg: "Hubo un error al eliminar el horario", error });
+    }
+};
+
 
 
 export {
@@ -134,5 +204,8 @@ export {
     obtenerRutas,
     actualizarRuta,
     eliminarRuta,
-    registrarHorario
+    registrarHorario,
+    actualizarHorario,
+    obtenerHorarios,
+    eliminarHorario
 };

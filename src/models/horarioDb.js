@@ -2,13 +2,13 @@
 import { Schema, model } from "mongoose";
 
 
-const turnoSchema = new Schema(
+const horarioSchema = new Schema(
     {
-        nombreTurno: {
+        nombreHorario: {
             type: String,
             required: true,
         },
-        horaTurno: {
+        horaHorario: {
             type: String,
             required: true,
         },
@@ -19,4 +19,4 @@ const turnoSchema = new Schema(
 );
 
 
-export default model("Horario", turnoSchema);
+export default model("Horario", horarioSchema);
