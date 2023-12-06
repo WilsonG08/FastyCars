@@ -1,30 +1,38 @@
-import mongoose, { Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
 
-const reservaSchema = new Schema(
-    {
-        cliente: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Pasajero",
+const reservaBoletoSchema = new Schema({
+    pasajero: {
+        nombre: {
+            type: String,
             required: true,
         },
-        ruta: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Ruta",
+        apellido: {
+            type: String,
             required: true,
         },
-        horario: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Horario",
-            required: true,
-        },
-        numeroBoletos: {
+        phone: {
             type: Number,
             required: true,
         },
     },
-    {
-        timestamps: true,
-    }
-);
+    desde: {
+        type: String, // Puedes cambiar el tipo según tu necesidad
+        required: true,
+    },
+    hasta: {
+        type: String, // Puedes cambiar el tipo según tu necesidad
+        required: true,
+    },
+    fecha: {
+        type: Date,
+        required: true,
+    },
+    numeroAsientos: {
+        type: Number,
+        required: true,
+    },
+}, {
+    timestamps: true,
+});
 
-export default model("ReservaBoleto", reservaSchema);
+export default model("ReservaBoleto", reservaBoletoSchema);

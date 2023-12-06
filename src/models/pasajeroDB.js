@@ -39,7 +39,7 @@ const pasajeroSchema = new Schema({
     },
     rol:{
         type: String,
-        default: "Pasajero"
+        default: "pasajero"
     }
 
 },{

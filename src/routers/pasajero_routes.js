@@ -17,6 +17,8 @@ import {
 } from '../controllers/pasajero_controllers.js'
 import verificarAutenticacion from '../middlewares/autenticacion.js'
 
+import { realizarReserva } from '../controllers/reserva_boleto_controllers.js';
+
 
 const router =  Router()
 
@@ -39,6 +41,11 @@ router.put("/pasajero/actualizarpassword", verificarAutenticacion, actualizarPas
 
 // VISUALIZAR PERFIL
 router.get("/perfil", verificarAutenticacion, perfil);
+
+
+// RESERVAR BOLETO
+router.post("/reserva-boleto", verificarAutenticacion, realizarReserva);
+
 
 
 
