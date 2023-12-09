@@ -1,14 +1,12 @@
-
 import { Schema, model } from "mongoose";
-
 
 const horarioSchema = new Schema(
     {
-        nombreHorario: {
+        nombreTurno: {
             type: String,
             required: true,
         },
-        horaHorario: {
+        horaTurno: {
             type: String,
             required: true,
         },

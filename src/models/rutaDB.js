@@ -14,7 +14,7 @@ const rutaSchema = new Schema(
         destino: {
             type: String,
             required: true,
-        },
+        }
     },
     {
         timestamps: true,

@@ -1,38 +1,101 @@
 import { Schema, model } from "mongoose";
 
-const reservaBoletoSchema = new Schema({
-    pasajero: {
-        nombre: {
+const boletoSchema = new Schema(
+    {
+        user: {
+            nombre: {
+                type: String,
+                required: true,
+            },
+            apellido: {
+                type: String,
+                required: true,
+            },
+            phone: {
+                type: String,
+                required: true,
+            },
+        },
+        ciudadSalida: {
+            ruta: {
+                type: Schema.Types.ObjectId,
+                ref: "Ruta",
+                required: true,
+            },
+            ciudad: {
+                type: String,
+                required: true,
+            },
+            /* direccion: {
+                type: String,
+                required: true,
+            },
+            latitud: {
+                type: String,
+                required: true,
+            },
+            longitud: {
+                type: String,
+                required: true,
+            },
+            referencia: {
+                type: String,
+                required: true,
+            }, */
+        },
+        ciudadLlegada: {
+            ruta: {
+                type: Schema.Types.ObjectId,
+                ref: "Ruta",
+                required: true,
+            },
+            ciudad: {
+                type: String,
+                required: true,
+            },
+            /* direccion: {
+                type: String,
+                required: true,
+            },
+            latitud: {
+                type: String,
+                required: true,
+            },
+            longitud: {
+                type: String,
+                required: true,
+            },
+            referencia: {
+                type: String,
+                required: true,
+            }, */
+        },
+        numPax: {
             type: String,
             required: true,
         },
-        apellido: {
+        turno: {
+            horario: {
+                type: Schema.Types.ObjectId,
+                ref: "Horario",
+                required: true,
+            },
+            fecha: {
+                type: String,
+                required: true,
+            },
+        },
+        estadoPax: {
             type: String,
             required: true,
         },
-        phone: {
-            type: Number,
-            required: true,
-        },
     },
-    desde: {
-        type: String, // Puedes cambiar el tipo según tu necesidad
-        required: true,
-    },
-    hasta: {
-        type: String, // Puedes cambiar el tipo según tu necesidad
-        required: true,
-    },
-    fecha: {
-        type: Date,
-        required: true,
-    },
-    numeroAsientos: {
-        type: Number,
-        required: true,
-    },
-}, {
-    timestamps: true,
-});
+    {
+        timestamps: true,
+    }
+);
 
-export default model("ReservaBoleto", reservaBoletoSchema);
+export default model("Boleto", boletoSchema);
+
+
+
