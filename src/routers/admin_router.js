@@ -1,6 +1,7 @@
 // Esta carpeta contiene los enrutadores de la aplicación. Los enrutadores se utilizan para mapear las URL a los controladores.
-
 import { Router } from 'express';
+import verificarAutenticacion from '../middlewares/autenticacion.js'
+
 import {
     registro,
     confirmEmail,
@@ -16,7 +17,6 @@ import {
     nuevoPassword,
     registrarChofer
 } from '../controllers/admin_controllers.js'
-import verificarAutenticacion from '../middlewares/autenticacion.js'
 
 import {
     registrarRuta,
@@ -28,6 +28,8 @@ import {
     obtenerHorarios,
     eliminarHorario
 } from '../controllers/rutas_horarios_admin.js'
+
+import {registrarServicio} from '../controllers/servicio_controllers.js'
 
 
 const router =  Router()
@@ -57,6 +59,9 @@ router.put("/admin/actualizar", verificarAutenticacion, actualizarPerfil);
 // LISTAR CHOFERES Y PASASJEROS REGISTRADOS
 router.get("/admin/lista-choferes",verificarAutenticacion, listarChoferes);
 router.get("/admin/lista-pasajeros", listarpasajeros);
+
+// REGISTRO DE SERVICIOS
+router.post("/admin/registro-servicio", verificarAutenticacion, registrarServicio);
 
 
 // ENDPOINTS DE RUTAS

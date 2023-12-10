@@ -6,8 +6,6 @@ import {
     perfil,
     registro,
     confirmEmail,
-    listarChoferes,
-    listarPasajeros,
     detallePasajero,
     actualizarPerfil,
     actualizarPassword,
@@ -42,6 +40,9 @@ router.put("/pasajero/actualizarpassword", verificarAutenticacion, actualizarPas
 // VISUALIZAR PERFIL
 router.get("/perfil", verificarAutenticacion, perfil);
 
+// VISUALIZAR SERVIVIOS DISPONIBLES
+//router.get("/servicios", verificarAutenticacion, "");
+
 
 // RESERVAR BOLETO
 router.post("/reserva-boleto", verificarAutenticacion, realizarReserva);
@@ -51,8 +52,8 @@ router.post("/reserva-boleto", verificarAutenticacion, realizarReserva);
 
 // AUN ME FALTA VER
 // DUDA AQUI, QUIERO LISTAR LOS CHOFERES
-router.get("/pasajeros", listarPasajeros);
-router.get("/pasajeros/chofer", listarChoferes);
+//router.get("/pasajeros", listarPasajeros);
+//router.get("/pasajeros/chofer", listarChoferes);
 
 router.get("/pasajero/:id", verificarAutenticacion, detallePasajero);
 router.put("/pasajero/:id", verificarAutenticacion, actualizarPerfil);

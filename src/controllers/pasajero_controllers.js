@@ -7,39 +7,6 @@ import generarJWT from "../helpers/crearJWT.js"
 import mongoose from "mongoose";
 
 
-/* 
-const login = async(req, res) => {
-    const { correo, password } = req.body
-
-    if( Object.values(req.body).includes("") ) return res.status(404).json({msg: "Lo sentimos, debes llenar todos los campos"})
-
-    const pasajeroBDD = await Pasajero.findOne({correo}).select("-status -__v -token -updatedAt -createdAt")
-
-    if( pasajeroBDD?.confirmEmail === false ) return res.status(403).json({msg: "Lo sentimos, debe verificar su cuenta"})
-
-    if ( !pasajeroBDD ) return res.status(404).json({result:false,msg: "Lo sentimos, el usuario no se encuentra regitrado"})
-
-    const verificarPassword = await pasajeroBDD.matchPassword(password)
-
-    if( !verificarPassword ) return res.status(404).json({msg: "Lo sentimos, el password no es correcto"})
-
-    const token = generarJWT(pasajeroBDD._id,"pasajero")
-
-    const { pasajeroNombre, pasajeroApellido, phone, _id, rol } = pasajeroBDD
-
-    res.status(200).json({
-        result:true,
-        token,
-        pasajeroNombre,
-        pasajeroApellido,
-        phone,
-        _id,
-        rol,
-        correo:pasajeroBDD.correo
-    })
-}
- */
-
 const login = async(req, res) => {
     const { correo, password } = req.body
 
@@ -132,15 +99,6 @@ const confirmEmail = async (req,res) => {
     await pasajeroBDD.save()
 
     res.status(200).json({msg: "Token cofirmado, ya puedes iniciar sesion!"})
-}
-
-// ojo estas funciones, se ddebe cambiar
-const listarChoferes = async (req, res) => {
-    res.status(200).json({res: "Lista de choferes registrados" })
-}
-
-const listarPasajeros = async (req, res) => {
-    res.status(200).json({res: "Lista de pasajeros registrados" })
 }
 
 
@@ -260,13 +218,16 @@ const nuevoPassword = async (req, res) => {
 }
 
 
+const serviciosDsiponibles = async(req, res) => {
+    
+}
+
+
 export {
     login,
     perfil,
     registro,
     confirmEmail,
-    listarChoferes,
-    listarPasajeros,
     detallePasajero,
     actualizarPerfil,
     actualizarPassword,
