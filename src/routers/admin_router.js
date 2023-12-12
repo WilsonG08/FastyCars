@@ -19,14 +19,10 @@ import {
 } from '../controllers/admin_controllers.js'
 
 import {
-    registrarRuta,
-    obtenerRutas,
-    actualizarRuta,
-    eliminarRuta,
-    registrarHorario,
-    actualizarHorario,
-    obtenerHorarios,
-    eliminarHorario
+    registrarRutaHorario,
+    obtenerRutasHorarios,
+    actualizarRutaHorario,
+    eliminarRutaHorario
 } from '../controllers/rutas_horarios_admin.js'
 
 import {registrarServicio} from '../controllers/servicio_controllers.js'
@@ -64,18 +60,11 @@ router.get("/admin/lista-pasajeros", listarpasajeros);
 router.post("/admin/registro-servicio", verificarAutenticacion, registrarServicio);
 
 
-// ENDPOINTS DE RUTAS
-router.post("/admin/registro-ruta", verificarAutenticacion, registrarRuta);
-router.get("/admin/rutas",verificarAutenticacion, obtenerRutas);
-router.put("/admin/actualizarRuta/:id", verificarAutenticacion, actualizarRuta);
-router.delete("/admin/eliminarRuta/:id", verificarAutenticacion, eliminarRuta);
-
-// ENDPOINTS DE HORARIOS
-router.post("/admin/registro-horario", verificarAutenticacion, registrarHorario);
-router.get("/admin/horarios",verificarAutenticacion, obtenerHorarios);
-router.put("/admin/actualizarHorario/:id", verificarAutenticacion, actualizarHorario);
-router.delete("/admin/eliminarHorario/:id", verificarAutenticacion, eliminarHorario);
-
+// ENDPOINTS DE RUTAS y HORARIOS
+router.post("/admin/registro-ruta", verificarAutenticacion, registrarRutaHorario);
+router.get("/admin/rutas",verificarAutenticacion, obtenerRutasHorarios);
+router.put("/admin/actualizarRuta/:id", verificarAutenticacion, actualizarRutaHorario);
+router.delete("/admin/eliminarRuta/:id", verificarAutenticacion, eliminarRutaHorario);
 
 
 export default router;

@@ -1,57 +1,61 @@
-import Horario from '../models/horarioDb.js';
-import Ruta from '../models/rutaDB.js';
+import RutayHorario from '../models/ruta_horario.js'
 import mongoose from 'mongoose';
 
+// REGISTRAR RUTA Y HORARIO 
+const registrarRutaHorario = async (req, res) => {
+    const { nombre, ciudad1, ciudad2, horario1, horario2, horario3 } = req.body;
 
-const registrarRuta = async (req, res) => {
-    const { origen, destino } = req.body;
-
-    if (!origen || !destino) {
+    if (!nombre || !ciudad1 || !ciudad2 || !horario1 || !horario2 || !horario3) {
         return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
     }
 
     // Verificar si el origen y el destino son iguales
-    if (origen === destino) {
-        return res.status(400).json({ msg: "El origen y el destino no pueden ser iguales" });
+    if (ciudad1 == ciudad2) {
+        return res.status(400).json({ msg: "Las ciudades de origen y destino no pueden ser iguales" });
     }
 
     try {
-        // Verificar si ya existe una ruta con el mismo origen y destino
-        const rutaExistente = await Ruta.findOne({ origen, destino });
+        // Verificar si ya existe una ruta con el mismo nombre
+        const nombreExistente = await RutayHorario.findOne({
+            "ruta.nombre": nombre,
+        });
 
-        if (rutaExistente) {
-            return res.status(400).json({ msg: "La ruta ya está registrada" });
+        if (nombreExistente) {
+            return res.status(400).json({ msg: "Ya existe una ruta con ese nombre" });
         }
 
-        // Encontrar la última ruta registrada para obtener el último número
-        const ultimaRuta = await Ruta.findOne({}, {}, { sort: { 'createdAt': -1 } });
+        // Verificar si ya existe una ruta con las mismas ciudades en el mismo orden
+        const ciudadExistente = await RutayHorario.findOne({
+            "ruta.ciudad1": ciudad1,
+            "ruta.ciudad2": ciudad2
+        });
 
-        // Determinar el próximo número de ruta
-        const proximoNumero = ultimaRuta ? parseInt(ultimaRuta.nombre.split(' ')[1]) + 1 : 1;
+        if (ciudadExistente) {
+            return res.status(400).json({ msg: "Ya existe una ruta con esas ciudades de origen y destino en el mismo orden" });
+        }
 
-        // Crear el nombre de la nueva ruta
-        const nuevoNombre = `Ruta ${proximoNumero}`;
-
-        // Crear la nueva ruta
-        const nuevaRuta = new Ruta({ nombre: nuevoNombre, origen, destino });
+        // Crear la nueva ruta con horarios
+        const nuevaRuta = new RutayHorario({
+            ruta: { nombre, ciudad1, ciudad2 },
+            horario: { horario1, horario2, horario3 }
+        });
 
         // Guardar la nueva ruta
         await nuevaRuta.save();
 
         res.status(200).json({
             msg: "Ruta registrada con éxito",
-            nombre: nuevoNombre
+            ruta: nuevaRuta
         });
     } catch (error) {
         res.status(500).json({ msg: "Hubo un error al registrar la ruta", error });
     }
 };
 
-
-
-const obtenerRutas = async (req, res) => {
+// OBTENER LAS RUTAS Y HORARIOS
+const obtenerRutasHorarios = async (req, res) => {
     try {
-        const rutas = await Ruta.find();
+        const rutas = await RutayHorario.find();
         res.status(200).json(rutas);
     } catch (error) {
         res.status(500).json({ msg: "Hubo un error al obtener las rutas", error });
@@ -59,153 +63,101 @@ const obtenerRutas = async (req, res) => {
 };
 
 
+// ACTUALIZAR RUTA Y HORARIO, POR id EN LA URL
+const actualizarRutaHorario = async (req, res) => {
+    const { nombre, ciudad1, ciudad2, horario1, horario2, horario3 } = req.body;
+    const { id } = req.params;
 
-const actualizarRuta = async (req, res) => {
+    if (!nombre || !ciudad1 || !ciudad2 || !horario1 || !horario2 || !horario3) {
+        return res
+            .status(400)
+            .json({ msg: "Lo sentimos, debes llenar todos los campos" });
+    }
+
+    // Verificar si el origen y el destino son iguales
+    if (ciudad1 == ciudad2) {
+        return res
+            .status(400)
+            .json({ msg: "Las ciudades de origen y destino no pueden ser iguales" });
+    }
+
     try {
-        const { origen, destino } = req.body;
+        // Verificar si ya existe una ruta con el mismo nombre
+        const nombreExistente = await RutayHorario.findOne({
+            "ruta.nombre": nombre,
+            _id: { $ne: id },
+        });
 
-        // Verificar si los campos obligatorios están presentes
-        if (!origen || !destino) {
-            return res.status(400).json({ msg: "Los campos 'origen' y 'destino' son obligatorios" });
+        if (nombreExistente) {
+            return res.status(400).json({ msg: "Ya existe una ruta con ese nombre" });
         }
 
-        // Verificar si el ID es válido
-        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            return res.status(400).json({ msg: "ID de ruta no válido" });
+        // Verificar si ya existe una ruta con las mismas ciudades en el mismo orden
+        const ciudadExistente = await RutayHorario.findOne({
+            "ruta.ciudad1": ciudad1,
+            "ruta.ciudad2": ciudad2,
+            _id: { $ne: id },
+        });
+
+        if (ciudadExistente) {
+            return res
+                .status(400)
+                .json({
+                    msg: "Ya existe una ruta con esas ciudades de origen y destino en el mismo orden",
+                });
         }
 
-        // Verificar si ya existe otra ruta con el mismo origen y destino
-        const rutaExistente = await Ruta.findOne({ _id: { $ne: req.params.id }, origen, destino });
+        // Actualizar la ruta con los nuevos datos
+        const rutaActualizada = await RutayHorario.findByIdAndUpdate(
+            id,
+            {
+                ruta: { nombre, ciudad1, ciudad2 },
+                horario: { horario1, horario2, horario3 },
+            },
+            { new: true }
+        );
 
-        if (rutaExistente) {
-            return res.status(400).json({ msg: "Ya existe una ruta con el mismo origen y destino" });
-        }
-
-        // Actualizar la ruta por ID, solo actualizando origen y destino
-        await Ruta.findByIdAndUpdate(req.params.id, { origen, destino });
-
-        res.status(200).json({ msg: "Ruta actualizada con éxito" });
+        res.status(200).json({
+            msg: "Ruta actualizada con éxito",
+            ruta: rutaActualizada,
+        });
     } catch (error) {
-        console.error("Error al actualizar la ruta:", error);
         res.status(500).json({ msg: "Hubo un error al actualizar la ruta", error });
     }
 };
 
 
+// ELIMINAR RUTA Y HORARIO POR EL id EN LA URL
+const eliminarRutaHorario = async (req, res) => {
+    const { id } = req.params;
 
-const eliminarRuta = async (req, res) => {
+    if (!id) {
+        return res.status(400).json({ msg: "Lo sentimos, debes proporcionar el ID de la ruta" });
+    }
+
     try {
-        // Verificar si el ID es válido
-        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            return res.status(400).json({ msg: "ID de ruta no válido" });
+        // Verificar si la ruta existe
+        const rutaExistente = await RutayHorario.findById(id);
+
+        if (!rutaExistente) {
+            return res.status(404).json({ msg: "No se encontró ninguna ruta con ese ID" });
         }
 
-        await Ruta.findByIdAndDelete(req.params.id);
-        res.status(200).json({ msg: "Ruta eliminada con éxito" });
+        // Eliminar la ruta
+        await RutayHorario.findByIdAndRemove(id);
+
+        res.status(200).json({
+            msg: "Ruta eliminada con éxito"
+        });
     } catch (error) {
         res.status(500).json({ msg: "Hubo un error al eliminar la ruta", error });
     }
 };
 
 
-const registrarHorario = async (req, res) => {
-    const { nombreTurno, horaTurno } = req.body;
-
-    if (!nombreTurno || !horaTurno) {
-        return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
-    }
-
-    try {
-        // Verificar si ya existe un horario con el mismo nombre
-        const horarioExistente = await Horario.findOne({ nombreTurno });
-
-        if (horarioExistente) {
-            return res.status(400).json({ msg: "El horario ya está registrado" });
-        }
-
-        // Crear el nuevo horario
-        const nuevoHorario = new Horario(req.body);
-
-        // Guardar el nuevo horario
-        await nuevoHorario.save();
-
-        res.status(200).json({
-            msg: "Horario registrado con éxito"
-        });
-    } catch (error) {
-        res.status(500).json({ msg: "Hubo un error al registrar el horario", error });
-    }
-};
-
-
-const actualizarHorario = async (req, res) => {
-    try {
-        const { nombreTurno, horaTurno  } = req.body;
-
-        // Verificar si los campos obligatorios están presentes
-        if (!nombreTurno || !horaTurno) {
-            return res.status(400).json({ msg: "Los campos 'nombre' y 'hora' son obligatorios" });
-        }
-
-        // Verificar si el ID es válido
-        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            return res.status(400).json({ msg: "ID de horario no válido" });
-        }
-
-        // Verificar si ya existe otro horario con el mismo nombre
-        const horarioExistentePorNombre = await Horario.findOne({ _id: { $ne: req.params.id }, nombreTurno });
-
-        // Verificar si ya existe otro horario con la misma hora
-        const horarioExistentePorHora = await Horario.findOne({ _id: { $ne: req.params.id }, horaTurno });
-
-        if (horarioExistentePorNombre || horarioExistentePorHora) {
-            return res.status(400).json({ msg: "Ya existe un horario con el mismo nombre o con la misma hora" });
-        }
-
-        // Actualizar el horario por ID, solo actualizando nombre y hora
-        await Horario.findByIdAndUpdate(req.params.id, { nombreTurno, horaTurno });
-
-        res.status(200).json({ msg: "Horario actualizado con éxito" });
-    } catch (error) {
-        console.error("Error al actualizar el horario:", error);
-        res.status(500).json({ msg: "Hubo un error al actualizar el horario", error });
-    }
-};
-
-
-
-const obtenerHorarios = async (req, res) => {
-    try {
-        const horarios = await Horario.find();
-        res.status(200).json(horarios);
-    } catch (error) {
-        res.status(500).json({ msg: "Hubo un error al obtener los horarios", error });
-    }
-};
-
-const eliminarHorario = async (req, res) => {
-    try {
-        // Verificar si el ID es válido
-        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            return res.status(400).json({ msg: "ID de horario no válido" });
-        }
-
-        await Horario.findByIdAndDelete(req.params.id);
-        res.status(200).json({ msg: "Horario eliminado con éxito" });
-    } catch (error) {
-        res.status(500).json({ msg: "Hubo un error al eliminar el horario", error });
-    }
-};
-
-
-
 export {
-    registrarRuta,
-    obtenerRutas,
-    actualizarRuta,
-    eliminarRuta,
-    registrarHorario,
-    actualizarHorario,
-    obtenerHorarios,
-    eliminarHorario
+    registrarRutaHorario,
+    obtenerRutasHorarios,
+    actualizarRutaHorario,
+    eliminarRutaHorario
 };

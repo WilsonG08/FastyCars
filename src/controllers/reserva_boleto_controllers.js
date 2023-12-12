@@ -1,4 +1,4 @@
-import Boleto from '../models/reservaDB.js';
+/* import Boleto from '../models/reservaDB.js';
 import Ruta from '../models/rutaDB.js'
 import Horario from '../models/horarioDb.js'
 
@@ -84,3 +84,4 @@ const realizarReserva = async (req, res) => {
 export {
     realizarReserva
 }
+ */
