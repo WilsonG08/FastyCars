@@ -17,20 +17,11 @@ const boletoSchema = new Schema(
             },
         },
         ciudadSalida: {
-            ruta: {
-                type: Schema.Types.ObjectId,
-                ref: "Ruta",
-                required: true,
-            },
             ciudad: {
                 type: String,
                 required: true,
             },
-            /* direccion: {
-                type: String,
-                required: true,
-            },
-            latitud: {
+            latitud:{
                 type: String,
                 required: true,
             },
@@ -41,23 +32,18 @@ const boletoSchema = new Schema(
             referencia: {
                 type: String,
                 required: true,
-            }, */
+            },
+            direccion: {
+                type: String,
+                required: true,
+            },
         },
         ciudadLlegada: {
-            ruta: {
-                type: Schema.Types.ObjectId,
-                ref: "Ruta",
-                required: true,
-            },
             ciudad: {
                 type: String,
                 required: true,
             },
-            /* direccion: {
-                type: String,
-                required: true,
-            },
-            latitud: {
+            latitud:{
                 type: String,
                 required: true,
             },
@@ -68,7 +54,11 @@ const boletoSchema = new Schema(
             referencia: {
                 type: String,
                 required: true,
-            }, */
+            },
+            direccion: {
+                type: String,
+                required: true,
+            },
         },
         numPax: {
             type: String,
@@ -76,14 +66,17 @@ const boletoSchema = new Schema(
         },
         turno: {
             horario: {
-                type: Schema.Types.ObjectId,
-                ref: "Horario",
+                type: String,
                 required: true,
             },
             fecha: {
                 type: String,
                 required: true,
             },
+        },
+        precio:{
+            type: String,
+            required: true,
         },
         estadoPax: {
             type: String,
@@ -96,6 +89,3 @@ const boletoSchema = new Schema(
 );
 
 export default model("Boleto", boletoSchema);
-
-
-
