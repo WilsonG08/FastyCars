@@ -95,19 +95,25 @@ const realizarReserva = async (req, res) => {
 };
 
 
-const listarBoletos = async (req, res) => {
+const listarReservasCliente = async (req, res) => {
     try {
-        const boleto = await Boleto.find({}, 'pasajeroNombre pasajeroApellido correo phone rol'); // Especifica los campos que deseas recuperar
+        const clienteId = req.pasajeroBDD._id;
 
-        res.status(200).json(boleto);
+        // Busca las reservas del cliente en la base de datos
+        const reservasCliente = await Boleto.find({ clienteId });
+
+        res.status(200).json({ reservas: reservasCliente });
     } catch (error) {
-        res.status(500).json({ error: 'Error al listar los pasajeros' });
+        console.error(error);
+        res.status(500).json({ msg: "Error al obtener las reservas del cliente" });
     }
 };
 
 
-const actualizarBoleto = async (req, res) => {
+
+const actualizarBoletoCliente = async (req, res) => {
     try {
+        const clienteId = req.pasajeroBDD._id;
         const boletoId = req.params.id; // Obtén el ID del boleto a actualizar desde los parámetros de la ruta
         const updateData = req.body; // Datos de actualización
 
@@ -116,16 +122,16 @@ const actualizarBoleto = async (req, res) => {
             return res.status(400).json({ msg: "ID de boleto no proporcionado" });
         }
 
-        // Actualiza el boleto en la base de datos
-        const boletoActualizado = await Boleto.findByIdAndUpdate(
-            boletoId,
+        // Actualiza el boleto solo si pertenece al cliente que ha iniciado sesión
+        const boletoActualizado = await Boleto.findOneAndUpdate(
+            { _id: boletoId, clienteId },
             { $set: updateData },
             { new: true }
         );
 
         // Verifica si se encontró y actualizó el boleto
         if (!boletoActualizado) {
-            return res.status(404).json({ msg: "Boleto no encontrado" });
+            return res.status(404).json({ msg: "Boleto no encontrado o no pertenece al cliente" });
         }
 
         res.status(200).json({ msg: "Boleto actualizado con éxito", boleto: boletoActualizado });
@@ -135,7 +141,35 @@ const actualizarBoleto = async (req, res) => {
     }
 };
 
+
+const eliminarReservaCliente = async (req, res) => {
+    try {
+        const clienteId = req.pasajeroBDD._id;
+        const boletoId = req.params.id; // Obtén el ID del boleto a eliminar desde los parámetros de la ruta
+
+        // Verifica si el ID del boleto es válido
+        if (!boletoId) {
+            return res.status(400).json({ msg: "ID de boleto no proporcionado" });
+        }
+
+        // Elimina el boleto solo si pertenece al cliente que ha iniciado sesión
+        const boletoEliminado = await Boleto.findOneAndDelete({ _id: boletoId, clienteId });
+
+        // Verifica si se encontró y eliminó el boleto
+        if (!boletoEliminado) {
+            return res.status(404).json({ msg: "Boleto no encontrado o no pertenece al cliente" });
+        }
+
+        res.status(200).json({ msg: "Boleto eliminado con éxito", boleto: boletoEliminado });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al eliminar el boleto" });
+    }
+};
+
 export {
     realizarReserva,
-    actualizarBoleto
+    listarReservasCliente,
+    actualizarBoletoCliente,
+    eliminarReservaCliente
 }
