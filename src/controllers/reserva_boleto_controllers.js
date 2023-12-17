@@ -1,76 +1,6 @@
 import Boleto from '../models/reservaDB.js';
 
-/* const realizarReserva = async (req, res) => {
-    try {
-        const { ciudadSalida, ciudadLlegada, fecha, numPax, turno, estadoPax } = req.body;
-        const { pasajeroNombre, pasajeroApellido, phone } = req.pasajeroBDD;
-
-        // Encuentra las rutas correspondientes a las ciudades de salida y llegada
-        const rutaSalida = await Ruta.findOne({ origen: ciudadSalida.ciudad });
-        const rutaLlegada = await Ruta.findOne({ destino: ciudadLlegada.ciudad });
-
-        // Encuentra los horarios correspondientes a la fecha y turno
-        const horario = await Horario.findOne({
-            nombreTurno: turno.horario,
-            fecha: turno.fecha,
-        });
-
-        // Verifica si las rutas y el horario se encontraron
-        if (!rutaSalida) {
-            return res.status(404).json({ msg: "No se encontró la ruta de salida" });
-        }
-
-        if (!rutaLlegada) {
-            return res.status(404).json({ msg: "No se encontró la ruta de llegada" });
-        }
-
-        if (!horario) {
-            return res.status(404).json({ msg: "No se encontró el horario" });
-        }
-
-        // Verifica si la ciudad de llegada está en la ruta de salida
-        if (rutaSalida.destino !== ciudadLlegada.ciudad) {
-            return res.status(400).json({ msg: "La ciudad de llegada no coincide con la ruta de salida" });
-        }
-
-        // Crea un nuevo boleto usando los datos obtenidos
-        const nuevoBoleto = new Boleto({
-            user: {
-                nombre: pasajeroNombre,
-                apellido: pasajeroApellido,
-                phone: phone,
-            },
-            ciudadSalida: {
-                ruta: rutaSalida._id,
-                ciudad: ciudadSalida.ciudad,
-            },
-            ciudadLlegada: {
-                ruta: rutaLlegada._id,
-                ciudad: ciudadLlegada.ciudad,
-            },
-            numPax,
-            turno: {
-                horario: horario._id,
-                fecha: turno.fecha,
-            },
-            estadoPax,
-        });
-
-        // Guarda el boleto en la base de datos
-        const boletoGuardado = await nuevoBoleto.save();
-        const boletoConDetalles = await Boleto
-            .findById(boletoGuardado._id)
-            .populate('ciudadSalida.ruta')
-            .populate('ciudadLlegada.ruta')
-            .populate('turno.horario');
-
-        res.status(201).json({ msg: "Reserva de boleto exitosa", boleto: boletoConDetalles });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Error al realizar la reserva de boleto" });
-    }
-}; */
-
+/* 
 const realizarReserva = async (req, res) => {
     try {
         const { ciudadSalida, ciudadLlegada, fecha, numPax, turno, estadoPax, precio } = req.body;
@@ -116,7 +46,96 @@ const realizarReserva = async (req, res) => {
     }
 };
 
+ */
+
+const realizarReserva = async (req, res) => {
+    try {
+        const { ciudadSalida, ciudadLlegada, fecha, numPax, turno, estadoPax, precio } = req.body;
+        const { pasajeroNombre, pasajeroApellido, phone, _id: clienteId } = req.pasajeroBDD;
+
+        // Valida si algún campo está vacío
+        for (let key in req.body) {
+            if (typeof req.body[key] === 'object') {
+                for (let subKey in req.body[key]) {
+                    if (!req.body[key][subKey]) {
+                        return res.status(400).json({ msg: `El campo ${subKey} no puede estar vacío` });
+                    }
+                }
+            } else {
+                if (!req.body[key]) {
+                    return res.status(400).json({ msg: `El campo ${key} no puede estar vacío` });
+                }
+            }
+        }
+
+        // Crea un nuevo boleto usando los datos obtenidos y el ID del cliente
+        const nuevoBoleto = new Boleto({
+            clienteId,
+            user: {
+                nombre: pasajeroNombre,
+                apellido: pasajeroApellido,
+                phone: phone,
+            },
+            ciudadSalida,
+            ciudadLlegada,
+            numPax,
+            turno,
+            precio,
+            estadoPax,
+        });
+
+        // Guarda el boleto en la base de datos
+        const boletoGuardado = await nuevoBoleto.save();
+
+        res.status(201).json({ msg: "Reserva de boleto exitosa", boleto: boletoGuardado });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al realizar la reserva de boleto" });
+    }
+};
+
+
+const listarBoletos = async (req, res) => {
+    try {
+        const boleto = await Boleto.find({}, 'pasajeroNombre pasajeroApellido correo phone rol'); // Especifica los campos que deseas recuperar
+
+        res.status(200).json(boleto);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al listar los pasajeros' });
+    }
+};
+
+
+const actualizarBoleto = async (req, res) => {
+    try {
+        const boletoId = req.params.id; // Obtén el ID del boleto a actualizar desde los parámetros de la ruta
+        const updateData = req.body; // Datos de actualización
+
+        // Verifica si el ID del boleto es válido
+        if (!boletoId) {
+            return res.status(400).json({ msg: "ID de boleto no proporcionado" });
+        }
+
+        // Actualiza el boleto en la base de datos
+        const boletoActualizado = await Boleto.findByIdAndUpdate(
+            boletoId,
+            { $set: updateData },
+            { new: true }
+        );
+
+        // Verifica si se encontró y actualizó el boleto
+        if (!boletoActualizado) {
+            return res.status(404).json({ msg: "Boleto no encontrado" });
+        }
+
+        res.status(200).json({ msg: "Boleto actualizado con éxito", boleto: boletoActualizado });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al actualizar el boleto" });
+    }
+};
 
 export {
-    realizarReserva
+    realizarReserva,
+    actualizarBoleto
 }

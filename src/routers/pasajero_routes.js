@@ -17,7 +17,8 @@ import {
 } from '../controllers/pasajero_controllers.js'
 import verificarAutenticacion from '../middlewares/autenticacion.js'
 
-import { realizarReserva } from '../controllers/reserva_boleto_controllers.js';
+import { realizarReserva,
+    actualizarBoleto } from '../controllers/reserva_boleto_controllers.js';
 
 
 const router =  Router()
@@ -48,12 +49,14 @@ router.get("/perfil", verificarAutenticacion, perfil);
 
 // RESERVAR BOLETO
 router.post("/reserva-boleto", verificarAutenticacion, realizarReserva);
+router.put("/actualizar-boleto/:id", verificarAutenticacion, actualizarBoleto);
 
 // OBTENER LAS RUTAS Y HORARIOS
 router.get("/rutas",verificarAutenticacion, obtenerRutasHorarios);
 
 //OBTENER LOS SERVICIOS DISPONIBLES
 router.get("/servicios",verificarAutenticacion, serviciosDsiponibles);
+
 
 
 

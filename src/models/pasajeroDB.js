@@ -1,5 +1,3 @@
-// Esta carpeta contiene los modelos de la aplicación. Los modelos representan los datos de la aplicación.
-
 import { Schema, model } from "mongoose";
 import bcrypt from "bcryptjs";
 

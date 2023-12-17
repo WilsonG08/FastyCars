@@ -2,6 +2,11 @@ import { Schema, model } from "mongoose";
 
 const boletoSchema = new Schema(
     {
+        clienteId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Pasajero',
+            required: true,
+        },
         user: {
             nombre: {
                 type: String,
