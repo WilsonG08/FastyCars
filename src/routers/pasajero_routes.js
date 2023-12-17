@@ -11,7 +11,9 @@ import {
     actualizarPassword,
     recuperarPassword,
     comprobarTokenPassword,
-    nuevoPassword
+    nuevoPassword,
+    serviciosDsiponibles,
+    obtenerRutasHorarios
 } from '../controllers/pasajero_controllers.js'
 import verificarAutenticacion from '../middlewares/autenticacion.js'
 
@@ -46,6 +48,12 @@ router.get("/perfil", verificarAutenticacion, perfil);
 
 // RESERVAR BOLETO
 router.post("/reserva-boleto", verificarAutenticacion, realizarReserva);
+
+// OBTENER LAS RUTAS Y HORARIOS
+router.get("/rutas",verificarAutenticacion, obtenerRutasHorarios);
+
+//OBTENER LOS SERVICIOS DISPONIBLES
+router.get("/servicios",verificarAutenticacion, serviciosDsiponibles);
 
 
 

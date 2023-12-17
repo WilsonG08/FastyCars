@@ -1,6 +1,8 @@
 import Pasajero from '../models/pasajeroDB.js'
 import Administrador from '../models/adminDB.js'
 import Conductor from '../models/conductorDB.js'
+import RutayHorario from '../models/ruta_horario.js'
+import Servicio from '../models/serviciosDb.js'
 
 import { sendMailToUser, sendMailToRecoveryPassword } from "../config/nodemailer.js"
 import generarJWT from "../helpers/crearJWT.js"
@@ -219,8 +221,23 @@ const nuevoPassword = async (req, res) => {
 
 
 const serviciosDsiponibles = async(req, res) => {
-    
+    try {
+        const servicios = await Servicio.find();
+        res.status(200).json(servicios);
+    } catch (error) {
+        res.status(500).json({ msg: "Hubo un error al obtener las rutas", error });
+    }
 }
+
+// OBTENER LAS RUTAS Y HORARIOS
+const obtenerRutasHorarios = async (req, res) => {
+    try {
+        const rutas = await RutayHorario.find();
+        res.status(200).json(rutas);
+    } catch (error) {
+        res.status(500).json({ msg: "Hubo un error al obtener las rutas", error });
+    }
+};
 
 
 export {
@@ -233,5 +250,7 @@ export {
     actualizarPassword,
     recuperarPassword,
     comprobarTokenPassword,
-    nuevoPassword
+    nuevoPassword,
+    serviciosDsiponibles,
+    obtenerRutasHorarios
 }
