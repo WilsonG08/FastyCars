@@ -36,7 +36,7 @@ const boletoSchema = new Schema(
             },
             referencia: {
                 type: String,
-                required: true,
+                required: false,
             },
             direccion: {
                 type: String,
@@ -58,7 +58,7 @@ const boletoSchema = new Schema(
             },
             referencia: {
                 type: String,
-                required: true,
+                required: false,
             },
             direccion: {
                 type: String,

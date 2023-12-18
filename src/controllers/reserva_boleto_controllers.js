@@ -1,53 +1,5 @@
 import Boleto from '../models/reservaDB.js';
 
-/* 
-const realizarReserva = async (req, res) => {
-    try {
-        const { ciudadSalida, ciudadLlegada, fecha, numPax, turno, estadoPax, precio } = req.body;
-        const { pasajeroNombre, pasajeroApellido, phone } = req.pasajeroBDD;
-
-        // Valida si algún campo está vacío
-        for (let key in req.body) {
-            if (typeof req.body[key] === 'object') {
-                for (let subKey in req.body[key]) {
-                    if (!req.body[key][subKey]) {
-                        return res.status(400).json({ msg: `El campo ${subKey} no puede estar vacío` });
-                    }
-                }
-            } else {
-                if (!req.body[key]) {
-                    return res.status(400).json({ msg: `El campo ${key} no puede estar vacío` });
-                }
-            }
-        }
-
-        // Crea un nuevo boleto usando los datos obtenidos
-        const nuevoBoleto = new Boleto({
-            user: {
-                nombre: pasajeroNombre,
-                apellido: pasajeroApellido,
-                phone: phone,
-            },
-            ciudadSalida,
-            ciudadLlegada,
-            numPax,
-            turno,
-            precio,
-            estadoPax,
-        });
-
-        // Guarda el boleto en la base de datos
-        const boletoGuardado = await nuevoBoleto.save();
-
-        res.status(201).json({ msg: "Reserva de boleto exitosa", boleto: boletoGuardado });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Error al realizar la reserva de boleto" });
-    }
-};
-
- */
-
 const realizarReserva = async (req, res) => {
     try {
         const { ciudadSalida, ciudadLlegada, fecha, numPax, turno, estadoPax, precio } = req.body;
@@ -87,10 +39,10 @@ const realizarReserva = async (req, res) => {
         // Guarda el boleto en la base de datos
         const boletoGuardado = await nuevoBoleto.save();
 
-        res.status(201).json({ msg: "Reserva de boleto exitosa", boleto: boletoGuardado });
+        res.status(201).json({ result:true, msg: "Reserva de boleto exitosa", boleto: boletoGuardado });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ msg: "Error al realizar la reserva de boleto" });
+        res.status(500).json({ result:false, msg: "Error al realizar la reserva de boleto" });
     }
 };
 
