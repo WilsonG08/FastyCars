@@ -239,6 +239,47 @@ const obtenerRutasHorarios = async (req, res) => {
     }
 };
 
+const verConductorAsignado = async (req, res) => {
+    try {
+        const { idBoleto } = req.body;
+
+        // Validar si idBoleto es una cadena válida ObjectId
+        if (!mongoose.Types.ObjectId.isValid(idBoleto)) {
+            return res.status(400).json({ error: 'ID de boleto no válido' });
+        }
+
+        // Convertir la cadena a ObjectId
+        const boletoObjectId = new mongoose.Types.ObjectId(idBoleto);
+
+        // Obtener el boleto
+        const boleto = await Boleto.findById(boletoObjectId).populate('conductorAsignado');
+
+        // Verificar si el boleto es válido
+        if (boleto && boleto.conductorAsignado) {
+            // Crear un objeto con solo los detalles del conductor que necesitas
+            const conductor = {
+                nombre: boleto.conductorAsignado.conductorNombre,
+                apellido: boleto.conductorAsignado.conductorApellido,
+                celular: boleto.conductorAsignado.phone,
+                marca: boleto.conductorAsignado.marcaVehiculo,
+                modelo: boleto.conductorAsignado.modeloVehiculo,
+                color: boleto.conductorAsignado.colorVehiculo,
+                placa: boleto.conductorAsignado.placaVehiculo
+            };
+
+            // Enviar respuesta con los detalles del conductor
+            res.status(200).json({ mensaje: 'Conductor asignado', conductor });
+        } else {
+            // Enviar respuesta de error si el boleto no es válido
+            res.status(400).json({ error: 'Error al obtener el conductor asignado' });
+        }
+    } catch (error) {
+        // Manejar errores
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+}
+
 
 export {
     login,
@@ -252,5 +293,6 @@ export {
     comprobarTokenPassword,
     nuevoPassword,
     serviciosDsiponibles,
-    obtenerRutasHorarios
+    obtenerRutasHorarios,
+    verConductorAsignado
 }

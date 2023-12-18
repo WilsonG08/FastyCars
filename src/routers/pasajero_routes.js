@@ -13,7 +13,8 @@ import {
     comprobarTokenPassword,
     nuevoPassword,
     serviciosDsiponibles,
-    obtenerRutasHorarios
+    obtenerRutasHorarios,
+    verConductorAsignado
 } from '../controllers/pasajero_controllers.js'
 import verificarAutenticacion from '../middlewares/autenticacion.js'
 
@@ -64,6 +65,9 @@ router.get("/rutas",verificarAutenticacion, obtenerRutasHorarios);
 //OBTENER LOS SERVICIOS DISPONIBLES
 router.get("/servicios",verificarAutenticacion, serviciosDsiponibles);
 
+
+// VER EL CONDUCTOR
+router.get("/admin/ver-conductor", verificarAutenticacion, verConductorAsignado);
 
 
 

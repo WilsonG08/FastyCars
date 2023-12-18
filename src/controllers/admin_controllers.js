@@ -3,6 +3,9 @@ import Conductor from "../models/conductorDB.js";
 import generarJWT from "../helpers/crearJWT.js";
 import mongoose from "mongoose";
 import Pasajero from '../models/pasajeroDB.js'
+import Boleto from '../models/reservaDB.js'
+
+
 
 
 import {
@@ -298,6 +301,49 @@ const registrarChofer = async (req, res) => {
 
 
 
+const asignarConductor = async (req, res) => {
+    try {
+        const { idBoleto, idConductor } = req.body;
+
+        // Validar si idBoleto es una cadena válida ObjectId
+        if (!mongoose.Types.ObjectId.isValid(idBoleto)) {
+            return res.status(400).json({ error: 'ID de boleto no válido' });
+        }
+
+        // Convertir la cadena a ObjectId
+        const boletoObjectId = new mongoose.Types.ObjectId(idBoleto);
+
+        // Obtener el boleto y el conductor
+        const boleto = await Boleto.findById(boletoObjectId);
+        const conductor = await Conductor.findById(idConductor);
+
+        // Verificar si el boleto y el conductor son válidos
+        if (boleto && conductor) {
+            // Actualizar el boleto con el conductor asignado
+            boleto.conductorAsignado = conductor._id;
+            await boleto.save();
+
+            // Actualizar el estado del conductor
+            conductor.estado = 'Ocupado';
+            await conductor.save();
+
+            // Enviar respuesta exitosa
+            res.status(200).json({ mensaje: 'Conductor asignado con éxito' });
+        } else {
+            // Enviar respuesta de error si el boleto o el conductor no son válidos
+            res.status(400).json({ error: 'Error en la asignación de conductor' });
+        }
+    } catch (error) {
+        // Manejar errores
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+}
+
+
+
+
+
 export {
     registro,
     confirmEmail,
@@ -312,4 +358,5 @@ export {
     comprobarTokenPassword,
     nuevoPassword,
     registrarChofer,
+    asignarConductor,
 };

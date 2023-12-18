@@ -10,7 +10,8 @@ import {
     actualizarPassword,
     recuperarPassword,
     comprobarTokenPassword,
-    nuevoPassword
+    nuevoPassword,
+    verViajesAsignados
 } from "../controllers/chofer_controllers.js"
 
 import verificarAutentificacion from "../middlewares/autenticacion.js";
@@ -34,11 +35,16 @@ router.put("/conductor/actualizarpassword", verificarAutenticacion, actualizarPa
 router.put("/chofer", verificarAutentificacion, actualizarChofer);
 router.delete("/chofer/eliminar/:id", verificarAutentificacion, eliminarChofer);
 
+// VER VIAJES ASIGNADO
+router.get("/chofer/viajes-asigandos",verificarAutenticacion, verViajesAsignados);
+
 
 
 // ME PUEDE SERVIR PARA LISTAR LOS CLIENTES
 router.get("/chofer", verificarAutentificacion, listarchoferes);
 router.get("/chofer/:id", verificarAutentificacion, detalleChofer);
+
+
 
 
 export default router;

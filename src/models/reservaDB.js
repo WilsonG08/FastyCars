@@ -7,6 +7,11 @@ const boletoSchema = new Schema(
             ref: 'Pasajero',
             required: true,
         },
+        conductorAsignado: {
+            type: Schema.Types.ObjectId,
+            ref: 'Conductor',
+            default: null,
+        },
         user: {
             nombre: {
                 type: String,
@@ -85,8 +90,10 @@ const boletoSchema = new Schema(
         },
         estadoPax: {
             type: String,
+            enum: ['Pendiente', 'En tránsito', 'Completado'],
             required: true,
         },
+        
     },
     {
         timestamps: true,
