@@ -5,9 +5,6 @@ import mongoose from "mongoose";
 import Pasajero from '../models/pasajeroDB.js'
 import Boleto from '../models/reservaDB.js'
 
-
-
-
 import {
     sendMailToRecoveryPassword,
     sendMailToUserAdmin,
@@ -340,6 +337,59 @@ const asignarConductor = async (req, res) => {
     }
 }
 
+/* 
+const verViajesPendientes = async (req, res) => {
+    try {
+        // Obtener los boletos que no tienen conductor asignado y cuyo estado es 'Pendiente'
+        const boletos = await Boleto.find({ conductorAsignado: null, estadoPax: 'Pendiente' });
+
+        // Verificar si se encontraron boletos
+        if (boletos.length > 0) {
+            // Enviar respuesta con los boletos pendientes
+            res.status(200).json({ mensaje: 'Viajes pendientes', boletos });
+        } else {
+            // Enviar respuesta de error si no se encontraron boletos
+            res.status(400).json({ error: 'No se encontraron viajes pendientes' });
+        }
+    } catch (error) {
+        // Manejar errores
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+}
+
+ */
+
+const verViajesPendientes = async (req, res) => {
+    try {
+        // Obtener los boletos que no tienen conductor asignado y cuyo estado es 'Pendiente'
+        const boletos = await Boleto.find({ conductorAsignado: null, estadoPax: 'Pendiente' });
+
+        // Verificar si se encontraron boletos
+        if (boletos.length > 0) {
+            // Crear un nuevo array de boletos con solo los detalles que necesitas
+            const boletosFiltrados = boletos.map(boleto => ({
+                nombre: boleto.user.nombre,
+                apellido: boleto.user.apellido,
+                ciudadSalida: boleto.ciudadSalida.ciudad,
+                ciudadLlegada: boleto.ciudadLlegada.ciudad,
+                turno: boleto.turno,
+                id: boleto._id,
+                numPax: boleto.numPax
+            }));
+            
+            // Enviar respuesta con los boletos pendientes
+            res.status(200).json({ mensaje: 'Viajes pendientes', boletos: boletosFiltrados });
+        } else {
+            // Enviar respuesta de error si no se encontraron boletos
+            res.status(400).json({ error: 'No se encontraron viajes pendientes' });
+        }
+    } catch (error) {
+        // Manejar errores
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+}
 
 
 
@@ -359,4 +409,5 @@ export {
     nuevoPassword,
     registrarChofer,
     asignarConductor,
+    verViajesPendientes,
 };

@@ -17,6 +17,7 @@ import {
     nuevoPassword,
     registrarChofer,
     asignarConductor,
+    verViajesPendientes
 } from '../controllers/admin_controllers.js'
 
 import {
@@ -67,8 +68,12 @@ router.get("/admin/rutas",verificarAutenticacion, obtenerRutasHorarios);
 router.put("/admin/actualizarRuta/:id", verificarAutenticacion, actualizarRutaHorario);
 router.delete("/admin/eliminarRuta/:id", verificarAutenticacion, eliminarRutaHorario);
 
+// VER VIAJES PENDIENTES
+router.get("/admin/viajes-pendientes",verificarAutenticacion, verViajesPendientes);
+
 // PARA LA ASIGNACION DE UN VIAJE A UN CONDUCTOR
 router.post("/admin/asignar-conductor", verificarAutenticacion, asignarConductor );
+
 
 
 

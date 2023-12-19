@@ -142,6 +142,7 @@ const nuevoPassword = async (req, res) => {
 }
 
 
+/* 
 const verViajesAsignados = async (req, res) => {
     try {
         const { idConductor } = req.body;
@@ -156,6 +157,40 @@ const verViajesAsignados = async (req, res) => {
 
         // Obtener los boletos asignados al conductor
         const boletos = await Boleto.find({ conductorAsignado: conductorObjectId });
+
+        // Verificar si se encontraron boletos
+        if (boletos.length > 0) {
+            // Enviar respuesta con los boletos asignados
+            res.status(200).json({ mensaje: 'Viajes asignados', boletos });
+        } else {
+            // Enviar respuesta de error si no se encontraron boletos
+            res.status(400).json({ error: 'No se encontraron viajes asignados' });
+        }
+    } catch (error) {
+        // Manejar errores
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+}
+
+ */
+
+
+const verViajesAsignados = async (req, res) => {
+    try {
+        const { idConductor } = req.body;
+
+        // Validar si idConductor es una cadena válida ObjectId
+        if (!mongoose.Types.ObjectId.isValid(idConductor)) {
+            return res.status(400).json({ error: 'ID de conductor no válido' });
+        }
+
+        // Convertir la cadena a ObjectId
+        const conductorObjectId = new mongoose.Types.ObjectId(idConductor);
+
+        // Obtener los boletos asignados al conductor
+        const boletos = await Boleto.find({ conductorAsignado: conductorObjectId })
+            .select('user ciudadSalida ciudadLlegada turno numPax precio estadoPax -_id');
 
         // Verificar si se encontraron boletos
         if (boletos.length > 0) {
