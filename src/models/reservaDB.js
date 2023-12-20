@@ -71,7 +71,7 @@ const boletoSchema = new Schema(
             },
         },
         numPax: {
-            type: String,
+            type: Number,
             required: true,
         },
         turno: {

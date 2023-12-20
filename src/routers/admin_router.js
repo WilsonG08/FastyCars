@@ -17,7 +17,8 @@ import {
     nuevoPassword,
     registrarChofer,
     asignarConductor,
-    verViajesPendientes
+    verViajesPendientes,
+    obtenerAsientosDisponibles
 } from '../controllers/admin_controllers.js'
 
 import {
@@ -73,6 +74,10 @@ router.get("/admin/viajes-pendientes",verificarAutenticacion, verViajesPendiente
 
 // PARA LA ASIGNACION DE UN VIAJE A UN CONDUCTOR
 router.post("/admin/asignar-conductor", verificarAutenticacion, asignarConductor );
+
+
+// VER ASIENTOS DISPONIBLES
+router.post("/admin/asientos-disponibles", verificarAutenticacion, obtenerAsientosDisponibles);
 
 
 
