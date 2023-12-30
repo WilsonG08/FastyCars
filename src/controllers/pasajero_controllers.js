@@ -220,14 +220,15 @@ const nuevoPassword = async (req, res) => {
 }
 
 
-const serviciosDsiponibles = async(req, res) => {
+const serviciosDsiponibles = async (req, res) => {
     try {
-        const servicios = await Servicio.find();
+        const servicios = await Servicio.find().select('nombreServicio detalleServicio valorEstimado');
         res.status(200).json(servicios);
     } catch (error) {
         res.status(500).json({ msg: "Hubo un error al obtener las rutas", error });
     }
 }
+
 
 // OBTENER LAS RUTAS Y HORARIOS
 const obtenerRutasHorarios = async (req, res) => {
