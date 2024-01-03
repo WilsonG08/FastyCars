@@ -34,6 +34,12 @@ import {
 } from '../controllers/reservaPrivado_controllers.js';
 
 
+import {
+    reservaEncomienda,
+    listarEncomiendas,
+    actualizarEncomienda
+} from '../controllers/reserva_encomienda_controllers.js';
+
 const router =  Router()
 
 // REGISTRO
@@ -83,6 +89,13 @@ router.post("/reserva-boleto-privado", verificarAutenticacion, reservaBoletoPriv
 router.get("/listar-boletos-privados", verificarAutenticacion, listarBoletosPriv);
 router.put("/actualizar-boleto-privado/:id", verificarAutenticacion, actualizarBoletoPriv);
 router.delete("/eliminar-boleto-privado/:id", verificarAutenticacion, eliminarBoletoPriv);
+
+
+// RESERVA ENCOMIENDA
+router.post("/reserva-encomienda", verificarAutenticacion, reservaEncomienda);
+router.get("/listar-encomiendas", verificarAutenticacion, listarEncomiendas);
+router.put("/encomienda-actualizar/:id", verificarAutenticacion, actualizarEncomienda);
+
 
 
 

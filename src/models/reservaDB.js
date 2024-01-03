@@ -2,6 +2,10 @@ import { Schema, model } from "mongoose";
 
 const boletoSchema = new Schema(
     {
+        tipoBoleto:{
+            type: String,
+            default: 'Compartido'
+        },
         clienteId: {
             type: Schema.Types.ObjectId,
             ref: 'Pasajero',

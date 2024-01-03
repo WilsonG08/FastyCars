@@ -2,6 +2,10 @@ import { Schema, model } from "mongoose";
 
 const registerEncomienda = new Schema(
     {
+        tipoBoleto:{
+            type: String,
+            default: 'Encomienda'
+        },
         remitente: {
             nombre: {
                 type: String,
