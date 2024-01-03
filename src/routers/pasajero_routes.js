@@ -25,6 +25,12 @@ import {
     eliminarReservaCliente
 } from '../controllers/reserva_boleto_controllers.js';
 
+// PARA EL VIAJE PRIVADO
+import {
+    realizarReservaPriv,
+    listarBoletosPriv,
+} from '../controllers/reservaPrivado_controllers.js';
+
 
 const router =  Router()
 
@@ -68,6 +74,11 @@ router.get("/servicios",verificarAutenticacion, serviciosDsiponibles);
 
 // VER EL CONDUCTOR
 router.get("/admin/ver-conductor", verificarAutenticacion, verConductorAsignado);
+
+
+// VIAJE PRIVADO
+router.post("/reserva-boleto-privado", verificarAutenticacion, realizarReservaPriv);
+router.get("/listar-boletos-privados", verificarAutenticacion, listarBoletosPriv);
 
 
 

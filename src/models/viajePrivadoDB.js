@@ -1,8 +1,12 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from "mongoose" ;
 
-const registerEncomienda = new Schema(
+const registerPriv = new Schema(
     {
-        remitente: {
+        tipoBoleto:{
+            type: String,
+            default: 'Privado'
+        },
+        user: {
             nombre: {
                 type: String,
                 required: true,
@@ -16,21 +20,7 @@ const registerEncomienda = new Schema(
                 required: true,
             },
         },
-        destinatario: {
-            nombre: {
-                type: String,
-                required: true,
-            },
-            apellido: {
-                type: String,
-                required: true,
-            },
-            phone: {
-                type: String,
-                required: true,
-            },
-        },
-        ciudadRemitente: {
+        ciudadSalida: {
             ciudad: {
                 type: String,
                 required: true,
@@ -52,7 +42,7 @@ const registerEncomienda = new Schema(
                 required: true,
             },
         },
-        ciudadDestinatario: {
+        ciudadLlegada: {
             ciudad: {
                 type: String,
                 required: true,
@@ -73,7 +63,8 @@ const registerEncomienda = new Schema(
                 type: String,
                 required: true,
             },
-        }, numPaquetes: {
+        },
+        numPax: {
             type: Number,
             required: true,
         },
@@ -89,14 +80,17 @@ const registerEncomienda = new Schema(
         },
         precio:{
             type: String,
-            required: false,
+            required: true,
         },
-        estadoPaquete: {
+        estadoPax: {
             type: String,
             enum: ['Pendiente', 'En tránsito', 'Completado'],
             required: true,
         },
+    },
+    {
+        timestamps: true,
     }
 );
 
-export default model("Encomienda", registerEncomienda);
+export default model("BoletoPrivado", registerPriv);
