@@ -1,6 +1,6 @@
 import BoletoPrivado from '../models/viajePrivadoDB.js';
 
-const realizarReservaPriv = async (req, res) => {
+const reservaBoletoPriv = async (req, res) => {
     try {
         const { ciudadSalida, ciudadLlegada, numPax, turno, estadoPax, precio } = req.body;
 
@@ -63,8 +63,58 @@ const listarBoletosPriv = async (req, res) => {
 };
 
 
+const actualizarBoletoPriv = async (req, res) => {
+    try {
+        const { id } = req.params; // ID de la reserva a actualizar
+        let datosActualizados = req.body; // Datos a actualizar
+
+        // Excluye el campo estadoPax de los datos a actualizar
+        if (datosActualizados.hasOwnProperty('estadoPax')) {
+            delete datosActualizados.estadoPax;
+        }
+
+        // Busca la reserva por ID y actualiza los datos
+        const reservaActualizada = await BoletoPrivado.findByIdAndUpdate(id, datosActualizados, { new: true });
+
+        if (!reservaActualizada) {
+            return res.status(404).json({ msg: "No se encontró la reserva con el ID proporcionado" });
+        }
+
+        res.status(200).json({ reserva: reservaActualizada });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al actualizar la reserva" });
+    }
+};
+
+
+
+const eliminarBoletoPriv = async (req, res) => {
+    try {
+        const { id } = req.params; // ID de la reserva a eliminar
+
+        // Busca la reserva por ID y la elimina
+        const reservaEliminada = await BoletoPrivado.findByIdAndDelete(id);
+
+        if (!reservaEliminada) {
+            return res.status(404).json({ msg: "No se encontró la reserva con el ID proporcionado" });
+        }
+
+        res.status(200).json({ msg: "Reserva eliminada exitosamente" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al eliminar la reserva" });
+    }
+};
+
+
+
+
+
 
 export {
-    realizarReservaPriv,
+    reservaBoletoPriv,
     listarBoletosPriv,
+    actualizarBoletoPriv,
+    eliminarBoletoPriv
 }
