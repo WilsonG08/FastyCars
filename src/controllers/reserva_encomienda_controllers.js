@@ -83,9 +83,23 @@ const actualizarEncomienda = async (req, res) => {
 
 
 
+const eliminarEncomienda = async (req, res) => {
+    try {
+        const { id } = req.params; // ID de la encomienda a eliminar
 
+        // Busca la encomienda por ID y la elimina
+        const encomiendaEliminada = await Encomienda.findByIdAndRemove(id);
 
+        if (!encomiendaEliminada) {
+            return res.status(404).json({ msg: "No se encontró la encomienda con el ID proporcionado" });
+        }
 
+        res.status(200).json({ msg: "Encomienda eliminada exitosamente" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al eliminar la encomienda" });
+    }
+};
 
 
 
@@ -93,5 +107,6 @@ const actualizarEncomienda = async (req, res) => {
 export{
     reservaEncomienda,
     listarEncomiendas,
-    actualizarEncomienda
+    actualizarEncomienda,
+    eliminarEncomienda
 }

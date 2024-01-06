@@ -6,11 +6,6 @@ const boletoSchema = new Schema(
             type: String,
             default: 'Compartido'
         },
-        clienteId: {
-            type: Schema.Types.ObjectId,
-            ref: 'Pasajero',
-            required: true,
-        },
         conductorAsignado: {
             type: Schema.Types.ObjectId,
             ref: 'Conductor',
@@ -94,7 +89,7 @@ const boletoSchema = new Schema(
         },
         estadoPax: {
             type: String,
-            enum: ['Pendiente', 'En tránsito', 'Completado'],
+            enum: ['Pendiente', 'Aprobado', 'En tránsito', 'Completado'],
             required: true,
         },
         

@@ -1,6 +1,7 @@
 import { Router } from "express"
 import verificarAutenticacion from '../middlewares/autenticacion.js'
 
+
 import {
     listarchoferes,
     detalleChofer,
@@ -11,7 +12,8 @@ import {
     recuperarPassword,
     comprobarTokenPassword,
     nuevoPassword,
-    verViajesAsignados
+    verViajesAsignados,
+    actualizarEstadoCompartido,
 } from "../controllers/chofer_controllers.js"
 
 import verificarAutentificacion from "../middlewares/autenticacion.js";
@@ -37,6 +39,11 @@ router.delete("/chofer/eliminar/:id", verificarAutentificacion, eliminarChofer);
 
 // VER VIAJES ASIGNADO
 router.get("/chofer/viajes-asigandos",verificarAutenticacion, verViajesAsignados);
+
+
+// CAMBIAR EL ESTADO DE UN PASAJERO
+router.put("/chofer/actualizarECom", verificarAutentificacion, actualizarEstadoCompartido);
+
 
 
 

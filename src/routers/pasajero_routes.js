@@ -33,11 +33,12 @@ import {
     eliminarBoletoPriv
 } from '../controllers/reservaPrivado_controllers.js';
 
-
+// ENCOMIENDA
 import {
     reservaEncomienda,
     listarEncomiendas,
-    actualizarEncomienda
+    actualizarEncomienda,
+    eliminarEncomienda
 } from '../controllers/reserva_encomienda_controllers.js';
 
 const router =  Router()
@@ -95,6 +96,7 @@ router.delete("/eliminar-boleto-privado/:id", verificarAutenticacion, eliminarBo
 router.post("/reserva-encomienda", verificarAutenticacion, reservaEncomienda);
 router.get("/listar-encomiendas", verificarAutenticacion, listarEncomiendas);
 router.put("/encomienda-actualizar/:id", verificarAutenticacion, actualizarEncomienda);
+router.delete("/eliminar-encomienda/:id", verificarAutenticacion, eliminarEncomienda);
 
 
 

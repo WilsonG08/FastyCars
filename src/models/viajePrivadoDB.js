@@ -84,7 +84,7 @@ const registerPriv = new Schema(
         },
         estadoPax: {
             type: String,
-            enum: ['Pendiente', 'En tránsito', 'Completado'],
+            enum: ['Pendiente', 'Aprobado', 'En tránsito', 'Completado'],
             required: true,
         },
     },

@@ -97,7 +97,7 @@ const registerEncomienda = new Schema(
         },
         estadoPaquete: {
             type: String,
-            enum: ['Pendiente', 'En tránsito', 'Completado'],
+            enum: ['Pendiente', 'Aprobado', 'En tránsito', 'Completado'],
             required: true,
         },
     }
