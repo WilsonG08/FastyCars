@@ -88,7 +88,6 @@ const actualizarBoletoPriv = async (req, res) => {
 };
 
 
-
 const eliminarBoletoPriv = async (req, res) => {
     try {
         const { id } = req.params; // ID de la reserva a eliminar
@@ -106,10 +105,6 @@ const eliminarBoletoPriv = async (req, res) => {
         res.status(500).json({ msg: "Error al eliminar la reserva" });
     }
 };
-
-
-
-
 
 
 export {
