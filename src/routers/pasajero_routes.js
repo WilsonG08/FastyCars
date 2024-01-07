@@ -69,7 +69,7 @@ router.get("/perfil", verificarAutenticacion, perfil);
 
 // RESERVAR BOLETO
 router.post("/reserva-boleto", verificarAutenticacion, realizarReserva);
-router.get("/listar-reserva", verificarAutenticacion, listarReservasCliente);
+router.get("/listar-reserva/:id", verificarAutenticacion, listarReservasCliente);
 router.put("/actualizar-boleto/:id", verificarAutenticacion, actualizarBoletoCliente);
 router.delete("/eliminar-boleto/:id", verificarAutenticacion, eliminarReservaCliente);
 

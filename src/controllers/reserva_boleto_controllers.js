@@ -51,7 +51,7 @@ const realizarReserva = async (req, res) => {
 
 
 
-
+/* 
 const listarReservasCliente = async (req, res) => {
     try {
         const { clienteId } = req.body;  // Extrae el clienteId del cuerpo de la solicitud
@@ -65,6 +65,23 @@ const listarReservasCliente = async (req, res) => {
         res.status(500).json({ msg: "Error al obtener las reservas del cliente" });
     }
 };
+*/
+
+
+const listarReservasCliente = async (req, res) => {
+    try {
+        const clienteId = req.params.id;  // Extrae el clienteId de los parámetros de la ruta
+
+        // Busca las reservas del cliente en la base de datos
+        const reservasCliente = await Boleto.find({ pasajeroId: clienteId });
+
+        res.status(200).json({ reservas: reservasCliente });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al obtener las reservas del cliente" });
+    }
+};
+
 
 
 /* 
