@@ -28,7 +28,6 @@ import {
 // PARA EL VIAJE PRIVADO
 import {
     reservaBoletoPriv,
-    listarBoletosPriv,
     actualizarBoletoPriv,
     eliminarBoletoPriv
 } from '../controllers/reservaPrivado_controllers.js';
@@ -87,7 +86,7 @@ router.get("/admin/ver-conductor", verificarAutenticacion, verConductorAsignado)
 
 // VIAJE PRIVADO
 router.post("/reserva-boleto-privado", verificarAutenticacion, reservaBoletoPriv);
-router.get("/listar-boletos-privados", verificarAutenticacion, listarBoletosPriv);
+router.get("/listar-boletos-privados/:id", verificarAutenticacion, listarReservasCliente);
 router.put("/actualizar-boleto-privado/:id", verificarAutenticacion, actualizarBoletoPriv);
 router.delete("/eliminar-boleto-privado/:id", verificarAutenticacion, eliminarBoletoPriv);
 

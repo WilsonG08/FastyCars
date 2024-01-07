@@ -1,8 +1,12 @@
 import BoletoPrivado from '../models/viajePrivadoDB.js';
+import mongoose from 'mongoose';
+
 
 const reservaBoletoPriv = async (req, res) => {
     try {
+        //const { ciudadSalida, ciudadLlegada, numPax, turno, estadoPax, precio } = req.body;
         const { ciudadSalida, ciudadLlegada, numPax, turno, estadoPax, precio } = req.body;
+        const { _id: pasajeroId } = req.pasajeroBDD;
 
         // Valida si algún campo está vacío
         for (let key in req.body) {
@@ -22,6 +26,7 @@ const reservaBoletoPriv = async (req, res) => {
 
         // Crea un nuevo boleto usando los datos obtenidos
         const nuevoBoleto = new BoletoPrivado({
+            pasajeroId,
             user: req.body.user,
             ciudadSalida,
             ciudadLlegada,
@@ -42,27 +47,7 @@ const reservaBoletoPriv = async (req, res) => {
 };
 
 
-const listarBoletosPriv = async (req, res) => {
-    try {
-        const clienteId = req.pasajeroBDD._id;
-
-        // Busca las reservas del cliente en la base de datos
-        const reservasCliente = await BoletoPrivado.find({ clienteId });
-
-        // Añade el tipo de boleto al principio de cada reserva y excluye los campos createdAt y updatedAt
-        const reservasConTipo = reservasCliente.map(reserva => {
-            const { createdAt, updatedAt, ...reservaSinTimestamps } = reserva._doc;
-            return { tipoBoleto: reserva.tipoBoleto, ...reservaSinTimestamps };
-        });
-
-        res.status(200).json({ reservas: reservasConTipo });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Error al obtener las reservas del cliente" });
-    }
-};
-
-
+/* 
 const actualizarBoletoPriv = async (req, res) => {
     try {
         const { id } = req.params; // ID de la reserva a actualizar
@@ -86,8 +71,48 @@ const actualizarBoletoPriv = async (req, res) => {
         res.status(500).json({ msg: "Error al actualizar la reserva" });
     }
 };
+*/
 
 
+const actualizarBoletoPriv = async (req, res) => {
+    try {
+        const clienteId = req.pasajeroBDD._id;
+        const boletoId = req.params.id; // Obtén el ID del boleto a actualizar desde los parámetros de la ruta
+        const updateData = req.body; // Datos de actualización
+
+        // Verifica si el ID del boleto es válido
+        if (!boletoId) {
+            return res.status(400).json({ msg: "ID de boleto no proporcionado" });
+        }
+
+        // Busca el boleto en la base de datos
+        const boleto = await BoletoPrivado.findOne({ _id: boletoId, pasajeroId: clienteId });
+
+        // Verifica si se encontró el boleto
+        if (!boleto) {
+            return res.status(404).json({ msg: "Boleto no encontrado o no pertenece al cliente" });
+        }
+
+        // Verifica si el estadoPax es 'Pendiente'
+        if (boleto.estadoPax !== 'Pendiente') {
+            return res.status(400).json({ msg: "El estado del boleto no es 'Pendiente'" });
+        }
+
+        // Actualiza el boleto
+        const boletoActualizado = await BoletoPrivado.findOneAndUpdate(
+            { _id: boletoId, pasajeroId: clienteId },
+            { $set: updateData },
+            { new: true }
+        );
+
+        res.status(200).json({ msg: "Boleto actualizado con éxito", boleto: boletoActualizado });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al actualizar el boleto" });
+    }
+};
+
+/* 
 const eliminarBoletoPriv = async (req, res) => {
     try {
         const { id } = req.params; // ID de la reserva a eliminar
@@ -105,11 +130,49 @@ const eliminarBoletoPriv = async (req, res) => {
         res.status(500).json({ msg: "Error al eliminar la reserva" });
     }
 };
+*/
+
+const eliminarBoletoPriv = async (req, res) => {
+    try {
+        const clienteId = req.pasajeroBDD._id;
+        const boletoId = req.params.id; // Obtén el ID del boleto a eliminar desde los parámetros de la ruta
+
+        // Verifica si el ID del boleto es válido
+        if (!boletoId) {
+            return res.status(400).json({ msg: "ID de boleto no proporcionado" });
+        }
+
+        // Busca el boleto en la base de datos
+        const boleto = await BoletoPrivado.findOne({ _id: boletoId, pasajeroId: clienteId });
+
+        // Verifica si se encontró el boleto
+        if (!boleto) {
+            return res.status(404).json({ msg: "Boleto no encontrado" });
+        }
+
+        // Verifica si el boleto pertenece al cliente
+        if (!mongoose.Types.ObjectId.isValid(boleto.pasajeroId) || boleto.pasajeroId.toString() !== clienteId.toString()) {
+            return res.status(403).json({ msg: "El boleto no pertenece al cliente" });
+        }
+
+        // Verifica si el estadoPax es 'Pendiente'
+        if (boleto.estadoPax !== 'Pendiente') {
+            return res.status(400).json({ msg: "El estado del boleto no es 'Pendiente'" });
+        }
+
+        // Elimina el boleto
+        const boletoEliminado = await BoletoPrivado.findOneAndDelete({ _id: boletoId, pasajeroId: clienteId });
+
+        res.status(200).json({ msg: "Boleto eliminado con éxito", boleto: boletoEliminado });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al eliminar el boleto" });
+    }
+};
 
 
 export {
     reservaBoletoPriv,
-    listarBoletosPriv,
     actualizarBoletoPriv,
-    eliminarBoletoPriv
+    eliminarBoletoPriv,
 }

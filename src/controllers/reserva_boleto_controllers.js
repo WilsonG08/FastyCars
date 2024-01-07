@@ -1,11 +1,12 @@
 import Boleto from '../models/reservaDB.js';
+import BoletoPrivado from '../models/viajePrivadoDB.js';
 import mongoose from 'mongoose';
 
 
 const realizarReserva = async (req, res) => {
     try {
         const { ciudadSalida, ciudadLlegada, fecha, numPax, turno, estadoPax, precio } = req.body;
-        const { pasajeroNombre, pasajeroApellido, phone, _id: pasajeroId } = req.pasajeroBDD;
+        const { _id: pasajeroId } = req.pasajeroBDD;
 
         // Valida si algún campo está vacío
         for (let key in req.body) {
@@ -26,11 +27,7 @@ const realizarReserva = async (req, res) => {
         // Crea un nuevo boleto usando los datos obtenidos y el ID del pasajero
         const nuevoBoleto = new Boleto({
             pasajeroId,  // Añade este campo
-            user: {
-                nombre: pasajeroNombre,
-                apellido: pasajeroApellido,
-                phone: phone,
-            },
+            user: req.body.user,
             ciudadSalida,
             ciudadLlegada,
             numPax,
@@ -73,9 +70,10 @@ const listarReservasCliente = async (req, res) => {
         const clienteId = req.params.id;  // Extrae el clienteId de los parámetros de la ruta
 
         // Busca las reservas del cliente en la base de datos
-        const reservasCliente = await Boleto.find({ pasajeroId: clienteId });
+        const reservasClienteC = await Boleto.find({ pasajeroId: clienteId });
+        const reservasClienteP = await BoletoPrivado.find({ pasajeroId: clienteId });
 
-        res.status(200).json({ reservas: reservasCliente });
+        res.status(200).json({ reservas: reservasClienteC, reservasClienteP });
     } catch (error) {
         console.error(error);
         res.status(500).json({ msg: "Error al obtener las reservas del cliente" });

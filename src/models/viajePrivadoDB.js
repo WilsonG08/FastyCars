@@ -6,6 +6,16 @@ const registerPriv = new Schema(
             type: String,
             default: 'Privado'
         },
+        conductorAsignado: {
+            type: Schema.Types.ObjectId,
+            ref: 'Conductor',
+            default: null,
+        },
+        pasajeroId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Pasajero',
+            required: false,
+        },
         user: {
             nombre: {
                 type: String,

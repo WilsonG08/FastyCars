@@ -6,6 +6,16 @@ const registerEncomienda = new Schema(
             type: String,
             default: 'Encomienda'
         },
+        conductorAsignado: {
+            type: Schema.Types.ObjectId,
+            ref: 'Conductor',
+            default: null,
+        },
+        pasajeroId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Pasajero',
+            required: true,
+        },
         remitente: {
             nombre: {
                 type: String,
