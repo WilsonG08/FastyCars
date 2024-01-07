@@ -57,6 +57,10 @@ const conductorSchema = new Schema(
             type: Number,
             required: true,
         },
+        asientosOcupados: {
+            type: Number,
+            default: 0,
+        },
         placaVehiculo: {
             type: String,
             required: true,

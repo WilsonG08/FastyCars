@@ -11,6 +11,11 @@ const boletoSchema = new Schema(
             ref: 'Conductor',
             default: null,
         },
+        pasajeroId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Pasajero',
+            required: true,
+        },
         user: {
             nombre: {
                 type: String,
