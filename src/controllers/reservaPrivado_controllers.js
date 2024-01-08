@@ -4,8 +4,7 @@ import mongoose from 'mongoose';
 
 const reservaBoletoPriv = async (req, res) => {
     try {
-        //const { ciudadSalida, ciudadLlegada, numPax, turno, estadoPax, precio } = req.body;
-        const { ciudadSalida, ciudadLlegada, numPax, turno, estadoPax, precio } = req.body;
+        const { ciudadSalida, ciudadLlegada, numPax, turno, estadoPax, precio, distancia } = req.body;
         const { _id: pasajeroId } = req.pasajeroBDD;
 
         // Valida si algún campo está vacío
@@ -25,14 +24,15 @@ const reservaBoletoPriv = async (req, res) => {
         }
 
         // Crea un nuevo boleto usando los datos obtenidos
-        const nuevoBoleto = new BoletoPrivado({
-            pasajeroId,
+        const nuevoBoleto = new Boleto({
+            pasajeroId,  // Añade este campo
             user: req.body.user,
             ciudadSalida,
             ciudadLlegada,
             numPax,
             turno,
             precio,
+            distancia,
             estadoPax,
         });
 

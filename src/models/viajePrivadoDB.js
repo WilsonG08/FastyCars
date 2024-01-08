@@ -92,6 +92,10 @@ const registerPriv = new Schema(
             type: String,
             required: true,
         },
+        distancia:{
+            type: Number,
+            required: false,
+        },
         estadoPax: {
             type: String,
             enum: ['Pendiente', 'Aprobado', 'En tránsito', 'Completado'],

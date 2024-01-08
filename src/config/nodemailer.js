@@ -22,6 +22,9 @@ const sendMailToUser = async(userMail,token)=>{
     <h1>Sistema de gestión (FAST-CAR 🏁 🚗🚘)</h1>
     <hr>
     <a href=${process.env.URL_BACKEND}confirmar/${token}>Clic para confirmar tu cuenta</a>
+    <br>
+    <h2>Tu Token es: </h2>
+    <a>${token}</a>
     <hr>
     <footer>Fast-Car te da la Bienvenida!</footer>
     `

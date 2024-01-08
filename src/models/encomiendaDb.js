@@ -105,6 +105,10 @@ const registerEncomienda = new Schema(
             type: String,
             required: false,
         },
+        distancia:{
+            type: Number,
+            required: false,
+        },
         estadoPaquete: {
             type: String,
             enum: ['Pendiente', 'Aprobado', 'En tránsito', 'Completado'],

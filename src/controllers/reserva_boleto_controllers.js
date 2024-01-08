@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 
 const realizarReserva = async (req, res) => {
     try {
-        const { ciudadSalida, ciudadLlegada, fecha, numPax, turno, estadoPax, precio } = req.body;
+        const { ciudadSalida, ciudadLlegada, numPax, turno, estadoPax, precio, distancia } = req.body;
         const { _id: pasajeroId } = req.pasajeroBDD;
 
         // Valida si algún campo está vacío
@@ -33,6 +33,7 @@ const realizarReserva = async (req, res) => {
             numPax,
             turno,
             precio,
+            distancia,
             estadoPax,
         });
 
