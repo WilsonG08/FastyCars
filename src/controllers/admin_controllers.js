@@ -33,7 +33,7 @@ const registro = async (req, res) => {
     await nuevoAdmin.save();
 
     res.status(200).json({
-        msg: "Revisa tu correo electronico para confirmar tu cuenta ADMINISTRADOR",
+        msg: "Revisa tu correo electronico para confirmar tu cuenta de Administrador",
     });
 };
 
@@ -42,7 +42,7 @@ const confirmEmail = async (req, res) => {
 
     const administradorBDD = await Administrador.findOne({ token: req.params.token });
 
-    if (!administradorBDD?.token) return res.status(404).json({ msg: "La cuenta ya ha sido confirmada como ADMINISTRADOR" });
+    if (!administradorBDD?.token) return res.status(404).json({ msg: "La cuenta ya ha sido confirmada como Administrador" });
 
     administradorBDD.token = null;
 
@@ -51,7 +51,7 @@ const confirmEmail = async (req, res) => {
     await administradorBDD.save();
 
     res.status(200).json({
-        msg: "Token de administrador confirmado, ya puedes iniciar sesión",
+        msg: "Token de Administrador confirmado, ya puedes iniciar sesión",
     });
 };
 
@@ -68,7 +68,8 @@ const perfil = (req, res) => {
 
 const listarChoferes = async (req, res) => {
     try {
-        const choferes = await Chofer.find({}, 'conductorNombre conductorApellido correo phone rol'); // Especifica los campos que deseas recuperar
+        // Especifica los campos que deseas recuperar
+        const choferes = await Chofer.find({}, 'conductorNombre conductorApellido correo phone rol'); 
 
         res.status(200).json(choferes);
     } catch (error) {
@@ -79,7 +80,8 @@ const listarChoferes = async (req, res) => {
 
 const listarpasajeros = async (req, res) => {
     try {
-        const pasajeros = await Pasajero.find({}, 'pasajeroNombre pasajeroApellido correo phone rol'); // Especifica los campos que deseas recuperar
+         // Especifica los campos que deseas recuperar
+        const pasajeros = await Pasajero.find({}, 'pasajeroNombre pasajeroApellido correo phone rol');
 
         res.status(200).json(pasajeros);
     } catch (error) {
@@ -88,35 +90,7 @@ const listarpasajeros = async (req, res) => {
 };
 
 
-
-const detalleChofer = async (req, res) => {
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: `Lo sentimos, debe ser un id válido` });
-
-    const administradorBDD = await Administrador.findById(id).select("-password");
-
-    if (!administradorBDD) return res.status(404).json({ mgs: `Lo sentimos, no existe el chofer ${id}` });
-
-    res.status(200).json({ msg: administradorBDD });
-};
-
-
-
-const detallePasjero = async (req, res) => {
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: `Lo sentimos, debe ser un id válido` });
-
-    const administradorBDD = await Administrador.findById(id).select("-password");
-
-    if (!administradorBDD) return res.status(404).json({ mgs: `Lo sentimos, no existe el chofer ${id}` });
-
-    res.status(200).json({ msg: administradorBDD });
-};
-
-
-
+/* 
 const actualizarPerfil = async (req, res) => {
     try {
         // Obtiene el ID del usuario que inició sesión
@@ -144,6 +118,57 @@ const actualizarPerfil = async (req, res) => {
         res.status(500).json({ msg: "Error al actualizar el perfil" });
     }
 };
+*/
+
+
+const actualizarPerfil = async (req, res) => {
+    try {
+        // Extrae el ID del administrador de la URL
+        const { id } = req.params;
+
+        // Verifica si el ID es válido
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(404).json({ msg: `Lo sentimos, debe ser un id válido: ${id}` });
+        }
+
+        // Verifica si el ID del usuario coincide con el ID del administrador
+        if (req.administradorBDD._id.toString() !== id) {
+            return res.status(403).json({ msg: `Acceso denegado` });
+        }
+
+
+        // Actualiza la información del perfil y genera un nuevo token
+        const administradorBDD = await Administrador.findByIdAndUpdate(
+            id,
+            {
+                adminNombre: req.body.adminNombre,
+                adminApellido: req.body.adminApellido,
+                phone: req.body.phone,
+            },
+            {
+                new: true,
+            }
+        );
+
+
+        // Verifica si se encontró al administrador
+        if (!administradorBDD) {
+            return res.status(403).json({ msg: `Acceso denegado` });
+        }
+
+        // Genera un nuevo token
+        administradorBDD.crearToken();
+        await administradorBDD.save();
+
+        res.status(200).json({ msg: "Perfil actualizado correctamente", administradorBDD });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al actualizar el perfil" });
+    }
+};
+
+
+
 
 
 const actualizarPassword = async (req, res) => {
@@ -582,8 +607,6 @@ export {
     perfil,
     listarChoferes,
     listarpasajeros,
-    detalleChofer,
-    detallePasjero,
     actualizarPerfil,
     actualizarPassword,
     recuperarPassword,

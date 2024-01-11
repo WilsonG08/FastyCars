@@ -8,8 +8,6 @@ import {
     perfil,
     listarChoferes,
     listarpasajeros,
-    detalleChofer,
-    detallePasjero,
     actualizarPerfil,
     actualizarPassword,
     recuperarPassword,
@@ -53,7 +51,7 @@ router.put("/admin/actualizarpassword", verificarAutenticacion, actualizarPasswo
 router.get("/admin/perfil", verificarAutenticacion, perfil);
 
 // ACTUALIZAR PERFIL
-router.put("/admin/actualizar", verificarAutenticacion, actualizarPerfil);
+router.put("/admin/actualizar/:id", verificarAutenticacion, actualizarPerfil);
 
 // LISTAR CHOFERES Y PASASJEROS REGISTRADOS
 router.get("/admin/lista-choferes",verificarAutenticacion, listarChoferes);

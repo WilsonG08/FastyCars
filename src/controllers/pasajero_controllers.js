@@ -368,29 +368,39 @@ const actualizarPerfilPasajero = async (req, res) => {
             return res.status(403).json({ msg: `Acceso denegado` });
         }
 
-        // Busca al pasajero en la base de datos
-        const pasajeroBDD = await Pasajero.findById(id);
+        // Actualiza la información del perfil
+        const pasajeroBDD = await Pasajero.findByIdAndUpdate(
+            id,
+            {
+                pasajeroNombre: req.body.pasajeroNombre,
+                pasajeroApellido: req.body.pasajeroApellido,
+                phone: req.body.phone,
+            },
+            {
+                new: true,
+            }
+        );
 
         // Verifica si se encontró al pasajero
         if (!pasajeroBDD) {
             return res.status(403).json({ msg: `Acceso denegado` });
         }
 
-        // Actualiza los campos del pasajero
-        pasajeroBDD.pasajeroNombre = req.body.pasajeroNombre;
-        pasajeroBDD.pasajeroApellido = req.body.pasajeroApellido;
-        pasajeroBDD.phone = req.body.phone;
+        // Genera un nuevo token
+        pasajeroBDD.crearToken();
 
         // Guarda los cambios en la base de datos
         await pasajeroBDD.save();
 
         // Envía una respuesta exitosa
-        res.json({ msg: "Perfil del pasajero actualizado con éxito" });
+        res.json({ msg: "Perfil del pasajero actualizado con éxito", pasajeroBDD });
     } catch (error) {
         console.error(error);
         res.status(500).json({ msg: "Error al actualizar el perfil del pasajero" });
     }
 };
+
+
 
 
 
