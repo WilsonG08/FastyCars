@@ -154,13 +154,13 @@ const actualizarPassword = async (req, res) => {
 
     const verificarPassword = await administradorBDD.matchPassword(req.body.passwordactual)
 
-    if (!verificarPassword) return res.status(404).json({ msg: "Lo sentimos, el password actual no es el correcto" })
+    if (!verificarPassword) return res.status(404).json({ msg: "Lo sentimos, la contraseña actual no es la correcta" })
 
     administradorBDD.password = await administradorBDD.encrypPassword(req.body.passwordnuevo)
 
     await administradorBDD.save()
 
-    res.status(200).json({ msg: "Password actualizado correctamente!" })
+    res.status(200).json({ msg: "La contraseña actualizado correctamente!" })
 }
 
 

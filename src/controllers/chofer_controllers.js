@@ -77,7 +77,7 @@ const actualizarPassword = async (req, res) => {
 
     const verificarPassword = await choferBDD.matchPassword(req.body.passwordactual)
 
-    if (!verificarPassword) return res.status(404).json({ msg: "Lo sentimos, el password actual no es el correcto" })
+    if (!verificarPassword) return res.status(404).json({ msg: "Lo sentimos, la contraseña actual no es la correcta" })
 
     choferBDD.password = await choferBDD.encrypPassword(req.body.passwordnuevo)
 

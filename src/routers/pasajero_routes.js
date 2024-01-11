@@ -14,7 +14,8 @@ import {
     nuevoPassword,
     serviciosDsiponibles,
     obtenerRutasHorarios,
-    verConductorAsignado
+    verConductorAsignado,
+    actualizarPerfilPasajero
 } from '../controllers/pasajero_controllers.js'
 import verificarAutenticacion from '../middlewares/autenticacion.js'
 
@@ -61,6 +62,10 @@ router.put("/pasajero/actualizarpassword", verificarAutenticacion, actualizarPas
 
 // VISUALIZAR PERFIL
 router.get("/perfil", verificarAutenticacion, perfil);
+
+// ACTUALIZAR PERFIL
+router.put("/pasajero/actualizarPerfil/:id", verificarAutenticacion, actualizarPerfilPasajero);
+
 
 // VISUALIZAR SERVIVIOS DISPONIBLES
 //router.get("/servicios", verificarAutenticacion, "");

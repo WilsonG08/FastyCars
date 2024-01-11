@@ -30,7 +30,7 @@ const login = async(req, res) => {
 
     const verificarPassword = await usuarioBDD.matchPassword(password)
 
-    if( !verificarPassword ) return res.status(404).json({msg: "Lo sentimos, el password no es correcto"})
+    if( !verificarPassword ) return res.status(404).json({msg: "Lo sentimos, la contraseña no es la correcta"})
 
     const token = generarJWT(usuarioBDD._id, usuarioBDD.rol)
 
@@ -82,7 +82,7 @@ const registro = async (req, res) => {
 
     await nuevoPasajero.save()
 
-    res.status(200).json({msg: "Revisa tu correo electronico para confirmar tu cuenta PASAJERO"})
+    res.status(200).json({msg: "Revisa tu correo electrónico para confirmar tu cuenta"});
 }
 
 
@@ -92,7 +92,7 @@ const confirmEmail = async (req,res) => {
 
     const pasajeroBDD = await Pasajero.findOne({token:req.params.token})
 
-    if( !pasajeroBDD?.token ) return res.status(404).json({msg: "La cuenta ya ha sido confirmada como PASAJERO"})
+    if( !pasajeroBDD?.token ) return res.status(404).json({msg: "La cuenta ya ha sido confirmada como cliente"})
 
     pasajeroBDD.token = null
 
@@ -100,8 +100,9 @@ const confirmEmail = async (req,res) => {
 
     await pasajeroBDD.save()
 
-    res.status(200).json({msg: "Token cofirmado, ya puedes iniciar sesion!"})
+    res.status(200).json({msg: "Token confirmado, ya puedes iniciar sesión!"})
 }
+
 
 
 const detallePasajero = async (req, res) => {
@@ -116,36 +117,7 @@ const detallePasajero = async (req, res) => {
     res.status(200).json({msg: pasajeroBDD})
 }
 
-const actualizarPerfil = async (req, res) => {
-    const { id } = req.params
 
-    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg: `Lo sentimos, debe ser un id válido: ${id}`})
-
-    if( Object.values(req.body).includes("") ) return res.status(400).json({msg: "Lo sentimos, debs de llenar todos los campos"})
-
-    const pasajeroBDD = await Pasajero.findById(id)
-
-    if( !pasajeroBDD ) return res.status(404).json({msg: `Lo sentimos, no existe el administrador ${id}`})
-
-    if(pasajeroBDD.correo != req.body.correo )
-    {
-        const pasajeroBDDMail = await Pasajero.findOne({correo:req.body.correo})
-
-        if( pasajeroBDDMail)
-        {
-            return res.status(404).json({msg: "Lo sentimos, el correo ya se encuentra registrado"})
-        }
-    }
-
-    pasajeroBDD.pasajeroNombre = req.body.pasajeroNombre
-    pasajeroBDD.pasajeroApellido = req.body.pasajeroApellido
-    pasajeroBDD.correo = req.body.correo
-    pasajeroBDD.phone = req.body.phone
-
-    await pasajeroBDD.save()
-
-    res.status(200).json({msg: "Perfil del pasajero actualizado correctamente!"})
-}
 
 
 const actualizarPassword = async (req, res) => {
@@ -155,13 +127,13 @@ const actualizarPassword = async (req, res) => {
 
     const verificarPassword = await pasajeroBDD.matchPassword(req.body.passwordactual)
 
-    if( !verificarPassword ) return res.status(404).json({msg: "Lo sentimos, el password actual no es el correcto"})
+    if( !verificarPassword ) return res.status(404).json({msg: "Lo sentimos, la contraseña actual no es la correcta"})
 
     pasajeroBDD.password = await pasajeroBDD.encrypPassword(req.body.passwordnuevo)
 
     await pasajeroBDD.save()
 
-    res.status(200).json({msg: "Password actualizado correctamente"})
+    res.status(200).json({msg: "Contraseña actualizado correctamente"})
 }
 
 
@@ -182,7 +154,7 @@ const recuperarPassword = async(req, res) => {
 
     await pasajeroBDD.save()
 
-    res.status(200).json({msg: "REvisa tu correo electronico para restablecer tu cuenta"})
+    res.status(200).json({msg: "Revisa tu correo electronico para restablecer tu cuenta"})
 }
 
 
@@ -204,7 +176,7 @@ const nuevoPassword = async (req, res) => {
 
     if( Object.values(req.body).includes("") ) return res.status(404).json({msg: "Lo sentimos, debs llenar todos los campos"})
 
-    if( password != confirmpassword ) return res.status(404).json({msg: "Lo sentimos, los password no coinciden"})
+    if( password != confirmpassword ) return res.status(404).json({msg: "Lo sentimos, la contraseña no coinciden"})
 
     const pasajeroBDD = await Pasajero.findOne({token:req.params.token})
 
@@ -216,7 +188,7 @@ const nuevoPassword = async (req, res) => {
 
     await pasajeroBDD.save()
 
-    res.status(200).json({msg: "Felicidades, ya puedes iniciar sesion con tu nuevo password"})
+    res.status(200).json({msg: "Felicidades, ya puedes iniciar sesion con tu nueva contraseña"})
 }
 
 
@@ -282,6 +254,146 @@ const verConductorAsignado = async (req, res) => {
 }
 
 
+const actualizarPerfil = async (req, res) => {
+    const { id } = req.params
+
+    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg: `Lo sentimos, debe ser un id válido: ${id}`})
+
+    if( Object.values(req.body).includes("") ) return res.status(400).json({msg: "Lo sentimos, debs de llenar todos los campos"})
+
+    const pasajeroBDD = await Pasajero.findById(id)
+
+    if( !pasajeroBDD ) return res.status(404).json({msg: `Lo sentimos, no existe el administrador ${id}`})
+
+    if(pasajeroBDD.correo != req.body.correo )
+    {
+        const pasajeroBDDMail = await Pasajero.findOne({correo:req.body.correo})
+
+        if( pasajeroBDDMail)
+        {
+            return res.status(404).json({msg: "Lo sentimos, el correo ya se encuentra registrado"})
+        }
+    }
+
+    pasajeroBDD.pasajeroNombre = req.body.pasajeroNombre
+    pasajeroBDD.pasajeroApellido = req.body.pasajeroApellido
+    pasajeroBDD.correo = req.body.correo
+    pasajeroBDD.phone = req.body.phone
+
+    await pasajeroBDD.save()
+
+    res.status(200).json({msg: "Perfil del pasajero actualizado correctamente!"})
+}
+
+/* 
+const actualizarPerfilPasajero = async (req, res) => {
+    try {
+        // Obtiene el ID del pasajero que inició sesión
+        const pasajeroActual = req.pasajero;
+
+        // Actualiza la información del perfil
+        const pasajeroBDD = await Pasajero.findByIdAndUpdate(
+            pasajeroActual._id,
+            {
+                pasajeroNombre: req.body.pasajeroNombre || pasajeroActual.pasajeroNombre,
+                pasajeroApellido: req.body.pasajeroApellido || pasajeroActual.pasajeroApellido,
+                phone: req.body.phone || pasajeroActual.phone
+            },
+            {
+                new: true,
+            }
+        );
+
+        // Genera y almacena un nuevo token
+        pasajeroBDD.crearToken();
+        await pasajeroBDD.save();
+
+        res.status(200).json({ msg: "Perfil de pasajero actualizado correctamente", pasajeroBDD });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al actualizar el perfil del pasajero" });
+    }
+};
+*/
+
+
+/* 
+const actualizarPerfilPasajero = async (req, res) => {
+    try {
+        // Extrae el ID del pasajero de la URL
+        const { id } = req.params;
+
+        // Verifica si el ID es válido
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(404).json({ msg: `Lo sentimos, debe ser un id válido: ${id}` });
+        }
+
+        // Busca al pasajero en la base de datos
+        const pasajeroBDD = await Pasajero.findById(id);
+
+        // Verifica si se encontró al pasajero
+        if (!pasajeroBDD) {
+            return res.status(403).json({ msg: `Acceso denegado` });
+        }
+
+        // Actualiza los campos del pasajero
+        pasajeroBDD.pasajeroNombre = req.body.pasajeroNombre;
+        pasajeroBDD.pasajeroApellido = req.body.pasajeroApellido;
+        pasajeroBDD.phone = req.body.phone;
+
+        // Guarda los cambios en la base de datos
+        await pasajeroBDD.save();
+
+        // Envía una respuesta exitosa
+        res.json({ msg: "Perfil del pasajero actualizado con éxito" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al actualizar el perfil del pasajero" });
+    }
+};
+*/
+
+const actualizarPerfilPasajero = async (req, res) => {
+    try {
+        // Extrae el ID del pasajero de la URL
+        const { id } = req.params;
+
+        // Verifica si el ID es válido
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(404).json({ msg: `Lo sentimos, debe ser un id válido: ${id}` });
+        }
+
+        // Verifica si el ID del usuario coincide con el ID del pasajero
+        if (req.pasajeroBDD._id.toString() !== id) {
+            return res.status(403).json({ msg: `Acceso denegado` });
+        }
+
+        // Busca al pasajero en la base de datos
+        const pasajeroBDD = await Pasajero.findById(id);
+
+        // Verifica si se encontró al pasajero
+        if (!pasajeroBDD) {
+            return res.status(403).json({ msg: `Acceso denegado` });
+        }
+
+        // Actualiza los campos del pasajero
+        pasajeroBDD.pasajeroNombre = req.body.pasajeroNombre;
+        pasajeroBDD.pasajeroApellido = req.body.pasajeroApellido;
+        pasajeroBDD.phone = req.body.phone;
+
+        // Guarda los cambios en la base de datos
+        await pasajeroBDD.save();
+
+        // Envía una respuesta exitosa
+        res.json({ msg: "Perfil del pasajero actualizado con éxito" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al actualizar el perfil del pasajero" });
+    }
+};
+
+
+
 export {
     login,
     perfil,
@@ -295,5 +407,6 @@ export {
     nuevoPassword,
     serviciosDsiponibles,
     obtenerRutasHorarios,
-    verConductorAsignado
+    verConductorAsignado,
+    actualizarPerfilPasajero,
 }
