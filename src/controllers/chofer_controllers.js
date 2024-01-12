@@ -7,11 +7,6 @@ import {
     sendMailToRecoveryPasswordChofer
 } from "../config/nodemailer.js";
 
-const listarchoferes = async(req, res) =>{
-    const chofer = await Conductor.find({estado:true}).where('Chofer').equals(req.choferBDD).select("-createdAt  -updateAt").populate('Chofer', '_id name lastName')
-    
-    res.status(200).json(chofer)
-}
 
 const detalleChofer =  async( req, res ) =>{
     const { id } = req.params
@@ -25,16 +20,49 @@ const detalleChofer =  async( req, res ) =>{
 
 
 const actualizarChofer = async (req, res) => {
-    const { id } = req.params
+    try {
+        // Extrae el ID del chofer de la URL
+        const { id } = req.params;
 
-    if( Object.values(req.body).includes("")) return res.status(400).json({msg: "Lo sentimos, debes llenar todos los campos"})
+        // Verifica si el ID es válido
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(404).json({ msg: `Lo sentimos, debe ser un id válido: ${id}` });
+        }
 
-    if( !mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({msg:`Lo sentimos, no existe el Chofer ${id}`})
+        // Verifica si el ID del usuario coincide con el ID del chofer
+        if (req.choferBDD._id.toString() !== id) {
+            return res.status(403).json({ msg: `Acceso denegado` });
+        }
 
-    await Chofer.findByIdAndUpdate(req.params.id,req.body)
+        // Actualiza la información del perfil y genera un nuevo token
+        const choferBDD = await Chofer.findByIdAndUpdate(
+            id,
+            {
+                choferNombre: req.body.choferNombre,
+                choferApellido: req.body.choferApellido,
+                phone: req.body.phone,
+            },
+            {
+                new: true,
+            }
+        );
 
-    res.status(200).json({msg: "Actualizacion exitosa del chofer"})
-}
+        // Verifica si se encontró al chofer
+        if (!choferBDD) {
+            return res.status(403).json({ msg: `Acceso denegado` });
+        }
+
+        // Genera un nuevo token
+        choferBDD.crearToken();
+        await choferBDD.save();
+
+        res.status(200).json({ msg: "Perfil de conductor actualizado correctamente", choferBDD });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al actualizar el perfil de conductor" });
+    }
+};
+
 
 
 const confirmEmail = async (req,res) => {
@@ -42,7 +70,7 @@ const confirmEmail = async (req,res) => {
 
     const choferBDD = await Conductor.findOne({token:req.params.token})
 
-    if( !choferBDD?.token ) return res.status(404).json({msg: "La cuenta ya ha sido confirmada CHOFER"})
+    if( !choferBDD?.token ) return res.status(404).json({msg: "La cuenta ya ha sido confirmada conductor"})
 
     choferBDD.token = null
 
@@ -50,7 +78,7 @@ const confirmEmail = async (req,res) => {
 
     await choferBDD.save()
 
-    res.status(200).json({msg: "Token cofirmado, ya puedes iniciar sesion querido CHOFER"})
+    res.status(200).json({msg: "Token cofirmado, ya puedes iniciar sesion querido conductor"})
 }
 
 // esta funcion no tiene que ir 
@@ -59,7 +87,7 @@ const eliminarChofer = async(req, res) => {
 
     if( Object.values(req.body).includes("")) return res.status(400).json({msg: "Lo sentimos, debes llenar todos los campos"})
 
-    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg: `Lo sentimos, no existe el Chofer ${id}`})
+    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg: `Lo sentimos, no existe el Conductor ${id}`})
 
     // duda, no va esta linea
     const { salida } = req.body
@@ -68,6 +96,7 @@ const eliminarChofer = async(req, res) => {
 
     res.status(200).json({msg: "Fecha de salida"})
 }
+
 
 const actualizarPassword = async (req, res) => {
 
@@ -83,7 +112,7 @@ const actualizarPassword = async (req, res) => {
 
     await choferBDD.save()
 
-    res.status(200).json({ msg: "Password actualizado correctamente!" })
+    res.status(200).json({ msg: "¡La contraseña se ha actualizado correctamente!" })
 }
 
 
@@ -104,7 +133,7 @@ const recuperarPassword = async (req, res) => {
 
     await choferBDD.save()
 
-    res.status(200).json({ msg: "Revisa tu correo electronico para reestablecer tu cuenta" })
+    res.status(200).json({ msg: "Por favor, revisa tu correo electrónico para restablecer tu cuenta." })
 }
 
 const comprobarTokenPassword = async (req, res) => {
@@ -116,7 +145,7 @@ const comprobarTokenPassword = async (req, res) => {
 
     await choferBDD.save()
 
-    res.status(200).json({ msg: "Token confirmado, ya puedes crear tu nuevo password" })
+    res.status(200).json({ msg: "Token confirmado, ya puedes crear tu nueva contraseña" })
 }
 
 
@@ -130,7 +159,7 @@ const nuevoPassword = async (req, res) => {
 
     const choferBDD = await Chofer.findOne({ token: req.params.token })
 
-    if (choferBDD?.token !== req.params.token) return res.status(404).json({ msg: "LO sentimos, no se puede validar la cuenta" })
+    if (choferBDD?.token !== req.params.token) return res.status(404).json({ msg: "Lo sentimos, no se puede validar la cuenta" })
 
     choferBDD.token = null
 
@@ -138,7 +167,7 @@ const nuevoPassword = async (req, res) => {
 
     await choferBDD.save()
 
-    res.status(200).json({ msg: "Felicidades, ya puedes iniciar sesion con tu nuevo password" })
+    res.status(200).json({ msg: "Felicidades, ya puedes iniciar sesión con tu nueva contraseña" })
 }
 
 
@@ -318,7 +347,6 @@ const actualizarEstadoCompartido = async (req, res) => {
 
 
 export {
-    listarchoferes,
     detalleChofer,
     actualizarChofer,
     eliminarChofer,

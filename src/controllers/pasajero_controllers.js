@@ -133,7 +133,7 @@ const actualizarPassword = async (req, res) => {
 
     await pasajeroBDD.save()
 
-    res.status(200).json({msg: "Contraseña actualizado correctamente"})
+    res.status(200).json({ msg: "La contraseña se ha actualizado correctamente" })
 }
 
 
@@ -154,7 +154,7 @@ const recuperarPassword = async(req, res) => {
 
     await pasajeroBDD.save()
 
-    res.status(200).json({msg: "Revisa tu correo electronico para restablecer tu cuenta"})
+    res.status(200).json({ msg: "Por favor, revisa tu correo electrónico para restablecer tu cuenta." })
 }
 
 
@@ -167,7 +167,7 @@ const comprobarTokenPassword = async (req, res) => {
 
     await pasajeroBDD.save()
 
-    res.status(200).json({msg: "Token confirmado, ya puedes crear tu nuevo password"})
+    res.status(200).json({ msg: "Token confirmado, ya puedes crear tu nueva contraseña" })
 }
 
 
@@ -176,7 +176,7 @@ const nuevoPassword = async (req, res) => {
 
     if( Object.values(req.body).includes("") ) return res.status(404).json({msg: "Lo sentimos, debs llenar todos los campos"})
 
-    if( password != confirmpassword ) return res.status(404).json({msg: "Lo sentimos, la contraseña no coinciden"})
+    if( password != confirmpassword ) return res.status(404).json({ msg: "Lo sentimos, las contraseñas no coinciden" })
 
     const pasajeroBDD = await Pasajero.findOne({token:req.params.token})
 

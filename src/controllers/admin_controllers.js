@@ -209,6 +209,8 @@ const recuperarPassword = async (req, res) => {
     res.status(200).json({ msg: "Revisa tu correo electronico para reestablecer tu cuenta" })
 }
 
+
+
 const comprobarTokenPassword = async (req, res) => {
     if (!(req.params.token)) return res.status(404).json({ msg: "Lo sentimos, no se puede validar la cuenta" })
 
@@ -228,11 +230,11 @@ const nuevoPassword = async (req, res) => {
 
     if (Object.values(req.body).includes("")) return res.status(404).json({ msg: "Lo sentimos, debes llenar todos los campos" })
 
-    if (password != confirmpassword) return res.status(404).json({ msg: "Lo sentimos, los passwords no coinciden!" })
+    if (password != confirmpassword) return res.status(404).json({ msg: "Lo sentimos, las contraseña no coinciden!" })
 
     const administradorBDD = await Administrador.findOne({ token: req.params.token })
 
-    if (administradorBDD?.token !== req.params.token) return res.status(404).json({ msg: "LO sentimos, no se puede validar la cuenta" })
+    if (administradorBDD?.token !== req.params.token) return res.status(404).json({ msg: "Lo sentimos, no se puede validar la cuenta" })
 
     administradorBDD.token = null
 
@@ -240,7 +242,7 @@ const nuevoPassword = async (req, res) => {
 
     await administradorBDD.save()
 
-    res.status(200).json({ msg: "Felicidades, ya puedes iniciar sesion con tu nuevo password" })
+    res.status(200).json({ msg: "Felicidades, ya puedes iniciar sesion con tu nueva contraseña" })
 }
 
 
@@ -262,16 +264,15 @@ const registrarChofer = async (req, res) => {
         !phone ||
         !cedula ||
         isNaN(numeroAsientos) ||
-        !Number.isInteger(numeroAsientos) ||  // Verifica si es un número entero
+        !Number.isInteger(numeroAsientos) ||  
         numeroAsientos < 1 ||
-        numeroAsientos > 4
+        numeroAsientos > 4 ||
+        numeroAsientos < 0
     ) {
         return res.status(400).json({
             msg: 'Debes llenar todos los campos: nombre, apellido, correo electrónico, contraseña, número de teléfono y número de asientos (debe ser un número entero entre 1 y 4)',
         });
     }
-
-
 
     // Validación de cedula
     if (!req.body.cedula) {
@@ -307,7 +308,7 @@ const registrarChofer = async (req, res) => {
 
     const token = nuevoChofer.crearToken();
 
-    //await sendMailToUserChofer(correo, token);
+    await sendMailToUserChofer(correo, token);
 
     try {
         await sendMailToUserChofer(correo, token);
@@ -323,8 +324,7 @@ const registrarChofer = async (req, res) => {
 };
 
 
-/* 
-const asignarConductor = async (req, res) => {
+/*const asignarConductor = async (req, res) => {
     try {
         const { idBoleto, idConductor } = req.body;
 
@@ -384,8 +384,7 @@ const asignarConductor = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 }
-
- */
+*/
 
 
 const asignarConductor = async (req, res) => {
