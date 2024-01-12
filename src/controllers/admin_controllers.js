@@ -604,7 +604,6 @@ export {
     registro,
     confirmEmail,
     perfil,
-    listarChoferes,
     listarpasajeros,
     actualizarPerfil,
     actualizarPassword,

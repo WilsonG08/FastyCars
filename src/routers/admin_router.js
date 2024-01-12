@@ -6,7 +6,6 @@ import {
     registro,
     confirmEmail,
     perfil,
-    listarChoferes,
     listarpasajeros,
     actualizarPerfil,
     actualizarPassword,
@@ -54,7 +53,7 @@ router.get("/admin/perfil", verificarAutenticacion, perfil);
 router.put("/admin/actualizar/:id", verificarAutenticacion, actualizarPerfil);
 
 // LISTAR CHOFERES Y PASASJEROS REGISTRADOS
-router.get("/admin/lista-choferes",verificarAutenticacion, listarChoferes);
+//router.get("/admin/lista-choferes",verificarAutenticacion, listarChoferes);
 router.get("/admin/lista-pasajeros", listarpasajeros);
 
 // REGISTRO DE SERVICIOS

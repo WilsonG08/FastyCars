@@ -3,7 +3,6 @@ import verificarAutenticacion from '../middlewares/autenticacion.js'
 
 
 import {
-    listarchoferes,
     detalleChofer,
     actualizarChofer,
     eliminarChofer,
@@ -48,7 +47,7 @@ router.put("/chofer/actualizarECom", verificarAutentificacion, actualizarEstadoC
 
 
 // ME PUEDE SERVIR PARA LISTAR LOS CLIENTES
-router.get("/chofer", verificarAutentificacion, listarchoferes);
+// router.get("/chofer", verificarAutentificacion, listarchoferes);
 router.get("/chofer/:id", verificarAutentificacion, detalleChofer);
 
 
