@@ -35,7 +35,7 @@ const actualizarChofer = async (req, res) => {
         }
 
         // Actualiza la información del perfil y genera un nuevo token
-        const choferBDD = await Chofer.findByIdAndUpdate(
+        const choferBDD = await Conductor.findByIdAndUpdate(
             id,
             {
                 choferNombre: req.body.choferNombre,

@@ -26,7 +26,7 @@ const realizarReserva = async (req, res) => {
             }
         }
 
-        // Crea un nuevo boleto usando los datos obtenidos y el ID del pasajero
+        // Crea un nuevo boleto
         const nuevoBoleto = new Boleto({
             pasajeroId,
             user: req.body.user,

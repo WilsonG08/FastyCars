@@ -33,7 +33,7 @@ router.put("/conductor/actualizarpassword", verificarAutenticacion, actualizarPa
 
 
 
-router.put("/chofer", verificarAutentificacion, actualizarChofer);
+router.put("/chofer/actualizarPerfil/:id", verificarAutentificacion, actualizarChofer);
 router.delete("/chofer/eliminar/:id", verificarAutentificacion, eliminarChofer);
 
 // VER VIAJES ASIGNADO
