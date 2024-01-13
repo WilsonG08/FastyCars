@@ -1,5 +1,4 @@
 // Esta carpeta contiene los enrutadores de la aplicación. Los enrutadores se utilizan para mapear las URL a los controladores.
-
 import { Router } from 'express';
 import {
     login,
@@ -19,6 +18,7 @@ import {
 } from '../controllers/pasajero_controllers.js'
 import verificarAutenticacion from '../middlewares/autenticacion.js'
 
+// Viaje compartido
 import { 
     realizarReserva,
     listarReservasCliente,
@@ -26,12 +26,13 @@ import {
     eliminarReservaCliente
 } from '../controllers/reserva_boleto_controllers.js';
 
+
 // PARA EL VIAJE PRIVADO
 import {
     reservaBoletoPriv,
     actualizarBoletoPriv,
-    eliminarBoletoPriv
 } from '../controllers/reservaPrivado_controllers.js';
+
 
 // ENCOMIENDA
 import {
@@ -77,6 +78,17 @@ router.get("/listar-reserva/:id", verificarAutenticacion, listarReservasCliente)
 router.put("/actualizar-boleto/:id", verificarAutenticacion, actualizarBoletoCliente);
 router.delete("/eliminar-boleto/:id", verificarAutenticacion, eliminarReservaCliente);
 
+// VIAJE PRIVADO
+router.post("/reserva-boleto-privado", verificarAutenticacion, reservaBoletoPriv);
+router.put("/actualizar-boleto-privado/:id", verificarAutenticacion, actualizarBoletoPriv);
+
+
+// RESERVA ENCOMIENDA
+router.post("/reserva-encomienda", verificarAutenticacion, reservaEncomienda);
+router.get("/listar-encomiendas", verificarAutenticacion, listarEncomiendas);
+router.put("/encomienda-actualizar/:id", verificarAutenticacion, actualizarEncomienda);
+router.delete("/eliminar-encomienda/:id", verificarAutenticacion, eliminarEncomienda);
+
 
 // OBTENER LAS RUTAS Y HORARIOS
 router.get("/rutas",verificarAutenticacion, obtenerRutasHorarios);
@@ -87,22 +99,6 @@ router.get("/servicios",verificarAutenticacion, serviciosDsiponibles);
 
 // VER EL CONDUCTOR
 router.get("/admin/ver-conductor", verificarAutenticacion, verConductorAsignado);
-
-
-// VIAJE PRIVADO
-router.post("/reserva-boleto-privado", verificarAutenticacion, reservaBoletoPriv);
-router.get("/listar-boletos-privados/:id", verificarAutenticacion, listarReservasCliente);
-router.put("/actualizar-boleto-privado/:id", verificarAutenticacion, actualizarBoletoPriv);
-router.delete("/eliminar-boleto-privado/:id", verificarAutenticacion, eliminarBoletoPriv);
-
-
-// RESERVA ENCOMIENDA
-router.post("/reserva-encomienda", verificarAutenticacion, reservaEncomienda);
-router.get("/listar-encomiendas", verificarAutenticacion, listarEncomiendas);
-router.put("/encomienda-actualizar/:id", verificarAutenticacion, actualizarEncomienda);
-router.delete("/eliminar-encomienda/:id", verificarAutenticacion, eliminarEncomienda);
-
-
 
 
 // AUN ME FALTA VER

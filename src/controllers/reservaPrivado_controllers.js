@@ -24,8 +24,8 @@ const reservaBoletoPriv = async (req, res) => {
         }
 
         // Crea un nuevo boleto usando los datos obtenidos
-        const nuevoBoleto = new Boleto({
-            pasajeroId,  // Añade este campo
+        const nuevoBoleto = new BoletoPrivado({
+            pasajeroId,
             user: req.body.user,
             ciudadSalida,
             ciudadLlegada,
@@ -34,7 +34,7 @@ const reservaBoletoPriv = async (req, res) => {
             precio,
             distancia,
             estadoPax,
-        });
+        });       
 
         // Guarda el boleto en la base de datos
         const boletoGuardado = await nuevoBoleto.save();
@@ -47,42 +47,21 @@ const reservaBoletoPriv = async (req, res) => {
 };
 
 
-/* 
-const actualizarBoletoPriv = async (req, res) => {
-    try {
-        const { id } = req.params; // ID de la reserva a actualizar
-        let datosActualizados = req.body; // Datos a actualizar
-
-        // Excluye el campo estadoPax de los datos a actualizar
-        if (datosActualizados.hasOwnProperty('estadoPax')) {
-            delete datosActualizados.estadoPax;
-        }
-
-        // Busca la reserva por ID y actualiza los datos
-        const reservaActualizada = await BoletoPrivado.findByIdAndUpdate(id, datosActualizados, { new: true });
-
-        if (!reservaActualizada) {
-            return res.status(404).json({ msg: "No se encontró la reserva con el ID proporcionado" });
-        }
-
-        res.status(200).json({ reserva: reservaActualizada });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Error al actualizar la reserva" });
-    }
-};
-*/
-
 
 const actualizarBoletoPriv = async (req, res) => {
     try {
         const clienteId = req.pasajeroBDD._id;
         const boletoId = req.params.id; // Obtén el ID del boleto a actualizar desde los parámetros de la ruta
-        const updateData = req.body; // Datos de actualización
+        let updateData = req.body; // Datos de actualización
 
         // Verifica si el ID del boleto es válido
         if (!boletoId) {
             return res.status(400).json({ msg: "ID de boleto no proporcionado" });
+        }
+
+        // Verifica si el cliente está tratando de actualizar el estado
+        if (updateData.estadoPax) {
+            return res.status(400).json({ msg: "No puedes actualizar el estado del boleto" });
         }
 
         // Busca el boleto en la base de datos
@@ -112,67 +91,9 @@ const actualizarBoletoPriv = async (req, res) => {
     }
 };
 
-/* 
-const eliminarBoletoPriv = async (req, res) => {
-    try {
-        const { id } = req.params; // ID de la reserva a eliminar
-
-        // Busca la reserva por ID y la elimina
-        const reservaEliminada = await BoletoPrivado.findByIdAndDelete(id);
-
-        if (!reservaEliminada) {
-            return res.status(404).json({ msg: "No se encontró la reserva con el ID proporcionado" });
-        }
-
-        res.status(200).json({ msg: "Reserva eliminada exitosamente" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Error al eliminar la reserva" });
-    }
-};
-*/
-
-const eliminarBoletoPriv = async (req, res) => {
-    try {
-        const clienteId = req.pasajeroBDD._id;
-        const boletoId = req.params.id; // Obtén el ID del boleto a eliminar desde los parámetros de la ruta
-
-        // Verifica si el ID del boleto es válido
-        if (!boletoId) {
-            return res.status(400).json({ msg: "ID de boleto no proporcionado" });
-        }
-
-        // Busca el boleto en la base de datos
-        const boleto = await BoletoPrivado.findOne({ _id: boletoId, pasajeroId: clienteId });
-
-        // Verifica si se encontró el boleto
-        if (!boleto) {
-            return res.status(404).json({ msg: "Boleto no encontrado" });
-        }
-
-        // Verifica si el boleto pertenece al cliente
-        if (!mongoose.Types.ObjectId.isValid(boleto.pasajeroId) || boleto.pasajeroId.toString() !== clienteId.toString()) {
-            return res.status(403).json({ msg: "El boleto no pertenece al cliente" });
-        }
-
-        // Verifica si el estadoPax es 'Pendiente'
-        if (boleto.estadoPax !== 'Pendiente') {
-            return res.status(400).json({ msg: "El estado del boleto no es 'Pendiente'" });
-        }
-
-        // Elimina el boleto
-        const boletoEliminado = await BoletoPrivado.findOneAndDelete({ _id: boletoId, pasajeroId: clienteId });
-
-        res.status(200).json({ msg: "Boleto eliminado con éxito", boleto: boletoEliminado });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Error al eliminar el boleto" });
-    }
-};
 
 
 export {
     reservaBoletoPriv,
     actualizarBoletoPriv,
-    eliminarBoletoPriv,
 }
