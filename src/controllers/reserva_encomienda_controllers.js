@@ -3,6 +3,7 @@ import Encomienda from '../models/encomiendaDb.js';
 const reservaEncomienda = async (req, res) => {
     try {
         const { remitente, destinatario, ciudadRemitente, ciudadDestinatario, numPaquetes, turno, estadoPaquete, precio } = req.body;
+        const { _id: pasajeroId } = req.pasajeroBDD;
 
         // Valida si algún campo está vacío
         for (let key in req.body) {
@@ -22,6 +23,8 @@ const reservaEncomienda = async (req, res) => {
 
         // Crea una nueva encomienda usando los datos obtenidos
         const nuevaEncomienda = new Encomienda({
+            pasajeroId,
+            user: req.body.user,
             remitente,
             destinatario,
             ciudadRemitente,
@@ -43,38 +46,43 @@ const reservaEncomienda = async (req, res) => {
 };
 
 
-const listarEncomiendas = async (req, res) => {
-    try {
-        // Busca todas las encomiendas en la base de datos
-        const encomiendas = await Encomienda.find({});
-
-        res.status(200).json({ encomiendas });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Error al obtener las encomiendas" });
-    }
-};
-
-
-
 const actualizarEncomienda = async (req, res) => {
     try {
-        const { id } = req.params; // ID de la encomienda a actualizar
-        let datosActualizados = req.body; // Datos a actualizar
+        const clienteId = req.pasajeroBDD._id;
+        const encomiendaId = req.params.id; // Obtén el ID de la encomienda a actualizar desde los parámetros de la ruta
+        let datosActualizados = req.body; // Datos de actualización
 
-        // Excluye los campos que no deseas actualizar
-        if (datosActualizados.hasOwnProperty('estadoPaquete')) {
-            delete datosActualizados.estadoPaquete;
+        // Verifica si el ID de la encomienda es válido
+        if (!encomiendaId) {
+            return res.status(400).json({ msg: "ID de encomienda no proporcionado" });
         }
 
-        // Busca la encomienda por ID y actualiza los datos
-        const encomiendaActualizada = await Encomienda.findByIdAndUpdate(id, datosActualizados, { new: true });
-
-        if (!encomiendaActualizada) {
-            return res.status(404).json({ msg: "No se encontró la encomienda con el ID proporcionado" });
+        // Verifica si el cliente está tratando de actualizar el estado
+        if (datosActualizados.estadoPaquete) {
+            return res.status(400).json({ msg: "No puedes actualizar el estado del paquete" });
         }
 
-        res.status(200).json({ encomienda: encomiendaActualizada });
+        // Busca la encomienda en la base de datos
+        const encomienda = await Encomienda.findOne({ _id: encomiendaId, pasajeroId: clienteId });
+
+        // Verifica si se encontró la encomienda
+        if (!encomienda) {
+            return res.status(404).json({ msg: "Encomienda no encontrada o no pertenece al cliente" });
+        }
+
+        // Verifica si el estadoPaquete es 'Pendiente'
+        if (encomienda.estadoPaquete !== 'Pendiente') {
+            return res.status(400).json({ msg: "El estado del paquete no es 'Pendiente'" });
+        }
+
+        // Actualiza la encomienda
+        const encomiendaActualizada = await Encomienda.findOneAndUpdate(
+            { _id: encomiendaId, pasajeroId: clienteId },
+            { $set: datosActualizados },
+            { new: true }
+        );
+
+        res.status(200).json({ msg: "Encomienda actualizada con éxito", encomienda: encomiendaActualizada });
     } catch (error) {
         console.error(error);
         res.status(500).json({ msg: "Error al actualizar la encomienda" });
@@ -83,30 +91,8 @@ const actualizarEncomienda = async (req, res) => {
 
 
 
-const eliminarEncomienda = async (req, res) => {
-    try {
-        const { id } = req.params; // ID de la encomienda a eliminar
-
-        // Busca la encomienda por ID y la elimina
-        const encomiendaEliminada = await Encomienda.findByIdAndRemove(id);
-
-        if (!encomiendaEliminada) {
-            return res.status(404).json({ msg: "No se encontró la encomienda con el ID proporcionado" });
-        }
-
-        res.status(200).json({ msg: "Encomienda eliminada exitosamente" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Error al eliminar la encomienda" });
-    }
-};
-
-
-
 
 export{
     reservaEncomienda,
-    listarEncomiendas,
     actualizarEncomienda,
-    eliminarEncomienda
 }

@@ -37,9 +37,7 @@ import {
 // ENCOMIENDA
 import {
     reservaEncomienda,
-    listarEncomiendas,
     actualizarEncomienda,
-    eliminarEncomienda
 } from '../controllers/reserva_encomienda_controllers.js';
 
 const router =  Router()
@@ -85,9 +83,8 @@ router.put("/actualizar-boleto-privado/:id", verificarAutenticacion, actualizarB
 
 // RESERVA ENCOMIENDA
 router.post("/reserva-encomienda", verificarAutenticacion, reservaEncomienda);
-router.get("/listar-encomiendas", verificarAutenticacion, listarEncomiendas);
 router.put("/encomienda-actualizar/:id", verificarAutenticacion, actualizarEncomienda);
-router.delete("/eliminar-encomienda/:id", verificarAutenticacion, eliminarEncomienda);
+
 
 
 // OBTENER LAS RUTAS Y HORARIOS
