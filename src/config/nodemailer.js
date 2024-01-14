@@ -76,9 +76,10 @@ const sendMailToRecoveryPassword = async(userMail,token)=>{
     <h1>Sistema de gestión PASAJERO - RECUPERAR (FAST-CAR 🏁 🚗🚘)</h1>
     <hr>
     <a href=${process.env.URL_BACKEND}recuperar-password/${token}>Clic para reestablecer tu contraseña</a>
+    <h2>Token 1: </h2>
     <${token}>
     <br>
-    <h2>Tu Token es: </h2>
+    <h2>Tu Token 2 es: </h2>
     <a>${token}</a>
     <hr>
     <footer>Fast-Car te da la Bienvenida!</footer>
