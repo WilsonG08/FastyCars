@@ -77,7 +77,7 @@ const sendMailToRecoveryPassword = async(userMail,token)=>{
     <hr>
     <a href=${process.env.URL_BACKEND}recuperar-password/${token}>Clic para reestablecer tu contraseña</a>
     <h2>Token 1: </h2>
-    <${token}>
+    <a>${token}</a>
     <br>
     <h2>Tu Token 2 es: </h2>
     <a>${token}</a>
