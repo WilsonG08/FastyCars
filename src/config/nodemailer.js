@@ -76,6 +76,9 @@ const sendMailToRecoveryPassword = async(userMail,token)=>{
     <h1>Sistema de gestión PASAJERO - RECUPERAR (FAST-CAR 🏁 🚗🚘)</h1>
     <hr>
     <a href=${process.env.URL_BACKEND}recuperar-password/${token}>Clic para reestablecer tu contraseña</a>
+    <br>
+    <h2>Tu Token es: </h2>
+    <a>${token}</a>
     <hr>
     <footer>Fast-Car te da la Bienvenida!</footer>
     `
@@ -94,6 +97,9 @@ const sendMailToRecoveryPasswordAdmin = async(userMail,token)=>{
     <h1>Sistema de gestión - ADMINNISTRADOR (FAST-CAR 🏁 🚗🚘)</h1>
     <hr>
     <a href=${process.env.URL_BACKEND}admin/recuperar-password/${token}>Clic para reestablecer tu contraseña</a>
+    <br>
+    <h2>Tu Token es: </h2>
+    <a>${token}</a>
     <hr>
     <footer>Fast-Car te da la Bienvenida!</footer>
     `
@@ -110,6 +116,9 @@ const sendMailToRecoveryPasswordChofer = async(userMail,token)=>{
     <h1>Sistema de gestión - CONDUCTOR (FAST-CAR 🏁 🚗🚘)</h1>
     <hr>
     <a href=${process.env.URL_BACKEND}conductor/recuperar-password/${token}>Clic para reestablecer tu contraseña</a>
+    <br>
+    <h2>Tu Token es: </h2>
+    <a>${token}</a>
     <hr>
     <footer>Fast-Car te da la Bienvenida!</footer>
     `

@@ -431,7 +431,7 @@ const actualizarEstadoCompartido = async (req, res) => {
 
                     // Si el estado es 'Completado', actualizar los asientos ocupados del conductor
                     if (nuevoEstado === 'Completado') {
-                        conductor.asientosOcupados += boleto.numPax;
+                        conductor.asientosOcupados -= boleto.numPax;
                         await conductor.save();
                     }
 
