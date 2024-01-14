@@ -140,10 +140,11 @@ const eliminarReservaCliente = async (req, res) => {
                     return res.status(403).json({ msg: "El boleto no pertenece al cliente" });
                 }
 
-                // Verifica si el estadoPax es 'Pendiente'
-                if (boleto.estadoPax !== 'Pendiente') {
+                // Verifica si el estadoPax no es 'Pendiente' o el estadoPaquete no es 'Pendiente'
+                if (boleto.estadoPax !== 'Pendiente' && boleto.estadoPaquete !== 'Pendiente') {
                     return res.status(400).json({ msg: "El estado del boleto no es 'Pendiente'" });
                 }
+
 
                 // Elimina el boleto
                 boletoEliminado = await boleto.deleteOne();

@@ -387,7 +387,7 @@ const registrarChofer = async (req, res) => {
 */
 
 
-const asignarConductor = async (req, res) => {
+/* const asignarConductor = async (req, res) => {
     try {
         const { idBoleto, idConductor } = req.body;
 
@@ -413,7 +413,7 @@ const asignarConductor = async (req, res) => {
                 // Sumar el número de pasajeros en todos los boletos
                 let pasajerosAsignados = 0;
                 for (let boleto of boletos) {
-                    pasajerosAsignados += boleto.numPax;
+                    pasajerosAsignados -= boleto.numPax;
                 }
 
                 // Verificar si hay suficientes asientos disponibles
@@ -450,7 +450,79 @@ const asignarConductor = async (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
+} 
+*/
+
+
+const asignarConductor = async (req, res) => {
+    try {
+        const { idBoleto, idConductor } = req.body;
+
+        // Validar si idBoleto es una cadena válida ObjectId
+        if (!mongoose.Types.ObjectId.isValid(idBoleto)) {
+            return res.status(400).json({ error: 'ID de boleto no válido' });
+        }
+
+        // Convertir la cadena a ObjectId
+        const boletoObjectId = new mongoose.Types.ObjectId(idBoleto);
+
+        // Obtener el boleto y el conductor
+        const boleto = await Boleto.findById(boletoObjectId);
+        const conductor = await Conductor.findById(idConductor);
+
+        // Verificar si el boleto y el conductor son válidos
+        if (boleto && conductor) {
+            // Verificar si el campo conductorAsignado del boleto está vacío
+            if (!boleto.conductorAsignado) {
+                // Obtener todos los boletos asignados al conductor
+                const boletos = await Boleto.find({ conductorAsignado: conductor._id });
+
+                // Sumar el número de pasajeros en todos los boletos
+                let pasajerosAsignados = 0;
+                for (let boleto of boletos) {
+                    pasajerosAsignados += boleto.numPax;
+                }
+
+                // Restar el número de pasajeros del boleto al número de asientos ocupados
+                conductor.asientosOcupados -= boleto.numPax;
+
+                // Verificar si hay suficientes asientos disponibles
+                if (conductor.numeroAsientos - pasajerosAsignados >= boleto.numPax) {
+                    // Actualizar el boleto con el conductor asignado y cambiar el estado del pasajero
+                    boleto.conductorAsignado = conductor._id;
+                    boleto.estadoPax = 'Aprobado';
+                    await boleto.save();
+
+                    // Actualizar el estado del conductor y el número de asientos ocupados
+                    conductor.estado = 'Ocupado';
+                    conductor.asientosOcupados += boleto.numPax;
+                    await conductor.save();
+
+                    // Enviar respuesta exitosa
+                    res.status(200).json({
+                        mensaje: 'Conductor asignado con éxito',
+                        nombreConductor: conductor.conductorNombre + ' ' + conductor.conductorApellido,
+                        asientosRequeridos: boleto.numPax
+                    });
+                } else {
+                    // Enviar respuesta de error si no hay suficientes asientos
+                    res.status(400).json({ error: 'No hay suficientes asientos disponibles' });
+                }
+            } else {
+                // Enviar respuesta de error si el campo conductorAsignado del boleto no está vacío
+                res.status(400).json({ error: 'El boleto ya tiene un conductor asignado' });
+            }
+        } else {
+            // Enviar respuesta de error si el boleto o el conductor no son válidos
+            res.status(400).json({ error: 'Error en la asignación de conductor' });
+        }
+    } catch (error) {
+        // Manejar errores
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
 }
+
 
 
 
@@ -495,6 +567,7 @@ const obtenerAsientosDisponibles = async (req, res) => {
 
 
 
+/* 
 const obtenerAsientosDisponibles = async (req, res) => {
     try {
         const { idConductor } = req.body;
@@ -528,7 +601,42 @@ const obtenerAsientosDisponibles = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 }
+*/
 
+
+const obtenerAsientosDisponibles = async (req, res) => {
+    try {
+        const { idConductor } = req.body;
+
+        // Obtener el conductor
+        const conductor = await Conductor.findById(idConductor);
+
+        // Verificar si el conductor es válido
+        if (conductor) {
+            // Obtener todos los boletos asignados al conductor
+            const boletos = await Boleto.find({ conductorAsignado: conductor._id });
+
+            // Sumar el número de pasajeros en todos los boletos
+            let asientosOcupados = 0;
+            for (let boleto of boletos) {
+                asientosOcupados += boleto.numPax;
+            }
+
+            // Calcular los asientos disponibles
+            const asientosDisponibles = conductor.numeroAsientos - asientosOcupados;
+
+            // Enviar respuesta con los asientos disponibles y el nombre del conductor
+            res.status(200).json({ mensaje: 'Asientos disponibles obtenidos con éxito', conductor: conductor.conductorNombre, asientosDisponibles: asientosDisponibles });
+        } else {
+            // Enviar respuesta de error si el conductor no es válido
+            res.status(400).json({ error: 'Error al obtener los asientos disponibles' });
+        }
+    } catch (error) {
+        // Manejar errores
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+}
 
 
 
