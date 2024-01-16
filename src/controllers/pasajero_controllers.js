@@ -68,9 +68,11 @@ const registro = async (req, res) => {
     
     if (!pasajeroNombre || !pasajeroApellido || !correo || !password || !phone) return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
 
-    const verificarcorreoBDD = await Pasajero.findOne({correo})
+    const verificarcorreoBDDAdmin = await Administrador.findOne({ correo });
+    const verificarcorreoBDDPasajero = await Pasajero.findOne({ correo });
+    const verificarcorreoBDDConductor = await Conductor.findOne({ correo });
 
-    if(verificarcorreoBDD) return res.status(400).json({msg: "Lo sentimos, el correo ya se encuentra registrado"})
+    if (verificarcorreoBDDAdmin || verificarcorreoBDDPasajero || verificarcorreoBDDConductor) return res.status(400).json({ msg: "Lo sentimos, el correo ya se encuentra registrado" });
 
     const nuevoPasajero = new Pasajero(req.body)
 
@@ -82,7 +84,9 @@ const registro = async (req, res) => {
 
     await nuevoPasajero.save()
 
-    res.status(200).json({msg: "Revisa tu correo electrónico para confirmar tu cuenta"});
+    res.status(200).json({
+        msg: "Por favor, revisa tu correo electrónico. Hemos enviado un token para que confirmes tu cuenta. ¡Gracias! 😊"
+    });
 }
 
 

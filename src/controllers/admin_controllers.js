@@ -1,8 +1,8 @@
 import Administrador from "../models/adminDB.js";
+import Pasajero from '../models/pasajeroDB.js'
 import Conductor from "../models/conductorDB.js";
 import generarJWT from "../helpers/crearJWT.js";
 import mongoose from "mongoose";
-import Pasajero from '../models/pasajeroDB.js'
 import Boleto from '../models/reservaDB.js'
 
 import {
@@ -18,9 +18,11 @@ const registro = async (req, res) => {
 
     if (!adminNombre || !adminApellido || !correo || !password || !phone) return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
 
-    const verificarcorreoBDD = await Administrador.findOne({ correo });
+    const verificarcorreoBDDAdmin = await Administrador.findOne({ correo });
+    const verificarcorreoBDDPasajero = await Pasajero.findOne({ correo });
+    const verificarcorreoBDDConductor = await Conductor.findOne({ correo });
 
-    if (verificarcorreoBDD) return res.status(400).json({ msg: "Lo sentimos, el correo ya se encuentra registrado" });
+    if (verificarcorreoBDDAdmin || verificarcorreoBDDPasajero || verificarcorreoBDDConductor) return res.status(400).json({ msg: "Lo sentimos, el correo ya se encuentra registrado" });
 
     const nuevoAdmin = new Administrador(req.body);
 
@@ -33,9 +35,10 @@ const registro = async (req, res) => {
     await nuevoAdmin.save();
 
     res.status(200).json({
-        msg: "Revisa tu correo electronico para confirmar tu cuenta de Administrador",
+        msg: "Por favor, revisa tu correo electrónico. Hemos enviado un token para que confirmes tu cuenta de Administrador ¡Gracias! 😊"
     });
 };
+
 
 const confirmEmail = async (req, res) => {
     if (!req.params.token) return res.status(400).json({ msg: "Lo sentimos, no se puede validar la cuenta" });
@@ -294,13 +297,11 @@ const registrarChofer = async (req, res) => {
         });
     }
 
-    const verificarcorreoBDDChofer = await Conductor.findOne({ correo });
+    const verificarcorreoBDDAdmin = await Administrador.findOne({ correo });
+    const verificarcorreoBDDPasajero = await Pasajero.findOne({ correo });
+    const verificarcorreoBDDConductor = await Conductor.findOne({ correo });
 
-    if (verificarcorreoBDDChofer) {
-        return res.status(400).json({
-            msg: 'Lo sentimos, el correo electrónico ya se encuentra registrado para otro chofer',
-        });
-    }
+    if (verificarcorreoBDDAdmin || verificarcorreoBDDPasajero || verificarcorreoBDDConductor) return res.status(400).json({ msg: "Lo sentimos, el correo ya se encuentra registrado" });
 
     const nuevoChofer = new Conductor(req.body);
 
