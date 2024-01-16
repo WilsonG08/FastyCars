@@ -40,6 +40,8 @@ import {
     actualizarEncomienda,
 } from '../controllers/reserva_encomienda_controllers.js';
 
+import validacionBoleto from '../middlewares/validacionRP.js'
+
 const router =  Router()
 
 // REGISTRO
@@ -71,7 +73,9 @@ router.put("/pasajero/actualizarPerfil/:id", verificarAutenticacion, actualizarP
 
 
 // RESERVAR BOLETO
-router.post("/reserva-boleto", verificarAutenticacion, realizarReserva);
+// router.post("/reserva-boleto", datosValidacion, verificarAutenticacion, realizarReserva);
+router.post("/reserva-boleto", validacionBoleto, verificarAutenticacion, realizarReserva);
+
 router.get("/listar-reserva/:id", verificarAutenticacion, listarReservasCliente);
 router.put("/actualizar-boleto/:id", verificarAutenticacion, actualizarBoletoCliente);
 router.delete("/eliminar-boleto/:id", verificarAutenticacion, eliminarReservaCliente);
