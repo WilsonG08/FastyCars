@@ -13,37 +13,39 @@ const transport = nodemailer.createTransport({
 })
 
 // send mail with defined transport object
-const sendMailToUser = async(userMail,token)=>{
+const sendMailToUser = async (userMail, token) => {
     let info = await transport.sendMail({
-    from: 'admin@vet.com',
-    to: userMail,
-    subject: "Confirma la autenticidad de tu dirección de correo electrónico.",
-    html: `
-    <h1>Sistema de gestión (FAST-CAR 🏁 🚗🚘)</h1>
-    <hr>
-    <a href=${process.env.URL_BACKEND}confirmar/${token}>Clic para confirmar tu cuenta</a>
-    <br>
-    <h2>Tu Token es: </h2>
-    <a>${token}</a>
-    <hr>
-    <footer>Fast-Car te da la Bienvenida!</footer>
-    `
+        from: 'fastycars.a@gmail.com',
+        to: userMail,
+        subject: "Confirma la autenticidad de tu dirección de correo electrónico.",
+        html: `
+            <h1>Sistema de gestión (FASTYCARS 🏁 🚗🚘)</h1>
+            <hr>
+            <br>
+            <h2>Tu Token es: </h2>
+            <h3>${token}</h3>
+            <hr>
+            <footer>FastyCars te da la Bienvenida!</footer>
+        `
     });
     console.log("Mensaje enviado satisfactoriamente: ", info.messageId);
 }
 
+
 const sendMailToUserChofer = async(userMail,token)=>{
     let info = await transport.sendMail({
-    from: 'admin@vet.com',
-    to: userMail,
-    subject: "Confirma la autenticidad de tu dirección de correo electrónico.",
-    html: `
-    <h1>Sistema de gestión - CHOFER (FAST-CAR 🏁 🚗🚘)</h1>
-    <hr>
-    <a href=${process.env.URL_BACKEND}chofer/confirmar/${token}>Clic para confirmar tu cuenta</a>
-    <hr>
-    <footer>Fast-Car te da la Bienvenida!</footer>
-    `
+        from: 'fastycars.a@gmail.com',
+        to: userMail,
+        subject: "Confirma la autenticidad de tu dirección de correo electrónico.",
+        html: `
+            <h1>Sistema de gestión Conductor (FASTYCARS 🏁 🚗🚘)</h1>
+            <hr>
+            <br>
+            <h2>Tu Token es: </h2>
+            <h3>${token}</h3>
+            <hr>
+            <footer>FastyCars te da la Bienvenida!</footer>
+        `
     });
     console.log("Mensaje enviado satisfactoriamente: ", info.messageId);
 }
