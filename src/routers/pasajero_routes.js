@@ -40,15 +40,20 @@ import {
     actualizarEncomienda,
 } from '../controllers/reserva_encomienda_controllers.js';
 
-import {validacionBoleto, validacionBoletoAc} from '../middlewares/validacionRP.js'
+import {
+    validacionBoleto,
+    validacionBoletoAc,
+    validacionPasajero,
+    validacionInicioSesion
+} from '../middlewares/validacionRP.js'
 
 const router =  Router()
 
 // REGISTRO
-router.post("/register", registro);
+router.post("/register",validacionPasajero, registro);
 
 // LOGIN DE LOS 3 PERFILES
-router.post("/login", login);
+router.post("/login", validacionInicioSesion, login);
 
 // CONFIRMAR CORREO
 router.get("/confirmar/:token", confirmEmail);

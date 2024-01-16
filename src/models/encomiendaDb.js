@@ -20,94 +20,116 @@ const registerEncomienda = new Schema(
             nombre: {
                 type: String,
                 required: true,
+                trim: true,
             },
             apellido: {
                 type: String,
                 required: true,
+                trim: true,
             },
             phone: {
                 type: String,
                 required: true,
+                trim: true,
             },
         },
         destinatario: {
             nombre: {
                 type: String,
                 required: true,
+                trim: true,
             },
             apellido: {
                 type: String,
                 required: true,
+                trim: true,
             },
             phone: {
                 type: String,
                 required: true,
+                trim: true,
             },
         },
         ciudadRemitente: {
             ciudad: {
                 type: String,
                 required: true,
+                trim: true,
             },
             latitud:{
                 type: String,
                 required: true,
+                trim: true,
             },
             longitud: {
                 type: String,
                 required: true,
+                trim: true,
             },
             referencia: {
                 type: String,
                 required: false,
+                trim: true,
             },
             direccion: {
                 type: String,
                 required: true,
+                trim: true,
             },
         },
         ciudadDestinatario: {
             ciudad: {
                 type: String,
                 required: true,
+                trim: true,
             },
             latitud:{
                 type: String,
                 required: true,
+                trim: true,
             },
             longitud: {
                 type: String,
                 required: true,
+                trim: true,
             },
             referencia: {
                 type: String,
                 required: false,
+                trim: true,
             },
             direccion: {
                 type: String,
                 required: true,
+                trim: true,
             },
         }, numPaquetes: {
             type: Number,
             required: true,
+            trim: true,
         },
         turno: {
             horario: {
                 type: String,
                 required: true,
+                trim: true,
             },
             fecha: {
                 type: String,
                 required: true,
+                trim: true,
             },
         },
         precio:{
             type: String,
             required: false,
+            trim: true,
         },
         distancia:{
             type: Number,
             required: false,
+            trim: true,
+            trim: true,
         },
         estadoPaquete: {
             type: String,

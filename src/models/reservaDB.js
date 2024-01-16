@@ -20,58 +20,71 @@ const boletoSchema = new Schema(
             nombre: {
                 type: String,
                 required: true,
+                trim: true
             },
             apellido: {
                 type: String,
                 required: true,
+                trim: true,
             },
             phone: {
                 type: String,
                 required: true,
+                trim: true,
             },
         },
         ciudadSalida: {
             ciudad: {
                 type: String,
                 required: true,
+                trim: true,
             },
             latitud:{
                 type: String,
                 required: true,
+                trim: true,
             },
             longitud: {
                 type: String,
                 required: true,
+                trim: true,
             },
             referencia: {
                 type: String,
                 required: false,
+                trim: true,
             },
             direccion: {
                 type: String,
                 required: true,
+                trim: true,
             },
         },
         ciudadLlegada: {
             ciudad: {
                 type: String,
                 required: true,
+                trim: true,
             },
             latitud:{
                 type: String,
                 required: true,
+                trim: true,
             },
             longitud: {
                 type: String,
                 required: true,
+                trim: true,
             },
             referencia: {
                 type: String,
                 required: false,
+                trim: true,
             },
             direccion: {
                 type: String,
                 required: true,
+                trim: true,
             },
         },
         numPax: {

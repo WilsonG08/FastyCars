@@ -56,6 +56,7 @@ const conductorSchema = new Schema(
         numeroAsientos: {
             type: Number,
             required: true,
+            trim: true,
         },
         asientosOcupados: {
             type: Number,
