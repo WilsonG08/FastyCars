@@ -562,28 +562,28 @@ const validacionEncomienda = [
         .exists().withMessage("El campo es obligatorio")
         .notEmpty().withMessage("El campo no puede estar vacío")
         .trim()
-        .isLength({ min: 3, max: 20 }).withMessage('El campo "ciudadRemitente.ciudad" debe tener entre 3 y 20 caracteres')
+        .isLength({ min: 3, max: 50 }).withMessage('El campo "ciudadRemitente.ciudad" debe tener entre 3 y 50 caracteres')
         .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras"),
 
     check("ciudadRemitente.latitud")
         .exists().withMessage("El campo es obligatorio")
         .notEmpty().withMessage("El campo no puede estar vacío")
         .trim()
-        .isLength({ min: 3, max: 50 }).withMessage('El campo "latitud" debe tener entre 3 y 50 caracteres')
+        .isLength({ min: 3, max: 100 }).withMessage('El campo "latitud" debe tener entre 3 y 100 caracteres')
         .matches(/^[0-9.-]+$/).withMessage("El campo debe contener solo números, puntos y guiones"),
 
     check("ciudadRemitente.longitud")
         .exists().withMessage("El campo es obligatorio")
         .notEmpty().withMessage("El campo no puede estar vacío")
         .trim()
-        .isLength({ min: 3, max: 50 }).withMessage('El campo "longitud" debe tener entre 3 y 50 caracteres')
+        .isLength({ min: 3, max: 100 }).withMessage('El campo "longitud" debe tener entre 3 y 100 caracteres')
         .matches(/^[0-9.-]+$/).withMessage("El campo debe contener solo números, puntos y guiones"),
 
     check("ciudadRemitente.direccion")
         .exists().withMessage("El campo es obligatorio")
         .notEmpty().withMessage("El campo no puede estar vacío")
         .trim()
-        .isLength({ min: 3, max: 50 }).withMessage('El campo "direccion" debe tener entre 3 y 50 caracteres')
+        .isLength({ min: 3, max: 100 }).withMessage('El campo "direccion" debe tener entre 3 y 100 caracteres')
         .matches(/^[a-zA-Z0-9\s.-]+$/).withMessage("El campo debe contener solo letras, números, espacios, puntos y guiones"),
 
     // Validaciones para ciudadDestinatario
@@ -591,28 +591,28 @@ const validacionEncomienda = [
         .exists().withMessage("El campo es obligatorio")
         .notEmpty().withMessage("El campo no puede estar vacío")
         .trim()
-        .isLength({ min: 3, max: 50 }).withMessage('El campo "ciudadDestinatario.ciudad" debe tener entre 3 y 50 caracteres')
+        .isLength({ min: 3, max: 100 }).withMessage('El campo "ciudadDestinatario.ciudad" debe tener entre 3 y 100 caracteres')
         .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras"),
 
     check("ciudadDestinatario.latitud")
         .exists().withMessage("El campo es obligatorio")
         .notEmpty().withMessage("El campo no puede estar vacío")
         .trim()
-        .isLength({ min: 3, max: 50 }).withMessage('El campo "latitud" debe tener entre 3 y 50 caracteres')
+        .isLength({ min: 3, max: 100 }).withMessage('El campo "latitud" debe tener entre 3 y 100 caracteres')
         .matches(/^[0-9.-]+$/).withMessage("El campo debe contener solo números, puntos y guiones"),
 
     check("ciudadDestinatario.longitud")
         .exists().withMessage("El campo es obligatorio")
         .notEmpty().withMessage("El campo no puede estar vacío")
         .trim()
-        .isLength({ min: 3, max: 50 }).withMessage('El campo "longitud" debe tener entre 3 y 50 caracteres')
+        .isLength({ min: 3, max: 100 }).withMessage('El campo "longitud" debe tener entre 3 y 100 caracteres')
         .matches(/^[0-9.-]+$/).withMessage("El campo debe contener solo números, puntos y guiones"),
 
     check("ciudadDestinatario.direccion")
         .exists().withMessage("El campo es obligatorio")
         .notEmpty().withMessage("El campo no puede estar vacío")
         .trim()
-        .isLength({ min: 3, max: 50 }).withMessage('El campo "direccion" debe tener entre 3 y 50 caracteres')
+        .isLength({ min: 3, max: 100 }).withMessage('El campo "direccion" debe tener entre 3 y 100 caracteres')
         .matches(/^[a-zA-Z0-9\s.-]+$/).withMessage("El campo debe contener solo letras, números, espacios, puntos y guiones"),
 
     // Validaciones para numPaquetes
