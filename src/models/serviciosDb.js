@@ -6,11 +6,13 @@ const servicioSchema = new Schema(
             type: String,
             unique: true,
             required: true,
+            trim: true,
         },
         detalleServicio:{
             type: String,
             unique: true,
             required: true,
+            trim: true,
         },
         valorEstimado:{
             type: Number,

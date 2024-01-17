@@ -191,6 +191,7 @@ const validacionBoletoAc = [
     },
 ];
 
+
 const validacionPasajero = [
     check("pasajeroNombre")
         .exists()
@@ -260,6 +261,7 @@ const validacionPasajero = [
     },
 ];
 
+
 const validacionInicioSesion = [
     check("correo")
         .exists()
@@ -292,6 +294,7 @@ const validacionInicioSesion = [
         }
     },
 ];
+
 
 const validacionConductor = [
     check("conductorNombre")
@@ -425,10 +428,95 @@ const validacionConductor = [
     },
 ];
 
+
+const validacionRutaHorario = [
+    check("nombreServicio")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .customSanitizer((value) => value?.trim())
+        .isLength({ min: 3, max: 50 })
+        .withMessage('El campo "nombreServicio" debe tener entre 3 y 50 caracteres')
+        .isString()
+        .withMessage("El campo debe ser una cadena de texto"),
+
+    check("detalleServicio")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .customSanitizer((value) => value?.trim())
+        .isLength({ min: 3, max: 200 })
+        .withMessage('El campo "detalleServicio" debe tener entre 3 y 200 caracteres')
+        .isString()
+        .withMessage("El campo debe ser una cadena de texto"),
+
+    check("valorEstimado")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .isNumeric()
+        .withMessage("El campo debe ser un número")
+        .isFloat({ min: 0 })
+        .withMessage("El campo debe ser un número mayor o igual a 0"),
+
+        (req, res, next) => {
+            const errors = validationResult(req);
+            if (errors.isEmpty()) {
+                return next();
+            } else {
+                return res.status(400).send({ errors: errors.array() });
+            }
+        },
+];
+
+
+const validacionServicio = [
+    check("nombreServicio")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 50 }).withMessage('El campo "nombreServicio" debe tener entre 3 y 50 caracteres')
+        .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras")
+        .not().matches(/\d/).withMessage('El campo no debe contener números'),
+
+    check("detalleServicio")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 200 }).withMessage('El campo "detalleServicio" debe tener entre 3 y 200 caracteres')
+        .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras")
+        .not().matches(/\d/).withMessage('El campo no debe contener números'),
+
+    check("valorEstimado")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .isNumeric().withMessage("El campo debe ser un número")
+        .isFloat({ min: 0 }).withMessage("El campo debe ser un número mayor o igual a 0"),
+
+        (req, res, next) => {
+            const errors = validationResult(req);
+            if (errors.isEmpty()) {
+                return next();
+            } else {
+                return res.status(400).send({ errors: errors.array() });
+            }
+        },
+];
+
+
+
+
+
+
 export {
     validacionBoleto,
     validacionBoletoAc,
     validacionPasajero,
     validacionInicioSesion,
-    validacionConductor
+    validacionConductor,
+    validacionRutaHorario,
+    validacionServicio
 };

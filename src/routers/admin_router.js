@@ -29,7 +29,11 @@ import {registrarServicio} from '../controllers/servicio_controllers.js'
 import verificarAutenticacion from '../middlewares/autenticacion.js'
 
 // Para las validaciones de datos
-import {validacionConductor}  from "../middlewares/validacionRP.js";
+import {
+    validacionConductor,
+    validacionRutaHorario,
+    validacionServicio
+}  from "../middlewares/validacionRP.js";
 
 
 const router =  Router()
@@ -61,13 +65,12 @@ router.put("/admin/actualizar/:id", verificarAutenticacion, actualizarPerfil);
 router.get("/admin/lista-pasajeros", listarpasajeros);
 
 // REGISTRO DE SERVICIOS
-router.post("/admin/registro-servicio", verificarAutenticacion, registrarServicio);
-
+router.post("/admin/registro-servicio", validacionServicio, verificarAutenticacion, registrarServicio);
 
 // ENDPOINTS DE RUTAS y HORARIOS
-router.post("/admin/registro-ruta", verificarAutenticacion, registrarRutaHorario);
+router.post("/admin/registro-ruta", validacionRutaHorario, verificarAutenticacion, registrarRutaHorario);
 router.get("/admin/rutas",verificarAutenticacion, obtenerRutasHorarios);
-router.put("/admin/actualizarRuta/:id", verificarAutenticacion, actualizarRutaHorario);
+router.put("/admin/actualizarRuta/:id", validacionRutaHorario, verificarAutenticacion, actualizarRutaHorario);
 router.delete("/admin/eliminarRuta/:id", verificarAutenticacion, eliminarRutaHorario);
 
 // VER VIAJES PENDIENTES
