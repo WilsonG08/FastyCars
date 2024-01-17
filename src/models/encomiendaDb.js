@@ -129,7 +129,6 @@ const registerEncomienda = new Schema(
             type: Number,
             required: false,
             trim: true,
-            trim: true,
         },
         estadoPaquete: {
             type: String,

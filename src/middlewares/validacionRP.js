@@ -103,6 +103,8 @@ const validacionBoleto = [
     },
 ];
 
+
+
 const validacionBoletoAc = [
     check("user.nombre")
         .exists()
@@ -192,6 +194,7 @@ const validacionBoletoAc = [
 ];
 
 
+
 const validacionPasajero = [
     check("pasajeroNombre")
         .exists()
@@ -262,6 +265,8 @@ const validacionPasajero = [
 ];
 
 
+
+
 const validacionInicioSesion = [
     check("correo")
         .exists()
@@ -294,6 +299,8 @@ const validacionInicioSesion = [
         }
     },
 ];
+
+
 
 
 const validacionConductor = [
@@ -391,7 +398,7 @@ const validacionConductor = [
         .withMessage("El campo debe ser un número entero positivo de hasta 4 dígitos"),
 
 
-        check("colorVehiculo")
+    check("colorVehiculo")
         .exists()
         .withMessage("El campo es obligatorio")
         .notEmpty()
@@ -427,7 +434,6 @@ const validacionConductor = [
         }
     },
 ];
-
 
 
 
@@ -472,6 +478,7 @@ const validacionRutaHorario = [
 
 
 
+
 const validacionServicio = [
     check("nombreServicio")
         .exists().withMessage("El campo es obligatorio")
@@ -495,19 +502,165 @@ const validacionServicio = [
         .isNumeric().withMessage("El campo debe ser un número")
         .isFloat({ min: 0 }).withMessage("El campo debe ser un número mayor o igual a 0"),
 
-        (req, res, next) => {
-            const errors = validationResult(req);
-            if (errors.isEmpty()) {
-                return next();
-            } else {
-                return res.status(400).send({ errors: errors.array() });
-            }
-        },
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            return next();
+        } else {
+            return res.status(400).send({ errors: errors.array() });
+        }
+    },
 ];
 
 
 
+const validacionEncomienda = [
+    // Validaciones para remitente
+    check("remitente.nombre")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 20 }).withMessage('El campo "remitente.nombre" debe tener entre 3 y 20 caracteres')
+        .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras"),
 
+    check("remitente.apellido")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 20 }).withMessage('El campo "remitente.apellido" debe tener entre 3 y 20 caracteres')
+        .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras"),
+
+    check("remitente.phone")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isMobilePhone().withMessage("El campo debe ser un número de teléfono válido"),
+
+
+    check("destinatario.nombre")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 20 }).withMessage('El campo "destinatario.nombre" debe tener entre 3 y 20 caracteres')
+        .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras"),
+
+    check("destinatario.apellido")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 20 }).withMessage('El campo "destinatario.apellido" debe tener entre 3 y 20 caracteres')
+        .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras"),
+
+    check("destinatario.phone")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isMobilePhone().withMessage("El campo debe ser un número de teléfono válido"),
+
+    // Validaciones para ciudadRemitente
+    check("ciudadRemitente.ciudad")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 20 }).withMessage('El campo "ciudadRemitente.ciudad" debe tener entre 3 y 20 caracteres')
+        .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras"),
+
+    check("ciudadRemitente.latitud")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 50 }).withMessage('El campo "latitud" debe tener entre 3 y 50 caracteres')
+        .matches(/^[0-9.-]+$/).withMessage("El campo debe contener solo números, puntos y guiones"),
+
+    check("ciudadRemitente.longitud")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 50 }).withMessage('El campo "longitud" debe tener entre 3 y 50 caracteres')
+        .matches(/^[0-9.-]+$/).withMessage("El campo debe contener solo números, puntos y guiones"),
+
+    check("ciudadRemitente.direccion")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 50 }).withMessage('El campo "direccion" debe tener entre 3 y 50 caracteres')
+        .matches(/^[a-zA-Z0-9\s.-]+$/).withMessage("El campo debe contener solo letras, números, espacios, puntos y guiones"),
+
+    // Validaciones para ciudadDestinatario
+    check("ciudadDestinatario.ciudad")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 50 }).withMessage('El campo "ciudadDestinatario.ciudad" debe tener entre 3 y 50 caracteres')
+        .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras"),
+
+    check("ciudadDestinatario.latitud")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 50 }).withMessage('El campo "latitud" debe tener entre 3 y 50 caracteres')
+        .matches(/^[0-9.-]+$/).withMessage("El campo debe contener solo números, puntos y guiones"),
+
+    check("ciudadDestinatario.longitud")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 50 }).withMessage('El campo "longitud" debe tener entre 3 y 50 caracteres')
+        .matches(/^[0-9.-]+$/).withMessage("El campo debe contener solo números, puntos y guiones"),
+
+    check("ciudadDestinatario.direccion")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 50 }).withMessage('El campo "direccion" debe tener entre 3 y 50 caracteres')
+        .matches(/^[a-zA-Z0-9\s.-]+$/).withMessage("El campo debe contener solo letras, números, espacios, puntos y guiones"),
+
+    // Validaciones para numPaquetes
+    check("numPaquetes")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .isNumeric().withMessage("El campo debe ser un número"),
+
+    // Validaciones para turno
+    check("turno.horario")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim(),
+
+    check("turno.fecha")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isDate().withMessage("El campo debe ser una fecha válida"),
+
+    // Validaciones para precio
+    check("precio")
+        .optional()
+        .trim()
+        .isNumeric().withMessage("El campo debe ser un número"),
+
+    // Validaciones para distancia
+    check("distancia")
+        .optional()
+        .trim()
+        .isNumeric().withMessage("El campo debe ser un número"),
+
+    // Validaciones para estadoPaquete
+    check("estadoPaquete")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .isIn(['Pendiente', 'Aprobado', 'En tránsito', 'Completado']).withMessage('El campo debe ser uno de los siguientes: "Pendiente", "Aprobado", "En tránsito", "Completado"'),
+
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            return next();
+        } else {
+            return res.status(400).send({ errors: errors.array() });
+        }
+    },
+];
 
 
 export {
@@ -517,5 +670,6 @@ export {
     validacionInicioSesion,
     validacionConductor,
     validacionRutaHorario,
-    validacionServicio
+    validacionServicio,
+    validacionEncomienda
 };
