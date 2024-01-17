@@ -249,7 +249,7 @@ const nuevoPassword = async (req, res) => {
 }
 
 
-
+/* 
 const registrarChofer = async (req, res) => {
     // Verify if the authenticated user is an administrator
     if (req.rol !== 'administrador') return res.status(403).json({ msg: 'Acceso no autorizado' });
@@ -323,210 +323,89 @@ const registrarChofer = async (req, res) => {
         msg: 'Revisa tu correo electrónico para confirmar tu cuenta de chofer',
     });
 };
-
-
-/*const asignarConductor = async (req, res) => {
-    try {
-        const { idBoleto, idConductor } = req.body;
-
-        // Validar si idBoleto es una cadena válida ObjectId
-        if (!mongoose.Types.ObjectId.isValid(idBoleto)) {
-            return res.status(400).json({ error: 'ID de boleto no válido' });
-        }
-
-        // Convertir la cadena a ObjectId
-        const boletoObjectId = new mongoose.Types.ObjectId(idBoleto);
-
-        // Obtener el boleto y el conductor
-        const boleto = await Boleto.findById(boletoObjectId);
-        const conductor = await Conductor.findById(idConductor);
-
-        // Verificar si el boleto y el conductor son válidos
-        if (boleto && conductor) {
-            // Verificar si el campo conductorAsignado del boleto está vacío
-            if (!boleto.conductorAsignado) {
-                // Obtener todos los boletos asignados al conductor
-                const boletos = await Boleto.find({ conductorAsignado: conductor._id });
-
-                // Sumar el número de pasajeros en todos los boletos
-                let pasajerosAsignados = 0;
-                for (let boleto of boletos) {
-                    pasajerosAsignados += boleto.numPax;
-                }
-
-                // Verificar si hay suficientes asientos disponibles
-                if (conductor.numeroAsientos - pasajerosAsignados >= boleto.numPax) {
-                    // Actualizar el boleto con el conductor asignado y cambiar el estado del pasajero
-                    boleto.conductorAsignado = conductor._id;
-                    boleto.estadoPax = 'Aprobado';
-                    await boleto.save();
-
-                    // Actualizar el estado del conductor
-                    conductor.estado = 'Ocupado';
-                    await conductor.save();
-
-                    // Enviar respuesta exitosa
-                    res.status(200).json({ mensaje: 'Conductor asignado con éxito' });
-                } else {
-                    // Enviar respuesta de error si no hay suficientes asientos
-                    res.status(400).json({ error: 'No hay suficientes asientos disponibles' });
-                }
-            } else {
-                // Enviar respuesta de error si el campo conductorAsignado del boleto no está vacío
-                res.status(400).json({ error: 'El boleto ya tiene un conductor asignado' });
-            }
-        } else {
-            // Enviar respuesta de error si el boleto o el conductor no son válidos
-            res.status(400).json({ error: 'Error en la asignación de conductor' });
-        }
-    } catch (error) {
-        // Manejar errores
-        console.error(error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-    }
-}
 */
 
+const registrarChofer = async (req, res) => {
+    // Verify if the authenticated user is an administrator
+    if (req.rol !== 'administrador') return res.status(403).json({ msg: 'Acceso no autorizado' });
 
-/* const asignarConductor = async (req, res) => {
-    try {
-        const { idBoleto, idConductor } = req.body;
+    const {
+        conductorNombre, conductorApellido, cedula, correo, password, phone, numeroAsientos,
+        placaVehiculo, marcaVehiculo, modeloVehiculo, anioVehiculo, colorVehiculo,
+    } = req.body;
 
-        // Validar si idBoleto es una cadena válida ObjectId
-        if (!mongoose.Types.ObjectId.isValid(idBoleto)) {
-            return res.status(400).json({ error: 'ID de boleto no válido' });
-        }
-
-        // Convertir la cadena a ObjectId
-        const boletoObjectId = new mongoose.Types.ObjectId(idBoleto);
-
-        // Obtener el boleto y el conductor
-        const boleto = await Boleto.findById(boletoObjectId);
-        const conductor = await Conductor.findById(idConductor);
-
-        // Verificar si el boleto y el conductor son válidos
-        if (boleto && conductor) {
-            // Verificar si el campo conductorAsignado del boleto está vacío
-            if (!boleto.conductorAsignado) {
-                // Obtener todos los boletos asignados al conductor
-                const boletos = await Boleto.find({ conductorAsignado: conductor._id });
-
-                // Sumar el número de pasajeros en todos los boletos
-                let pasajerosAsignados = 0;
-                for (let boleto of boletos) {
-                    pasajerosAsignados -= boleto.numPax;
-                }
-
-                // Verificar si hay suficientes asientos disponibles
-                if (conductor.numeroAsientos - pasajerosAsignados >= boleto.numPax) {
-                    // Actualizar el boleto con el conductor asignado y cambiar el estado del pasajero
-                    boleto.conductorAsignado = conductor._id;
-                    boleto.estadoPax = 'Aprobado';
-                    await boleto.save();
-
-                    // Actualizar el estado del conductor
-                    conductor.estado = 'Ocupado';
-                    await conductor.save();
-
-                    // Enviar respuesta exitosa
-                    res.status(200).json({
-                        mensaje: 'Conductor asignado con éxito',
-                        nombreConductor: conductor.conductorNombre + ' ' + conductor.conductorApellido,
-                        asientosRequeridos: boleto.numPax
-                    });
-                } else {
-                    // Enviar respuesta de error si no hay suficientes asientos
-                    res.status(400).json({ error: 'No hay suficientes asientos disponibles' });
-                }
-            } else {
-                // Enviar respuesta de error si el campo conductorAsignado del boleto no está vacío
-                res.status(400).json({ error: 'El boleto ya tiene un conductor asignado' });
-            }
-        } else {
-            // Enviar respuesta de error si el boleto o el conductor no son válidos
-            res.status(400).json({ error: 'Error en la asignación de conductor' });
-        }
-    } catch (error) {
-        // Manejar errores
-        console.error(error);
-        res.status(500).json({ error: 'Error interno del servidor' });
+    if (
+        !conductorNombre ||
+        !conductorApellido ||
+        !correo ||
+        !password ||
+        !phone ||
+        !cedula ||
+        isNaN(numeroAsientos) ||
+        !Number.isInteger(numeroAsientos) ||  
+        numeroAsientos < 1 ||
+        numeroAsientos > 4 ||
+        numeroAsientos < 0
+    ) {
+        return res.status(400).json({
+            msg: 'Debes llenar todos los campos: nombre, apellido, correo electrónico, contraseña, número de teléfono y número de asientos (debe ser un número entero entre 1 y 4)',
+        });
     }
-} 
-*/
 
-
-/* 
-const asignarConductor = async (req, res) => {
-    try {
-        const { idBoleto, idConductor } = req.body;
-
-        // Validar si idBoleto es una cadena válida ObjectId
-        if (!mongoose.Types.ObjectId.isValid(idBoleto)) {
-            return res.status(400).json({ error: 'ID de boleto no válido' });
-        }
-
-        // Convertir la cadena a ObjectId
-        const boletoObjectId = new mongoose.Types.ObjectId(idBoleto);
-
-        // Obtener el boleto y el conductor
-        const boleto = await Boleto.findById(boletoObjectId);
-        const conductor = await Conductor.findById(idConductor);
-
-        // Verificar si el boleto y el conductor son válidos
-        if (boleto && conductor) {
-            // Verificar si el campo conductorAsignado del boleto está vacío
-            if (!boleto.conductorAsignado) {
-                // Obtener todos los boletos asignados al conductor
-                const boletos = await Boleto.find({ conductorAsignado: conductor._id });
-
-                // Sumar el número de pasajeros en todos los boletos
-                let pasajerosAsignados = 0;
-                for (let boleto of boletos) {
-                    pasajerosAsignados += boleto.numPax;
-                }
-
-                // Restar el número de pasajeros del boleto al número de asientos ocupados
-                conductor.asientosOcupados -= boleto.numPax;
-
-                // Verificar si hay suficientes asientos disponibles
-                if (conductor.numeroAsientos - pasajerosAsignados >= boleto.numPax) {
-                    // Actualizar el boleto con el conductor asignado y cambiar el estado del pasajero
-                    boleto.conductorAsignado = conductor._id;
-                    boleto.estadoPax = 'Aprobado';
-                    await boleto.save();
-
-                    // Actualizar el estado del conductor y el número de asientos ocupados
-                    conductor.estado = 'Ocupado';
-                    conductor.asientosOcupados += boleto.numPax;
-                    await conductor.save();
-
-                    // Enviar respuesta exitosa
-                    res.status(200).json({
-                        mensaje: 'Conductor asignado con éxito',
-                        nombreConductor: conductor.conductorNombre + ' ' + conductor.conductorApellido,
-                        asientosRequeridos: boleto.numPax
-                    });
-                } else {
-                    // Enviar respuesta de error si no hay suficientes asientos
-                    res.status(400).json({ error: 'No hay suficientes asientos disponibles' });
-                }
-            } else {
-                // Enviar respuesta de error si el campo conductorAsignado del boleto no está vacío
-                res.status(400).json({ error: 'El boleto ya tiene un conductor asignado' });
-            }
-        } else {
-            // Enviar respuesta de error si el boleto o el conductor no son válidos
-            res.status(400).json({ error: 'Error en la asignación de conductor' });
-        }
-    } catch (error) {
-        // Manejar errores
-        console.error(error);
-        res.status(500).json({ error: 'Error interno del servidor' });
+    // Validación de cedula
+    if (!req.body.cedula) {
+        return res.status(400).json({ msg: "El campo 'cedula' es obligatorio" });
     }
-}
-*/
 
+    // Validar la información del vehículo
+    if (!placaVehiculo || !marcaVehiculo || !modeloVehiculo || !anioVehiculo || !colorVehiculo) {
+        return res.status(400).json({
+            msg: 'Debes llenar todos los campos de información del vehículo: placa, marca, modelo, año y color',
+        });
+    }
 
+    // Verificar la inscripción de vehículos duplicados
+    const existingChoferWithPlate = await Conductor.findOne({ placaVehiculo });
+    if (existingChoferWithPlate) {
+        return res.status(400).json({
+            msg: 'La placa del vehículo ya está registrada para otro chofer',
+        });
+    }
+
+    // Verificar la inscripción de cedulas duplicadas
+    const existingChoferWithCedula = await Conductor.findOne({ cedula });
+    if (existingChoferWithCedula) {
+        return res.status(400).json({
+            msg: 'La cédula ya está registrada para otro chofer',
+        });
+    }
+
+    const verificarcorreoBDDAdmin = await Administrador.findOne({ correo });
+    const verificarcorreoBDDPasajero = await Pasajero.findOne({ correo });
+    const verificarcorreoBDDConductor = await Conductor.findOne({ correo });
+
+    if (verificarcorreoBDDAdmin || verificarcorreoBDDPasajero || verificarcorreoBDDConductor) return res.status(400).json({ msg: "Lo sentimos, el correo ya se encuentra registrado" });
+
+    const nuevoChofer = new Conductor(req.body);
+
+    nuevoChofer.password = await nuevoChofer.encrypPassword(password);
+
+    const token = nuevoChofer.crearToken();
+
+    await sendMailToUserChofer(correo, token);
+
+    try {
+        await sendMailToUserChofer(correo, token);
+    } catch (error) {
+        console.error('Error enviando correo electrónico de confirmación:', error);
+    }
+
+    await nuevoChofer.save();
+
+    res.status(200).json({
+        msg: 'Revisa tu correo electrónico para confirmar tu cuenta de chofer',
+    });
+};
 
 
 

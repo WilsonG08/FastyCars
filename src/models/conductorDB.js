@@ -16,7 +16,6 @@ const conductorSchema = new Schema(
         cedula: {
             type: Number,
             required: true,
-            trim: true,
             unique: true,
         },
         correo: {
@@ -56,7 +55,6 @@ const conductorSchema = new Schema(
         numeroAsientos: {
             type: Number,
             required: true,
-            trim: true,
         },
         asientosOcupados: {
             type: Number,
@@ -89,6 +87,7 @@ const conductorSchema = new Schema(
         timestamps: true,
     }
 );
+
 
 // Metodo para cifrar el password del chofer
 conductorSchema.methods.encrypPassword = async function (password) {

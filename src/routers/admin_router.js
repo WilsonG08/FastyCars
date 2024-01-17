@@ -1,6 +1,5 @@
 // Esta carpeta contiene los enrutadores de la aplicación. Los enrutadores se utilizan para mapear las URL a los controladores.
 import { Router } from 'express';
-import verificarAutenticacion from '../middlewares/autenticacion.js'
 
 import {
     registro,
@@ -27,13 +26,18 @@ import {
 
 import {registrarServicio} from '../controllers/servicio_controllers.js'
 
+import verificarAutenticacion from '../middlewares/autenticacion.js'
+
+// Para las validaciones de datos
+import {validacionConductor}  from "../middlewares/validacionRP.js";
+
 
 const router =  Router()
 
 
 //REGISTRO
 router.post("/admin/register", registro);
-router.post("/admin/registrar-chofer", verificarAutenticacion, registrarChofer);
+router.post("/admin/registrar-chofer", validacionConductor, verificarAutenticacion, registrarChofer);
 
 // CONFIRMAR CORREO
 router.get("/admin/confirmar/:token", confirmEmail);

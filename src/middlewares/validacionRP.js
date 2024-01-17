@@ -191,7 +191,6 @@ const validacionBoletoAc = [
     },
 ];
 
-
 const validacionPasajero = [
     check("pasajeroNombre")
         .exists()
@@ -237,9 +236,9 @@ const validacionPasajero = [
         .withMessage("La contraseña debe tener al menos 8 caracteres")
         .isString()
         .withMessage("El campo debe ser una cadena de texto")
-        .not().matches(/\s/)
+        .not()
+        .matches(/\s/)
         .withMessage("La contraseña no puede contener espacios"),
-    
 
     check("phone")
         .exists()
@@ -250,7 +249,6 @@ const validacionPasajero = [
         .withMessage("El campo debe ser un número entero positivo")
         .isLength({ max: 10 })
         .withMessage("El número de teléfono no puede tener más de 10 dígitos"),
-    
 
     (req, res, next) => {
         const errors = validationResult(req);
@@ -281,7 +279,8 @@ const validacionInicioSesion = [
         .withMessage("La contraseña debe tener al menos 8 caracteres")
         .isString()
         .withMessage("El campo debe ser una cadena de texto")
-        .not().matches(/\s/)
+        .not()
+        .matches(/\s/)
         .withMessage("La contraseña no puede contener espacios"),
 
     (req, res, next) => {
@@ -294,11 +293,142 @@ const validacionInicioSesion = [
     },
 ];
 
+const validacionConductor = [
+    check("conductorNombre")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .customSanitizer((value) => value?.trim())
+        .isLength({ min: 3, max: 20 })
+        .withMessage('El campo "nombre" debe tener entre 3 y 20 caracteres')
+        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ" })
+        .withMessage('El campo "nombre" debe contener solo letras')
+        .isString()
+        .withMessage("El campo debe ser una cadena de texto"),
+
+    check("conductorApellido")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .customSanitizer((value) => value?.trim())
+        .isLength({ min: 3, max: 20 })
+        .withMessage('El campo "apellido" debe tener entre 3 y 20 caracteres')
+        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ" })
+        .withMessage('El campo "apellido" debe contener solo letras')
+        .isString()
+        .withMessage("El campo debe ser una cadena de texto"),
+
+    check("cedula")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .isInt({ min: 0, max: 9999999999 })
+        .withMessage("El campo debe ser un número entero positivo de hasta 10 dígitos"),
 
 
-export { 
+    check("correo")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .isEmail()
+        .withMessage("El campo debe ser un correo electrónico válido"),
+
+    check("password")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .isLength({ min: 8 })
+        .withMessage("El campo debe tener al menos 8 caracteres"),
+
+    check("phone")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .isInt({ min: 0, max: 9999999999 })
+        .withMessage("El campo debe ser un número entero positivo de hasta 10 dígitos"),
+
+    check("marcaVehiculo")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .customSanitizer((value) => value?.trim())
+        .isLength({ min: 3, max: 20 })
+        .withMessage('El campo "marcaVehiculo" debe tener entre 3 y 20 caracteres')
+        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ" })
+        .withMessage('El campo "marcaVehiculo" debe contener solo letras')
+        .isString()
+        .withMessage("El campo debe ser una cadena de texto"),
+
+    check("modeloVehiculo")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .customSanitizer((value) => value?.trim())
+        .isLength({ min: 3, max: 20 })
+        .withMessage('El campo "modeloVehiculo" debe tener entre 3 y 20 caracteres')
+        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ" })
+        .withMessage('El campo "modeloVehiculo" debe contener solo letras')
+        .isString()
+        .withMessage("El campo debe ser una cadena de texto"),
+
+    check("anioVehiculo")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .isInt({ min: 0, max: 9999 })
+        .withMessage("El campo debe ser un número entero positivo de hasta 4 dígitos"),
+
+
+        check("colorVehiculo")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .customSanitizer((value) => value?.trim())
+        .isLength({ min: 3, max: 20 })
+        .withMessage('El campo "colorVehiculo" debe tener entre 3 y 20 caracteres')
+        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ" })
+        .withMessage('El campo "colorVehiculo" debe contener solo letras')
+        .isString()
+        .withMessage("El campo debe ser una cadena de texto"),
+
+    check("numeroAsientos")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío")
+        .isInt({ min: 1, max: 20 })
+        .withMessage("El campo debe ser un número entero positivo entre 1 y 20"),
+
+    check("placaVehiculo")
+        .exists()
+        .withMessage("El campo es obligatorio")
+        .notEmpty()
+        .withMessage("El campo no puede estar vacío"),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            return next();
+        } else {
+            return res.status(400).send({ errors: errors.array() });
+        }
+    },
+];
+
+export {
     validacionBoleto,
     validacionBoletoAc,
     validacionPasajero,
-    validacionInicioSesion
+    validacionInicioSesion,
+    validacionConductor
 };
