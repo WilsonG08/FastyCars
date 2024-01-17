@@ -32,7 +32,7 @@ import verificarAutenticacion from '../middlewares/autenticacion.js'
 import {
     validacionConductor,
     validacionRutaHorario,
-    validacionServicio
+    validacionServicio,
 }  from "../middlewares/validacionRP.js";
 
 

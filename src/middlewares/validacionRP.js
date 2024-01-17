@@ -429,48 +429,47 @@ const validacionConductor = [
 ];
 
 
+
+
+
 const validacionRutaHorario = [
-    check("nombreServicio")
-        .exists()
-        .withMessage("El campo es obligatorio")
-        .notEmpty()
-        .withMessage("El campo no puede estar vacío")
-        .customSanitizer((value) => value?.trim())
-        .isLength({ min: 3, max: 50 })
-        .withMessage('El campo "nombreServicio" debe tener entre 3 y 50 caracteres')
-        .isString()
-        .withMessage("El campo debe ser una cadena de texto"),
+    check("ruta.nombre")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 50 }).withMessage('El campo "nombre" debe tener entre 3 y 50 caracteres')
+        .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras"),
 
-    check("detalleServicio")
-        .exists()
-        .withMessage("El campo es obligatorio")
-        .notEmpty()
-        .withMessage("El campo no puede estar vacío")
-        .customSanitizer((value) => value?.trim())
-        .isLength({ min: 3, max: 200 })
-        .withMessage('El campo "detalleServicio" debe tener entre 3 y 200 caracteres')
-        .isString()
-        .withMessage("El campo debe ser una cadena de texto"),
+    check("ruta.ciudad1")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 50 }).withMessage('El campo "ciudad1" debe tener entre 3 y 50 caracteres')
+        .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras"),
 
-    check("valorEstimado")
-        .exists()
-        .withMessage("El campo es obligatorio")
-        .notEmpty()
-        .withMessage("El campo no puede estar vacío")
-        .isNumeric()
-        .withMessage("El campo debe ser un número")
-        .isFloat({ min: 0 })
-        .withMessage("El campo debe ser un número mayor o igual a 0"),
+    check("ruta.ciudad2")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim()
+        .isLength({ min: 3, max: 50 }).withMessage('El campo "ciudad2" debe tener entre 3 y 50 caracteres')
+        .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras"),
 
-        (req, res, next) => {
-            const errors = validationResult(req);
-            if (errors.isEmpty()) {
-                return next();
-            } else {
-                return res.status(400).send({ errors: errors.array() });
-            }
-        },
+    check("horario.horario1")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim(),
+
+    check("horario.horario2")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim(),
+
+    check("horario.horario3")
+        .exists().withMessage("El campo es obligatorio")
+        .notEmpty().withMessage("El campo no puede estar vacío")
+        .trim(),
 ];
+
 
 
 const validacionServicio = [
