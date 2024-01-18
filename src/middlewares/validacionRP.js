@@ -42,9 +42,9 @@ const validacionBoleto = [
         .withMessage("El campo es obligatorio")
         .notEmpty()
         .withMessage("El campo no puede estar vacío")
-        .customSanitizer((value) => value?.trim())
-        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ" })
-        .withMessage("El campo debe ser una cadena de texto con solo letras"),
+        //.customSanitizer((value) => value?.trim())
+        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ" }),
+        //.withMessage("El campo debe ser una cadena de texto con solo letras"),
 
     check("ciudadSalida.direccion")
         .exists()
@@ -57,9 +57,9 @@ const validacionBoleto = [
         .withMessage("El campo es obligatorio")
         .notEmpty()
         .withMessage("El campo no puede estar vacío")
-        .customSanitizer((value) => value?.trim())
-        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ" })
-        .withMessage("El campo debe ser una cadena de texto con solo letras"),
+        //.customSanitizer((value) => value?.trim())
+        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ" }),
+        //.withMessage("El campo debe ser una cadena de texto con solo letras"),
 
     check("ciudadLlegada.direccion")
         .exists()
@@ -533,8 +533,8 @@ const validacionEncomienda = [
     check("remitente.phone")
         .exists().withMessage("El campo es obligatorio")
         .notEmpty().withMessage("El campo no puede estar vacío")
-        .trim()
-        .isMobilePhone().withMessage("El campo debe ser un número de teléfono válido"),
+        .trim(),
+        //.isMobilePhone().withMessage("El campo debe ser un número de teléfono válido"),
 
 
     check("destinatario.nombre")
@@ -554,8 +554,8 @@ const validacionEncomienda = [
     check("destinatario.phone")
         .exists().withMessage("El campo es obligatorio")
         .notEmpty().withMessage("El campo no puede estar vacío")
-        .trim()
-        .isMobilePhone().withMessage("El campo debe ser un número de teléfono válido"),
+        .trim(),
+        //.isMobilePhone().withMessage("El campo debe ser un número de teléfono válido"),
 
     // Validaciones para ciudadRemitente
     check("ciudadRemitente.ciudad")
@@ -630,8 +630,8 @@ const validacionEncomienda = [
     check("turno.fecha")
         .exists().withMessage("El campo es obligatorio")
         .notEmpty().withMessage("El campo no puede estar vacío")
-        .trim()
-        .isDate().withMessage("El campo debe ser una fecha válida"),
+        .trim(),
+        //.isDate().withMessage("El campo debe ser una fecha válida"),
 
     // Validaciones para precio
     check("precio")
