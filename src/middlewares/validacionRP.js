@@ -42,9 +42,8 @@ const validacionBoleto = [
         .withMessage("El campo es obligatorio")
         .notEmpty()
         .withMessage("El campo no puede estar vacío")
-        //.customSanitizer((value) => value?.trim())
-        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ" }),
-        //.withMessage("El campo debe ser una cadena de texto con solo letras"),
+        .matches(/^[a-záéíóúñ\s]*$/i)
+        .withMessage("El campo debe ser una cadena de texto con solo letras y espacios"),
 
     check("ciudadSalida.direccion")
         .exists()
@@ -57,9 +56,8 @@ const validacionBoleto = [
         .withMessage("El campo es obligatorio")
         .notEmpty()
         .withMessage("El campo no puede estar vacío")
-        //.customSanitizer((value) => value?.trim())
-        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ" }),
-        //.withMessage("El campo debe ser una cadena de texto con solo letras"),
+        .matches(/^[a-záéíóúñ\s]*$/i)
+        .withMessage("El campo debe ser una cadena de texto con solo letras y espacios"),
 
     check("ciudadLlegada.direccion")
         .exists()
