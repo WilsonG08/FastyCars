@@ -162,7 +162,7 @@ const nuevoPassword = async (req, res) => {
 
     if (password != confirmpassword) return res.status(404).json({ msg: "Lo sentimos, los passwords no coinciden!" })
 
-    const choferBDD = await Chofer.findOne({ token: req.params.token })
+    const choferBDD = await Conductor.findOne({ token: req.params.token })
 
     if (choferBDD?.token !== req.params.token) return res.status(404).json({ msg: "Lo sentimos, no se puede validar la cuenta" })
 

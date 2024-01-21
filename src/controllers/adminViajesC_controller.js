@@ -1,8 +1,8 @@
-import Administrador from "../models/adminDB.js";
+/* import Administrador from "../models/adminDB.js";
 import Pasajero from '../models/pasajeroDB.js'
 import Conductor from "../models/conductorDB.js";
 import generarJWT from "../helpers/crearJWT.js";
-import mongoose from "mongoose";
+import mongoose from "mongoose"; */
 import Boleto from '../models/reservaDB.js'
 
 
