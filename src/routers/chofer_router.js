@@ -29,9 +29,9 @@ router.get("/conductor/:id", verificarAutentificacion, detalleChofer);
 // RECUPERAR CONTRASEÑA
 router.post("/conductor/recuperar-password", recuperarPassword);
 router.get("/conductor/recuperar-password/:token", comprobarTokenPassword);
+router.post("/conductor/nuevo-password/:token", nuevoPassword);
 
 // ACTUALIZAR CONTRASEÑA
-router.post("/conductor/nuevo-password/:token", nuevoPassword);
 router.put("/conductor/actualizarpassword", verificarAutenticacion, actualizarPassword);
 
 
