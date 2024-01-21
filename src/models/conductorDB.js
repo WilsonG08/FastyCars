@@ -75,12 +75,18 @@ const conductorSchema = new Schema(
             default: false,
         },
         administrador: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Administrador",
+            required: true,
         },
         rol: {
             type: String,
             default: "conductor",
+        },
+        estado: {
+            type: String,
+            enum: ['Ocupado', 'Disponible'],
+            default: 'Disponible',
         },        
     },
     {

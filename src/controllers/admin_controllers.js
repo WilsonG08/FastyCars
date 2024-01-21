@@ -69,16 +69,7 @@ const perfil = (req, res) => {
 };
 
 
-const listarChoferes = async (req, res) => {
-    try {
-        // Especifica los campos que deseas recuperar
-        const choferes = await Chofer.find({}, 'conductorNombre conductorApellido correo phone rol'); 
 
-        res.status(200).json(choferes);
-    } catch (error) {
-        res.status(500).json({ error: 'Error al listar los choferes' });
-    }
-};
 
 
 const listarpasajeros = async (req, res) => {
@@ -92,36 +83,6 @@ const listarpasajeros = async (req, res) => {
     }
 };
 
-
-/* 
-const actualizarPerfil = async (req, res) => {
-    try {
-        // Obtiene el ID del usuario que inició sesión
-        const usuarioActual = req.administradorBDD;
-
-        // Actualiza la información del perfil
-        const administradorBDD = await Administrador.findByIdAndUpdate(
-            usuarioActual._id,
-            {
-                adminNombre: req.body.adminNombre || usuarioActual.adminNombre,
-                adminApellido: req.body.adminApellido || usuarioActual.adminApellido
-            },
-            {
-                new: true,
-            }
-        );
-
-        // Genera y almacena un nuevo token
-        administradorBDD.crearToken();
-        await administradorBDD.save();
-
-        res.status(200).json({ msg: "Perfil actualizado correctamente", administradorBDD });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Error al actualizar el perfil" });
-    }
-};
-*/
 
 
 const actualizarPerfil = async (req, res) => {
@@ -169,7 +130,6 @@ const actualizarPerfil = async (req, res) => {
         res.status(500).json({ msg: "Error al actualizar el perfil" });
     }
 };
-
 
 
 
@@ -249,164 +209,6 @@ const nuevoPassword = async (req, res) => {
 }
 
 
-/* 
-const registrarChofer = async (req, res) => {
-    // Verify if the authenticated user is an administrator
-    if (req.rol !== 'administrador') return res.status(403).json({ msg: 'Acceso no autorizado' });
-
-    const {
-        conductorNombre, conductorApellido, cedula, correo, password, phone, numeroAsientos,
-        placaVehiculo, marcaVehiculo, modeloVehiculo, anioVehiculo, colorVehiculo,
-    } = req.body;
-
-    if (
-        !conductorNombre ||
-        !conductorApellido ||
-        !correo ||
-        !password ||
-        !phone ||
-        !cedula ||
-        isNaN(numeroAsientos) ||
-        !Number.isInteger(numeroAsientos) ||  
-        numeroAsientos < 1 ||
-        numeroAsientos > 4 ||
-        numeroAsientos < 0
-    ) {
-        return res.status(400).json({
-            msg: 'Debes llenar todos los campos: nombre, apellido, correo electrónico, contraseña, número de teléfono y número de asientos (debe ser un número entero entre 1 y 4)',
-        });
-    }
-
-    // Validación de cedula
-    if (!req.body.cedula) {
-        return res.status(400).json({ msg: "El campo 'cedula' es obligatorio" });
-    }
-
-    // Validar la información del vehículo
-    if (!placaVehiculo || !marcaVehiculo || !modeloVehiculo || !anioVehiculo || !colorVehiculo) {
-        return res.status(400).json({
-            msg: 'Debes llenar todos los campos de información del vehículo: placa, marca, modelo, año y color',
-        });
-    }
-
-    // Verificar la inscripción de vehículos duplicados
-    const existingChoferWithPlate = await Conductor.findOne({ placaVehiculo });
-    if (existingChoferWithPlate) {
-        return res.status(400).json({
-            msg: 'La placa del vehículo ya está registrada para otro chofer',
-        });
-    }
-
-    const verificarcorreoBDDAdmin = await Administrador.findOne({ correo });
-    const verificarcorreoBDDPasajero = await Pasajero.findOne({ correo });
-    const verificarcorreoBDDConductor = await Conductor.findOne({ correo });
-
-    if (verificarcorreoBDDAdmin || verificarcorreoBDDPasajero || verificarcorreoBDDConductor) return res.status(400).json({ msg: "Lo sentimos, el correo ya se encuentra registrado" });
-
-    const nuevoChofer = new Conductor(req.body);
-
-    nuevoChofer.password = await nuevoChofer.encrypPassword(password);
-
-    const token = nuevoChofer.crearToken();
-
-    await sendMailToUserChofer(correo, token);
-
-    try {
-        await sendMailToUserChofer(correo, token);
-    } catch (error) {
-        console.error('Error enviando correo electrónico de confirmación:', error);
-    }
-
-    await nuevoChofer.save();
-
-    res.status(200).json({
-        msg: 'Revisa tu correo electrónico para confirmar tu cuenta de chofer',
-    });
-};
-*/
-
-const registrarChofer = async (req, res) => {
-    // Verify if the authenticated user is an administrator
-    if (req.rol !== 'administrador') return res.status(403).json({ msg: 'Acceso no autorizado' });
-
-    const {
-        conductorNombre, conductorApellido, cedula, correo, password, phone, numeroAsientos,
-        placaVehiculo, marcaVehiculo, modeloVehiculo, anioVehiculo, colorVehiculo,
-    } = req.body;
-
-    if (
-        !conductorNombre ||
-        !conductorApellido ||
-        !correo ||
-        !password ||
-        !phone ||
-        !cedula ||
-        isNaN(numeroAsientos) ||
-        !Number.isInteger(numeroAsientos) ||  
-        numeroAsientos < 1 ||
-        numeroAsientos > 4 ||
-        numeroAsientos < 0
-    ) {
-        return res.status(400).json({
-            msg: 'Debes llenar todos los campos: nombre, apellido, correo electrónico, contraseña, número de teléfono y número de asientos (debe ser un número entero entre 1 y 4)',
-        });
-    }
-
-    // Validación de cedula
-    if (!req.body.cedula) {
-        return res.status(400).json({ msg: "El campo 'cedula' es obligatorio" });
-    }
-
-    // Validar la información del vehículo
-    if (!placaVehiculo || !marcaVehiculo || !modeloVehiculo || !anioVehiculo || !colorVehiculo) {
-        return res.status(400).json({
-            msg: 'Debes llenar todos los campos de información del vehículo: placa, marca, modelo, año y color',
-        });
-    }
-
-    // Verificar la inscripción de vehículos duplicados
-    const existingChoferWithPlate = await Conductor.findOne({ placaVehiculo });
-    if (existingChoferWithPlate) {
-        return res.status(400).json({
-            msg: 'La placa del vehículo ya está registrada para otro chofer',
-        });
-    }
-
-    // Verificar la inscripción de cedulas duplicadas
-    const existingChoferWithCedula = await Conductor.findOne({ cedula });
-    if (existingChoferWithCedula) {
-        return res.status(400).json({
-            msg: 'La cédula ya está registrada para otro chofer',
-        });
-    }
-
-    const verificarcorreoBDDAdmin = await Administrador.findOne({ correo });
-    const verificarcorreoBDDPasajero = await Pasajero.findOne({ correo });
-    const verificarcorreoBDDConductor = await Conductor.findOne({ correo });
-
-    if (verificarcorreoBDDAdmin || verificarcorreoBDDPasajero || verificarcorreoBDDConductor) return res.status(400).json({ msg: "Lo sentimos, el correo ya se encuentra registrado" });
-
-    const nuevoChofer = new Conductor(req.body);
-
-    nuevoChofer.password = await nuevoChofer.encrypPassword(password);
-
-    const token = nuevoChofer.crearToken();
-
-    await sendMailToUserChofer(correo, token);
-
-    try {
-        await sendMailToUserChofer(correo, token);
-    } catch (error) {
-        console.error('Error enviando correo electrónico de confirmación:', error);
-    }
-
-    await nuevoChofer.save();
-
-    res.status(200).json({
-        msg: 'Revisa tu correo electrónico para confirmar tu cuenta de chofer',
-    });
-};
-
 
 
 const asignarConductor = async (req, res) => {
@@ -477,88 +279,6 @@ const asignarConductor = async (req, res) => {
 
 
 
-
-
-
-
-
-
-/* 
-const obtenerAsientosDisponibles = async (req, res) => {
-    try {
-        const { idConductor } = req.body;
-
-        // Obtener el conductor
-        const conductor = await Conductor.findById(idConductor);
-
-        // Verificar si el conductor es válido
-        if (conductor) {
-            // Obtener todos los boletos asignados al conductor
-            const boletos = await Boleto.find({ conductorAsignado: conductor._id });
-
-            // Sumar el número de pasajeros en todos los boletos
-            let pasajerosAsignados = 0;
-            for (let boleto of boletos) {
-                pasajerosAsignados += boleto.numPax;
-            }
-
-            // Calcular los asientos disponibles
-            const asientosDisponibles = conductor.numeroAsientos - pasajerosAsignados;
-
-            // Enviar respuesta con los asientos disponibles
-            res.status(200).json({ mensaje: 'Asientos disponibles obtenidos con éxito', asientosDisponibles: asientosDisponibles });
-        } else {
-            // Enviar respuesta de error si el conductor no es válido
-            res.status(400).json({ error: 'Error al obtener los asientos disponibles' });
-        }
-    } catch (error) {
-        // Manejar errores
-        console.error(error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-    }
-}
-
- */
-
-
-
-/* 
-const obtenerAsientosDisponibles = async (req, res) => {
-    try {
-        const { idConductor } = req.body;
-
-        // Obtener el conductor
-        const conductor = await Conductor.findById(idConductor);
-
-        // Verificar si el conductor es válido
-        if (conductor) {
-            // Obtener todos los boletos asignados al conductor
-            const boletos = await Boleto.find({ conductorAsignado: conductor._id });
-
-            // Sumar el número de pasajeros en todos los boletos
-            let pasajerosAsignados = 0;
-            for (let boleto of boletos) {
-                pasajerosAsignados += boleto.numPax;
-            }
-
-            // Calcular los asientos disponibles
-            const asientosDisponibles = conductor.numeroAsientos - pasajerosAsignados;
-
-            // Enviar respuesta con los asientos disponibles y el nombre del conductor
-            res.status(200).json({ mensaje: 'Asientos disponibles obtenidos con éxito', conductor: conductor.conductorNombre, asientosDisponibles: asientosDisponibles });
-        } else {
-            // Enviar respuesta de error si el conductor no es válido
-            res.status(400).json({ error: 'Error al obtener los asientos disponibles' });
-        }
-    } catch (error) {
-        // Manejar errores
-        console.error(error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-    }
-}
-*/
-
-
 const obtenerAsientosDisponibles = async (req, res) => {
     try {
         const { idConductor } = req.body;
@@ -594,40 +314,6 @@ const obtenerAsientosDisponibles = async (req, res) => {
 }
 
 
-
-
-/* 
-const verViajesPendientes = async (req, res) => {
-    try {
-        // Obtener los boletos que no tienen conductor asignado y cuyo estado es 'Pendiente'
-        const boletos = await Boleto.find({ conductorAsignado: null, estadoPax: 'Pendiente' });
-
-        // Verificar si se encontraron boletos
-        if (boletos.length > 0) {
-            // Crear un nuevo array de boletos con solo los detalles que necesitas
-            const boletosFiltrados = boletos.map(boleto => ({
-                nombre: boleto.user.nombre,
-                apellido: boleto.user.apellido,
-                ciudadSalida: boleto.ciudadSalida.ciudad,
-                ciudadLlegada: boleto.ciudadLlegada.ciudad,
-                turno: boleto.turno,
-                id: boleto._id,
-                numPax: boleto.numPax
-            }));
-            
-            // Enviar respuesta con los boletos pendientes
-            res.status(200).json({ mensaje: 'Viajes pendientes', boletos: boletosFiltrados });
-        } else {
-            // Enviar respuesta de error si no se encontraron boletos
-            res.status(400).json({ error: 'No se encontraron viajes pendientes' });
-        }
-    } catch (error) {
-        // Manejar errores
-        console.error(error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-    }
-}
-*/
 
 const verViajesPendientes = async (req, res) => {
     try {
@@ -673,8 +359,7 @@ export {
     recuperarPassword,
     comprobarTokenPassword,
     nuevoPassword,
-    registrarChofer,
     asignarConductor,
     verViajesPendientes,
-    obtenerAsientosDisponibles
+    obtenerAsientosDisponibles,
 };

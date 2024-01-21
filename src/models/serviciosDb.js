@@ -10,13 +10,11 @@ const servicioSchema = new Schema(
         },
         detalleServicio:{
             type: String,
-            unique: true,
             required: true,
             trim: true,
         },
         valorEstimado:{
             type: Number,
-            unique: true,
             required: true,
         }
     },
@@ -24,6 +22,5 @@ const servicioSchema = new Schema(
         timestamps: true,
     }
 );
-
 
 export default model("Servicio", servicioSchema);

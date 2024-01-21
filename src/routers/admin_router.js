@@ -11,22 +11,19 @@ import {
     recuperarPassword,
     comprobarTokenPassword,
     nuevoPassword,
-    registrarChofer,
     asignarConductor,
     verViajesPendientes,
-    obtenerAsientosDisponibles
+    obtenerAsientosDisponibles,
 } from '../controllers/admin_controllers.js'
 
+// RUTAS Y HORARIOS
 import {
     registrarRutaHorario,
     obtenerRutasHorarios,
     actualizarRutaHorario,
-    eliminarRutaHorario
+    eliminarRutaHorario,
+    obtenerRutaHorarioPorId
 } from '../controllers/rutas_horarios_admin.js'
-
-import {registrarServicio} from '../controllers/servicio_controllers.js'
-
-import verificarAutenticacion from '../middlewares/autenticacion.js'
 
 // Para las validaciones de datos
 import {
@@ -36,12 +33,36 @@ import {
 }  from "../middlewares/validacionRP.js";
 
 
-const router =  Router()
+// Para que el ADMIN pueda gestionar a los conductores
+import{
+    registrarChofer,
+    listarChoferes,
+    obtenerChoferPorId,
+    eliminarChoferPorId,
+    actualizarChoferAdmin
+} from '../controllers/adminConductor_controller.js'
+
+
+// Para la gestion de VIAJES COMPARTIDOS
+import{
+    viajesPendientesCompartidos,
+    viajeCompartidoId,
+    eliminarBoletoCompId,
+    actualizarBoletoC,
+} from '../controllers/adminViajesC_controller.js'
+
+
+
+import {registrarServicio} from '../controllers/servicio_controllers.js'
+
+import verificarAutenticacion from '../middlewares/autenticacion.js'
+
+
+const router =  Router();
 
 
 //REGISTRO
 router.post("/admin/register", registro);
-router.post("/admin/registrar-chofer", validacionConductor, verificarAutenticacion, registrarChofer);
 
 // CONFIRMAR CORREO
 router.get("/admin/confirmar/:token", confirmEmail);
@@ -72,6 +93,31 @@ router.post("/admin/registro-ruta", validacionRutaHorario, verificarAutenticacio
 router.get("/admin/rutas",verificarAutenticacion, obtenerRutasHorarios);
 router.put("/admin/actualizarRuta/:id", validacionRutaHorario, verificarAutenticacion, actualizarRutaHorario);
 router.delete("/admin/eliminarRuta/:id", verificarAutenticacion, eliminarRutaHorario);
+router.get("/admin/ruta/:id",verificarAutenticacion, obtenerRutaHorarioPorId);
+
+
+
+//GESTION DE CONDUCTORES
+router.post("/admin/registrar-chofer", validacionConductor, verificarAutenticacion, registrarChofer);
+router.get("/admin/lista-conductores", verificarAutenticacion, listarChoferes);
+router.get("/admin/conductor/:id",verificarAutenticacion, obtenerChoferPorId );
+router.delete("/admin/eliminarConductor/:id", verificarAutenticacion, eliminarChoferPorId);
+router.put("/admin/actualizarConductor/:id", validacionConductor, verificarAutenticacion, actualizarChoferAdmin );
+
+
+// GESTION DE VIAJES COMPARTIDOS
+router.get("/admin/viajesC", verificarAutenticacion, viajesPendientesCompartidos);
+router.get("/admin/viajeC/:id", verificarAutenticacion, viajeCompartidoId);
+router.delete("/admin/eliminarVC/:id", verificarAutenticacion, eliminarBoletoCompId);
+router.put("/admin/actualizarVC/:id", verificarAutenticacion, actualizarBoletoC );
+
+
+
+
+
+
+
+
 
 // VER VIAJES PENDIENTES
 router.get("/admin/viajes-pendientes",verificarAutenticacion, verViajesPendientes);
@@ -82,6 +128,7 @@ router.post("/admin/asignar-conductor", verificarAutenticacion, asignarConductor
 
 // VER ASIENTOS DISPONIBLES
 router.post("/admin/asientos-disponibles", verificarAutenticacion, obtenerAsientosDisponibles);
+
 
 
 

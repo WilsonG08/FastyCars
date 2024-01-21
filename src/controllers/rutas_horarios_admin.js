@@ -155,9 +155,34 @@ const eliminarRutaHorario = async (req, res) => {
 };
 
 
+// OBTENER RUTA Y HORARIO POR ID
+const obtenerRutaHorarioPorId = async (req, res) => {
+    try {
+        // Extrae el ID de la ruta y horario de la URL
+        const { id } = req.params;
+
+        // Obtiene la ruta y horario por su ID
+        const rutaHorario = await RutayHorario.findById(id);
+
+        // Verifica si se encontró la ruta y horario
+        if (!rutaHorario) {
+            return res.status(404).json({ msg: `No se encontró una ruta y horario con el ID proporcionado: ${id}` });
+        }
+
+        // Envía la ruta y horario como respuesta
+        res.status(200).json(rutaHorario);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Hubo un error al obtener la ruta y horario", error });
+    }
+};
+
+
+
 export {
     registrarRutaHorario,
     obtenerRutasHorarios,
     actualizarRutaHorario,
-    eliminarRutaHorario
+    eliminarRutaHorario,
+    obtenerRutaHorarioPorId
 };

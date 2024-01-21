@@ -1,12 +1,12 @@
 // Este archivo contiene la configuración de la base de datos de la aplicación.
 
-import moongose from 'mongoose';
+import mongoose  from 'mongoose';
 
-moongose.set('strictQuery', true)
+mongoose .set('strictQuery', true)
 
 const connection =  async () => {
     try {
-        const { connection } = await moongose.connect(process.env.MONGODB_URI,{
+        const { connection } = await mongoose.connect(process.env.MONGODB_URI,{
             useUnifiedTopology: true,
             useNewUrlParser: true,
         })
