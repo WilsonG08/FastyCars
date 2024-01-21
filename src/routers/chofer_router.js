@@ -3,7 +3,6 @@ import verificarAutenticacion from '../middlewares/autenticacion.js'
 
 
 import {
-    detalleChofer,
     actualizarChofer,
     eliminarChofer,
     confirmEmail,
@@ -13,6 +12,7 @@ import {
     nuevoPassword,
     verViajesAsignados,
     actualizarEstadoCompartido,
+    detalleChofer
 } from "../controllers/chofer_controllers.js"
 
 import verificarAutentificacion from "../middlewares/autenticacion.js";
@@ -22,6 +22,9 @@ const router = Router();
 
 // CONFIRMAR CORREO
 router.get("/chofer/confirmar/:token", confirmEmail);
+
+// VER INFORMACION PERFIL
+router.get("/conductor/:id", verificarAutentificacion, detalleChofer);
 
 // RECUPERAR CONTRASEÑA
 router.post("/conductor/recuperar-password", recuperarPassword);
@@ -48,7 +51,8 @@ router.put("/chofer/actualizarECom", verificarAutentificacion, actualizarEstadoC
 
 // ME PUEDE SERVIR PARA LISTAR LOS CLIENTES
 // router.get("/chofer", verificarAutentificacion, listarchoferes);
-router.get("/chofer/:id", verificarAutentificacion, detalleChofer);
+
+
 
 
 
