@@ -70,8 +70,6 @@ const perfil = (req, res) => {
 
 
 
-
-
 const listarpasajeros = async (req, res) => {
     try {
          // Especifica los campos que deseas recuperar

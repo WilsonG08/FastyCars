@@ -52,6 +52,15 @@ import{
 } from '../controllers/adminViajesC_controller.js'
 
 
+// PARA LA GESTION DE VIAJES PRIVADOS
+import{
+    viajesPendientesPrivado,
+    viajePrivadoId,
+    eliminarBoletoPrivId,
+    actualizarBoletoP,
+    asignarPrivado
+} from '../controllers/adminViajesP_controller.js';
+
 
 import {registrarServicio} from '../controllers/servicio_controllers.js'
 
@@ -112,10 +121,12 @@ router.delete("/admin/eliminarVC/:id", verificarAutenticacion, eliminarBoletoCom
 router.put("/admin/actualizarVC/:id", verificarAutenticacion, actualizarBoletoC );
 
 
-
-
-
-
+// GESTION DE VIAJES PRIVADOS
+router.get("/admin/viajesPriv", verificarAutenticacion, viajesPendientesPrivado);
+router.get("/admin/viajePriv/:id", verificarAutenticacion, viajePrivadoId);
+router.delete("/admin/eliminarPriv/:id", verificarAutenticacion, eliminarBoletoPrivId);
+router.put("/admin/actualizarPriv/:id", verificarAutenticacion, actualizarBoletoP );
+router.post("/admin/asignar-conductorPriv", verificarAutenticacion, asignarPrivado );
 
 
 
