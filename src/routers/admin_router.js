@@ -62,6 +62,15 @@ import{
 } from '../controllers/adminViajesP_controller.js';
 
 
+// PARA LA GESTION DE ENCOMIENDAS
+import{
+    encomiendasPendientes,
+    encomiendaId,
+    actualizarEncomienda,
+    eliminarEncomiendaId,
+    asignarEncomienda
+} from '../controllers/adminViajesE_controller.js';
+
 import {registrarServicio} from '../controllers/servicio_controllers.js'
 
 import verificarAutenticacion from '../middlewares/autenticacion.js'
@@ -128,7 +137,19 @@ router.delete("/admin/eliminarPriv/:id", verificarAutenticacion, eliminarBoletoP
 router.put("/admin/actualizarPriv/:id", verificarAutenticacion, actualizarBoletoP );
 router.post("/admin/asignar-conductorPriv", verificarAutenticacion, asignarPrivado );
 
+// GESTION DE VIAJES PRIVADOS
+router.get("/admin/encomiendas", verificarAutenticacion, encomiendasPendientes);
+router.get("/admin/encomienda/:id", verificarAutenticacion, encomiendaId);
+router.delete("/admin/eliminarEnco/:id", verificarAutenticacion, eliminarEncomiendaId);
+router.put("/admin/actualizarEnco/:id", verificarAutenticacion, actualizarEncomienda );
+router.post("/admin/asignar-conductorEnco", verificarAutenticacion, asignarEncomienda );
 
+
+/*     encomiendasPendientes,
+    encomiendaId,
+    actualizarEncomienda,
+    eliminarEncomiendaId,
+ */
 
 // VER VIAJES PENDIENTES
 router.get("/admin/viajes-pendientes",verificarAutenticacion, verViajesPendientes);
