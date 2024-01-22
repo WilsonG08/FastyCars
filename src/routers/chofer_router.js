@@ -12,7 +12,9 @@ import {
     nuevoPassword,
     verViajesAsignados,
     actualizarEstadoCompartido,
-    detalleChofer
+    detalleChofer,
+    verViajesAsignadPrivados,
+    actualizarEstadoPrivado
 } from "../controllers/chofer_controllers.js"
 
 import verificarAutentificacion from "../middlewares/autenticacion.js";
@@ -35,16 +37,25 @@ router.post("/conductor/nuevo-password/:token", nuevoPassword);
 router.put("/conductor/actualizarpassword", verificarAutenticacion, actualizarPassword);
 
 
-
+// ACTUALIZAR PERFIL
 router.put("/chofer/actualizarPerfil/:id", verificarAutentificacion, actualizarChofer);
+
+
 router.delete("/chofer/eliminar/:id", verificarAutentificacion, eliminarChofer);
 
 // VER VIAJES ASIGNADO
-router.get("/chofer/viajes-asigandos",verificarAutenticacion, verViajesAsignados);
+router.post("/chofer/viajes-asigandos",verificarAutenticacion, verViajesAsignados);
+
+// Ver viajes privados asignados
+router.post("/chofer/viajes-asigandosPriv",verificarAutenticacion, verViajesAsignadPrivados);
+
+
 
 
 // CAMBIAR EL ESTADO DE UN PASAJERO
 router.put("/chofer/actualizarECom", verificarAutentificacion, actualizarEstadoCompartido);
+router.put("/chofer/actualizarPriv", verificarAutentificacion, actualizarEstadoPrivado);
+
 
 
 
