@@ -198,13 +198,13 @@ const verViajesAsignados = async (req, res) => {
         // Convertir la cadena a ObjectId
         const conductorObjectId = new mongoose.Types.ObjectId(idConductor);
 
-        // Obtener los boletos asignados al conductor cuyo estadoPax es 'Aprobado'
+        // Obtener los boletos asignados al conductor cuyo estadoPax es 'Aprobado' y conductorAsignado coincide con idConductor
         const boletos = await Boleto.find({ conductorAsignado: conductorObjectId, estadoPax: 'Aprobado' })
-            .select('tipoBoleto user ciudadSalida ciudadLlegada turno numPax precio estadoPax ');
+            .select('tipoBoleto user ciudadSalida ciudadLlegada turno numPax precio estadoPax');
 
-        // Obtener las encomiendas asignadas al conductor
-        const encomiendas = await Encomienda.find({ conductorAsignado: conductorObjectId })
-            .select('tipoBoleto pasajeroId remitente destinatario ciudadRemitente ciudadDestinatario numPaquetes turno estadoPaquete -_id');
+        // Obtener las encomiendas asignadas al conductor cuyo estadoPaquete es 'Aprobado' y conductorAsignado coincide con idConductor
+        const encomiendas = await Encomienda.find({ conductorAsignado: conductorObjectId, estadoPaquete: 'Aprobado' })
+            .select('tipoBoleto pasajeroId remitente destinatario ciudadRemitente ciudadDestinatario numPaquetes turno estadoPaquete');
 
         // Verificar si se encontraron boletos o encomiendas
         if (boletos.length > 0 || encomiendas.length > 0) {
@@ -235,10 +235,9 @@ const verViajesAsignadPrivados = async (req, res) => {
         // Convertir la cadena a ObjectId
         const conductorObjectId = new mongoose.Types.ObjectId(idConductor);
 
-        // Obtener los boletos de tipo privado asignados al conductor cuyo estadoPax es 'Aprobado'
+        // Obtener los boletos de tipo privado asignados al conductor cuyo estadoPax es 'Aprobado' y conductorAsignado coincide con idConductor
         const boletos = await BoletoPrivado.find({ conductorAsignado: conductorObjectId, estadoPax: 'Aprobado' })
             .select('user ciudadSalida ciudadLlegada turno numPax precio estadoPax');
-
 
         // Verificar si se encontraron boletos de tipo privado
         if (boletos.length > 0) {
@@ -369,6 +368,60 @@ const actualizarEstadoPrivado = async (req, res) => {
 };
 
 
+const actualizarEstadoEncomienda = async (req, res) => {
+    try {
+        const { idEncomienda, idConductor, nuevoEstado } = req.body;
+
+        // Validar si idEncomienda es una cadena válida ObjectId
+        if (!mongoose.Types.ObjectId.isValid(idEncomienda)) {
+            return res.status(400).json({ error: 'ID de encomienda no válido' });
+        }
+
+        // Convertir la cadena a ObjectId
+        const encomiendaObjectId = new mongoose.Types.ObjectId(idEncomienda);
+
+        // Obtener la encomienda y el conductor
+        const encomienda = await Encomienda.findById(encomiendaObjectId);
+        const conductor = await Conductor.findById(idConductor);
+
+        // Verificar si la encomienda y el conductor son válidos
+        if (encomienda && conductor) {
+            // Verificar si el estado del paquete no está ya 'Completado'
+            if (encomienda.estadoPaquete !== 'Completado') {
+                // Verificar si el nuevoEstado es 'En tránsito' o 'Completado'
+                if (['En tránsito', 'Completado'].includes(nuevoEstado)) {
+                    // Actualizar el estado del paquete
+                    encomienda.estadoPaquete = nuevoEstado;
+                    await encomienda.save();
+
+                    // Si el estado es 'Completado', cambiar el estado del conductor a 'Disponible'
+                    if (nuevoEstado === 'Completado') {
+                        conductor.estado = 'Disponible';
+                        await conductor.save();
+                    }
+
+                    // Enviar respuesta exitosa
+                    res.status(200).json({ mensaje: 'Encomienda actualizada con éxito' });
+                } else {
+                    // Enviar respuesta de error si el nuevoEstado no es 'En tránsito' o 'Completado'
+                    res.status(400).json({ error: 'Estado no permitido' });
+                }
+            } else {
+                // Enviar respuesta de error si el estado del paquete ya está 'Completado'
+                res.status(400).json({ error: 'La encomienda ya ha sido finalizada' });
+            }
+        } else {
+            // Enviar respuesta de error si la encomienda o el conductor no son válidos
+            res.status(400).json({ error: 'Error al actualizar la encomienda' });
+        }
+    } catch (error) {
+        // Manejar errores
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+
 
 
 export {
@@ -383,6 +436,7 @@ export {
     verViajesAsignados,
     actualizarEstadoCompartido,
     verViajesAsignadPrivados,
-    actualizarEstadoPrivado
+    actualizarEstadoPrivado,
+    actualizarEstadoEncomienda
 }
 

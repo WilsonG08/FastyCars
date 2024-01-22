@@ -14,7 +14,8 @@ import {
     actualizarEstadoCompartido,
     detalleChofer,
     verViajesAsignadPrivados,
-    actualizarEstadoPrivado
+    actualizarEstadoPrivado,
+    actualizarEstadoEncomienda
 } from "../controllers/chofer_controllers.js"
 
 import verificarAutentificacion from "../middlewares/autenticacion.js";
@@ -55,6 +56,7 @@ router.post("/chofer/viajes-asigandosPriv",verificarAutenticacion, verViajesAsig
 // CAMBIAR EL ESTADO DE UN PASAJERO
 router.put("/chofer/actualizarECom", verificarAutentificacion, actualizarEstadoCompartido);
 router.put("/chofer/actualizarPriv", verificarAutentificacion, actualizarEstadoPrivado);
+router.put("/chofer/actualizarEncomienda", verificarAutentificacion, actualizarEstadoEncomienda);
 
 
 
