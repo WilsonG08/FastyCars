@@ -103,7 +103,7 @@ router.get("/servicios",verificarAutenticacion, serviciosDsiponibles);
 
 
 // VER EL CONDUCTOR
-router.get("/admin/ver-conductor", verificarAutenticacion, verConductorAsignado);
+router.post("/ver-conductor", verificarAutenticacion, verConductorAsignado);
 
 
 // AUN ME FALTA VER

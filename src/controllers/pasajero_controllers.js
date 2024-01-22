@@ -1,8 +1,9 @@
-import Pasajero from '../models/pasajeroDB.js'
-import Administrador from '../models/adminDB.js'
-import Conductor from '../models/conductorDB.js'
-import RutayHorario from '../models/ruta_horario.js'
-import Servicio from '../models/serviciosDb.js'
+import Pasajero from '../models/pasajeroDB.js';
+import Administrador from '../models/adminDB.js';
+import Conductor from '../models/conductorDB.js';
+import RutayHorario from '../models/ruta_horario.js';
+import Servicio from '../models/serviciosDb.js';
+import Boleto from '../models/reservaDB.js';
 
 import { sendMailToUser, sendMailToRecoveryPassword } from "../config/nodemailer.js"
 import generarJWT from "../helpers/crearJWT.js"
@@ -216,6 +217,8 @@ const obtenerRutasHorarios = async (req, res) => {
     }
 };
 
+
+
 const verConductorAsignado = async (req, res) => {
     try {
         const { idBoleto } = req.body;
@@ -336,6 +339,7 @@ const actualizarPerfilPasajero = async (req, res) => {
         res.status(500).json({ msg: "Error al actualizar el perfil del pasajero" });
     }
 };
+
 
 
 
