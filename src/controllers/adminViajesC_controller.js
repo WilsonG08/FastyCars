@@ -1,9 +1,11 @@
 /* import Administrador from "../models/adminDB.js";
 import Pasajero from '../models/pasajeroDB.js'
-import Conductor from "../models/conductorDB.js";
 import generarJWT from "../helpers/crearJWT.js";
-import mongoose from "mongoose"; */
+ */
+
 import Boleto from '../models/reservaDB.js'
+import Conductor from "../models/conductorDB.js";
+import mongoose from "mongoose";
 
 
 // LISTA TODOS LOS VIAJES PENDIENTES
@@ -123,12 +125,17 @@ const actualizarBoletoC = async (req, res) => {
         estadoPax: req.body.estadoPax
     };
 
-
     if (req.rol !== 'administrador') {
         return res.status(403).json({ msg: 'Acceso denegado. Solo los usuarios con rol de Administrador tienen permiso para esta operación.' });
     }
 
     try {
+        // Verificar si el conductor existe
+        const conductor = await Conductor.findById(req.body.conductorAsignado);
+        if (!conductor) {
+            return res.status(400).json({ error: 'No se encontró el conductor con el ID proporcionado' });
+        }
+
         // Obtener el boleto actual
         const boletoActual = await Boleto.findById(id);
 
@@ -155,10 +162,78 @@ const actualizarBoletoC = async (req, res) => {
 }
 
 
+// ASIGNA UN CONDUCTOR
+const asignarConductorVC = async (req, res) => {
+    try {
+        const { idBoleto, idConductor } = req.body;
+
+        // Validar si idBoleto es una cadena válida ObjectId
+        if (!mongoose.Types.ObjectId.isValid(idBoleto)) {
+            return res.status(400).json({ error: 'ID de boleto no válido' });
+        }
+
+        // Convertir la cadena a ObjectId
+        const boletoObjectId = new mongoose.Types.ObjectId(idBoleto);
+
+        // Obtener el boleto y el conductor
+        const boleto = await Boleto.findById(boletoObjectId);
+        const conductor = await Conductor.findById(idConductor);
+
+        // Verificar si el boleto y el conductor son válidos
+        if (boleto && conductor) {
+            // Verificar si el campo conductorAsignado del boleto está vacío
+            if (!boleto.conductorAsignado) {
+                // Obtener todos los boletos asignados al conductor
+                const boletos = await Boleto.find({ conductorAsignado: conductor._id });
+
+                // Sumar el número de pasajeros en todos los boletos
+                let pasajerosAsignados = 0;
+                for (let boleto of boletos) {
+                    pasajerosAsignados += boleto.numPax;
+                }
+
+                // Verificar si hay suficientes asientos disponibles
+                if (conductor.numeroAsientos - conductor.asientosOcupados >= boleto.numPax) {
+                    // Actualizar el boleto con el conductor asignado y cambiar el estado del pasajero
+                    boleto.conductorAsignado = conductor._id;
+                    boleto.estadoPax = 'Aprobado';
+                    await boleto.save();
+
+                    // Actualizar el estado del conductor y el número de asientos ocupados
+                    conductor.estado = 'Ocupado';
+                    conductor.asientosOcupados += boleto.numPax;
+                    await conductor.save();
+
+                    // Enviar respuesta exitosa
+                    res.status(200).json({
+                        mensaje: 'Conductor asignado con éxito',
+                        nombreConductor: conductor.conductorNombre + ' ' + conductor.conductorApellido,
+                        asientosRequeridos: boleto.numPax
+                    });
+                } else {
+                    // Enviar respuesta de error si no hay suficientes asientos
+                    res.status(400).json({ error: 'No hay suficientes asientos disponibles' });
+                }
+            } else {
+                // Enviar respuesta de error si el campo conductorAsignado del boleto no está vacío
+                res.status(400).json({ error: 'El boleto ya tiene un conductor asignado' });
+            }
+        } else {
+            // Enviar respuesta de error si el boleto o el conductor no son válidos
+            res.status(400).json({ error: 'Error en la asignación de conductor' });
+        }
+    } catch (error) {
+        // Manejar errores
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
 
 export {
     viajesPendientesCompartidos,
     viajeCompartidoId,
     eliminarBoletoCompId,
-    actualizarBoletoC
+    actualizarBoletoC,
+    asignarConductorVC
 }

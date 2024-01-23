@@ -1,7 +1,9 @@
-/* import Administrador from "../models/adminDB.js";
+/* ";
 import Pasajero from '../models/pasajeroDB.js'
 import generarJWT from "../helpers/crearJWT.js";
+import Administrador from "../models/adminDB.js";
 */
+
 
 import mongoose from "mongoose"; 
 import Conductor from "../models/conductorDB.js";
@@ -133,12 +135,17 @@ const actualizarBoletoP = async (req, res) => {
         estadoPax: req.body.estadoPax
     };
 
-
     if (req.rol !== 'administrador') {
         return res.status(403).json({ msg: 'Acceso denegado. Solo los usuarios con rol de Administrador tienen permiso para esta operación.' });
     }
 
     try {
+        // Verificar si el conductor existe
+        const conductor = await Conductor.findById(req.body.conductorAsignado);
+        if (!conductor) {
+            return res.status(400).json({ error: 'No se encontró el conductor con el ID proporcionado' });
+        }
+
         // Obtener el boleto actual
         const boletoActual = await BoletoPrivado.findById(id);
 

@@ -76,8 +76,7 @@ const registrarChofer = async (req, res) => {
 
     const nuevoChofer = new Conductor(req.body);
 
-    // Asignar el ID del administrador al campo 'administrador' del nuevo conductor
-    nuevoChofer.administrador = req.administradorBDD._id; // Asegúrate de que 'req.userId' contiene el ID del administrador
+    nuevoChofer.administrador = req.administradorBDD._id; 
 
     nuevoChofer.password = await nuevoChofer.encrypPassword(password);
 
@@ -205,9 +204,14 @@ const actualizarChoferAdmin = async (req, res) => {
         res.status(200).json({ msg: "Perfil de conductor actualizado correctamente", choferBDD });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ msg: "Error al actualizar el perfil de conductor" });
+        if (error.code === 11000) {
+            res.status(400).json({ msg: "La placa del vehículo ya existe: " + req.body.placaVehiculo });
+        } else {
+            res.status(500).json({ msg: "Error al actualizar el perfil de conductor" });
+        }
     }
 };
+
 
 
 

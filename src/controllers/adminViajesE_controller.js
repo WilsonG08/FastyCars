@@ -92,6 +92,7 @@ const encomiendaId = async (req, res) => {
 // ACTUALIZA SOLO EL ESTADO Y ASIGNACION DE UN CONDUCTOR 
 const actualizarEncomienda = async (req, res) => {
     const idEncomienda = req.params.id; // Obtener el ID del parámetro de la ruta
+    const idConductor = req.body.conductorAsignado; // Obtener el ID del conductor del cuerpo de la solicitud
 
     // Solo tomar en cuenta los campos 'conductorAsignado' y 'estadoPaquete' del cuerpo de la solicitud
     const datosActualizados = {
@@ -104,12 +105,13 @@ const actualizarEncomienda = async (req, res) => {
     }
 
     try {
-        // Obtener la encomienda actual
+        // Obtener la encomienda y el conductor
         const encomiendaActual = await Encomienda.findById(idEncomienda);
+        const conductor = await Conductor.findById(idConductor);
 
-        // Verificar si la encomienda existe
-        if (!encomiendaActual) {
-            return res.status(400).json({ error: 'No se encontró la encomienda con el ID proporcionado' });
+        // Verificar si la encomienda y el conductor existen
+        if (!encomiendaActual || !conductor) {
+            return res.status(400).json({ error: 'No se encontró la encomienda o el conductor con los IDs proporcionados' });
         }
 
         // Verificar el estado actual de la encomienda
@@ -127,7 +129,8 @@ const actualizarEncomienda = async (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
-}
+};
+
 
 
 

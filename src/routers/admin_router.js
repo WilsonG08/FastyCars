@@ -11,7 +11,6 @@ import {
     recuperarPassword,
     comprobarTokenPassword,
     nuevoPassword,
-    asignarConductor,
     verViajesPendientes,
     obtenerAsientosDisponibles,
 } from '../controllers/admin_controllers.js'
@@ -30,11 +29,12 @@ import {
     validacionConductor,
     validacionRutaHorario,
     validacionServicio,
-}  from "../middlewares/validacionRP.js";
+    conductorUpdateAdmin
+} from "../middlewares/validacionRP.js";
 
 
 // Para que el ADMIN pueda gestionar a los conductores
-import{
+import {
     registrarChofer,
     listarChoferes,
     obtenerChoferPorId,
@@ -44,16 +44,17 @@ import{
 
 
 // Para la gestion de VIAJES COMPARTIDOS
-import{
+import {
     viajesPendientesCompartidos,
     viajeCompartidoId,
     eliminarBoletoCompId,
     actualizarBoletoC,
+    asignarConductorVC
 } from '../controllers/adminViajesC_controller.js'
 
 
 // PARA LA GESTION DE VIAJES PRIVADOS
-import{
+import {
     viajesPendientesPrivado,
     viajePrivadoId,
     eliminarBoletoPrivId,
@@ -63,7 +64,7 @@ import{
 
 
 // PARA LA GESTION DE ENCOMIENDAS
-import{
+import {
     encomiendasPendientes,
     encomiendaId,
     actualizarEncomienda,
@@ -71,16 +72,36 @@ import{
     asignarEncomienda
 } from '../controllers/adminViajesE_controller.js';
 
-import {registrarServicio} from '../controllers/servicio_controllers.js'
+import {
+    registrarServicio,
+    obtenerServicios,
+    obtenerServicio,
+    actualizarServicio,
+    eliminarServicio
+} from '../controllers/servicio_controllers.js'
 
+// PARA LA VALDIACION DE INICIO DE SESION
 import verificarAutenticacion from '../middlewares/autenticacion.js'
 
 
-const router =  Router();
+// PARA VALIDAR LOS DATOS
+import {
+    validacionRegistroAdmin,
+    validacionActualizarPerfil,
+    validaUpdateConAdmin,
+    validaUpdateBoletoP,
+    validaAsignarPrivado,
+    validaUPdateEncomienda,
+    validaAsignarEncomienda,
+    validaAsignarConductorVC
+} from '../middlewares/validacionAdmin.js';
+
+
+const router = Router();
 
 
 //REGISTRO
-router.post("/admin/register", registro);
+router.post("/admin/register", validacionRegistroAdmin, registro);
 
 // CONFIRMAR CORREO
 router.get("/admin/confirmar/:token", confirmEmail);
@@ -97,65 +118,62 @@ router.put("/admin/actualizarpassword", verificarAutenticacion, actualizarPasswo
 router.get("/admin/perfil", verificarAutenticacion, perfil);
 
 // ACTUALIZAR PERFIL
-router.put("/admin/actualizar/:id", verificarAutenticacion, actualizarPerfil);
+router.put("/admin/actualizar/:id", validacionActualizarPerfil, verificarAutenticacion, actualizarPerfil);
 
 // LISTAR CHOFERES Y PASASJEROS REGISTRADOS
-//router.get("/admin/lista-choferes",verificarAutenticacion, listarChoferes);
+router.get("/admin/lista-choferes", verificarAutenticacion, listarChoferes);
 router.get("/admin/lista-pasajeros", listarpasajeros);
 
 // REGISTRO DE SERVICIOS
 router.post("/admin/registro-servicio", validacionServicio, verificarAutenticacion, registrarServicio);
+router.get("/admin/servicios", verificarAutenticacion, obtenerServicios);
+router.get("/admin/servicio/:id", verificarAutenticacion, obtenerServicio);
+router.put("/admin/servicio/:id", validacionServicio, verificarAutenticacion, actualizarServicio);
+router.delete("/admin/servicio/:id", verificarAutenticacion, eliminarServicio);
+
 
 // ENDPOINTS DE RUTAS y HORARIOS
 router.post("/admin/registro-ruta", validacionRutaHorario, verificarAutenticacion, registrarRutaHorario);
-router.get("/admin/rutas",verificarAutenticacion, obtenerRutasHorarios);
+router.get("/admin/rutas", verificarAutenticacion, obtenerRutasHorarios);
 router.put("/admin/actualizarRuta/:id", validacionRutaHorario, verificarAutenticacion, actualizarRutaHorario);
 router.delete("/admin/eliminarRuta/:id", verificarAutenticacion, eliminarRutaHorario);
-router.get("/admin/ruta/:id",verificarAutenticacion, obtenerRutaHorarioPorId);
-
+router.get("/admin/ruta/:id", verificarAutenticacion, obtenerRutaHorarioPorId);
 
 
 //GESTION DE CONDUCTORES
 router.post("/admin/registrar-chofer", validacionConductor, verificarAutenticacion, registrarChofer);
 router.get("/admin/lista-conductores", verificarAutenticacion, listarChoferes);
-router.get("/admin/conductor/:id",verificarAutenticacion, obtenerChoferPorId );
+router.get("/admin/conductor/:id", verificarAutenticacion, obtenerChoferPorId);
 router.delete("/admin/eliminarConductor/:id", verificarAutenticacion, eliminarChoferPorId);
-router.put("/admin/actualizarConductor/:id", validacionConductor, verificarAutenticacion, actualizarChoferAdmin );
+router.put("/admin/actualizarConductor/:id", conductorUpdateAdmin, verificarAutenticacion, actualizarChoferAdmin);
 
 
 // GESTION DE VIAJES COMPARTIDOS
 router.get("/admin/viajesC", verificarAutenticacion, viajesPendientesCompartidos);
 router.get("/admin/viajeC/:id", verificarAutenticacion, viajeCompartidoId);
 router.delete("/admin/eliminarVC/:id", verificarAutenticacion, eliminarBoletoCompId);
-router.put("/admin/actualizarVC/:id", verificarAutenticacion, actualizarBoletoC );
+router.put("/admin/actualizarVC/:id", validaUpdateConAdmin, verificarAutenticacion, actualizarBoletoC);
+router.post("/admin/asignar-conductor", validaAsignarConductorVC, verificarAutenticacion, asignarConductorVC);
 
 
 // GESTION DE VIAJES PRIVADOS
 router.get("/admin/viajesPriv", verificarAutenticacion, viajesPendientesPrivado);
 router.get("/admin/viajePriv/:id", verificarAutenticacion, viajePrivadoId);
 router.delete("/admin/eliminarPriv/:id", verificarAutenticacion, eliminarBoletoPrivId);
-router.put("/admin/actualizarPriv/:id", verificarAutenticacion, actualizarBoletoP );
-router.post("/admin/asignar-conductorPriv", verificarAutenticacion, asignarPrivado );
+router.put("/admin/actualizarPriv/:id", validaUpdateBoletoP, verificarAutenticacion, actualizarBoletoP);
+router.post("/admin/asignar-conductorPriv", validaAsignarPrivado, verificarAutenticacion, asignarPrivado);
 
-// GESTION DE VIAJES PRIVADOS
+// GESTION DE ENCOMIENDAS
 router.get("/admin/encomiendas", verificarAutenticacion, encomiendasPendientes);
 router.get("/admin/encomienda/:id", verificarAutenticacion, encomiendaId);
 router.delete("/admin/eliminarEnco/:id", verificarAutenticacion, eliminarEncomiendaId);
-router.put("/admin/actualizarEnco/:id", verificarAutenticacion, actualizarEncomienda );
-router.post("/admin/asignar-conductorEnco", verificarAutenticacion, asignarEncomienda );
+router.put("/admin/actualizarEnco/:id", validaUPdateEncomienda, verificarAutenticacion, actualizarEncomienda);
+router.post("/admin/asignar-conductorEnco", validaAsignarEncomienda , verificarAutenticacion, asignarEncomienda);
 
 
-/*     encomiendasPendientes,
-    encomiendaId,
-    actualizarEncomienda,
-    eliminarEncomiendaId,
- */
 
 // VER VIAJES PENDIENTES
-router.get("/admin/viajes-pendientes",verificarAutenticacion, verViajesPendientes);
-
-// PARA LA ASIGNACION DE UN VIAJE A UN CONDUCTOR
-router.post("/admin/asignar-conductor", verificarAutenticacion, asignarConductor );
+router.get("/admin/viajes-pendientes", verificarAutenticacion, verViajesPendientes);
 
 
 // VER ASIENTOS DISPONIBLES

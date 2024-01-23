@@ -3,6 +3,10 @@ import mongoose from 'mongoose';
 
 // REGISTRAR RUTA Y HORARIO 
 const registrarRutaHorario = async (req, res) => {
+    // Verify if the authenticated user is an administrator
+    if (req.rol !== 'administrador') {
+        return res.status(403).json({ msg: 'Acceso denegado. Solo los usuarios con rol de Administrador tienen permiso para esta operación.' });
+    }
     const { nombre, ciudad1, ciudad2, horario1, horario2, horario3 } = req.body;
 
     if (!nombre || !ciudad1 || !ciudad2 || !horario1 || !horario2 || !horario3) {
@@ -54,6 +58,10 @@ const registrarRutaHorario = async (req, res) => {
 
 // OBTENER LAS RUTAS Y HORARIOS
 const obtenerRutasHorarios = async (req, res) => {
+    // Verify if the authenticated user is an administrator
+    if (req.rol !== 'administrador') {
+        return res.status(403).json({ msg: 'Acceso denegado. Solo los usuarios con rol de Administrador tienen permiso para esta operación.' });
+    }
     try {
         const rutas = await RutayHorario.find();
         res.status(200).json(rutas);
@@ -65,6 +73,10 @@ const obtenerRutasHorarios = async (req, res) => {
 
 // ACTUALIZAR RUTA Y HORARIO, POR id EN LA URL
 const actualizarRutaHorario = async (req, res) => {
+    // Verificar si el usuario autenticado es un administrador
+    if (req.rol !== 'administrador') {
+        return res.status(403).json({ msg: 'Acceso denegado. Solo los usuarios con rol de Administrador tienen permiso para esta operación.' });
+    }
     const { nombre, ciudad1, ciudad2, horario1, horario2, horario3 } = req.body;
     const { id } = req.params;
 
@@ -82,6 +94,12 @@ const actualizarRutaHorario = async (req, res) => {
     }
 
     try {
+        // Buscar la ruta por ID
+        const rutaExistente = await RutayHorario.findById(id);
+        if (!rutaExistente) {
+            return res.status(404).json({ msg: "No se encontró ninguna ruta con el ID proporcionado" });
+        }
+
         // Verificar si ya existe una ruta con el mismo nombre
         const nombreExistente = await RutayHorario.findOne({
             "ruta.nombre": nombre,
@@ -127,8 +145,13 @@ const actualizarRutaHorario = async (req, res) => {
 };
 
 
+
 // ELIMINAR RUTA Y HORARIO POR EL id EN LA URL
 const eliminarRutaHorario = async (req, res) => {
+    // Verify if the authenticated user is an administrator
+    if (req.rol !== 'administrador') {
+        return res.status(403).json({ msg: 'Acceso denegado. Solo los usuarios con rol de Administrador tienen permiso para esta operación.' });
+    }
     const { id } = req.params;
 
     if (!id) {
@@ -157,6 +180,10 @@ const eliminarRutaHorario = async (req, res) => {
 
 // OBTENER RUTA Y HORARIO POR ID
 const obtenerRutaHorarioPorId = async (req, res) => {
+    // Verify if the authenticated user is an administrator
+    if (req.rol !== 'administrador') {
+        return res.status(403).json({ msg: 'Acceso denegado. Solo los usuarios con rol de Administrador tienen permiso para esta operación.' });
+    }
     try {
         // Extrae el ID de la ruta y horario de la URL
         const { id } = req.params;
