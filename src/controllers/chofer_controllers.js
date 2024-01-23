@@ -200,11 +200,11 @@ const verViajesAsignados = async (req, res) => {
 
         // Obtener los boletos asignados al conductor cuyo estadoPax es 'Aprobado' y conductorAsignado coincide con idConductor
         const boletos = await Boleto.find({ conductorAsignado: conductorObjectId, estadoPax: 'Aprobado' })
-            .select('tipoBoleto user ciudadSalida ciudadLlegada turno numPax precio estadoPax');
+            .select('tipoBoleto user ciudadSalida ciudadLlegada turno numPax precio estadoPax distancia');
 
         // Obtener las encomiendas asignadas al conductor cuyo estadoPaquete es 'Aprobado' y conductorAsignado coincide con idConductor
         const encomiendas = await Encomienda.find({ conductorAsignado: conductorObjectId, estadoPaquete: 'Aprobado' })
-            .select('tipoBoleto pasajeroId remitente destinatario ciudadRemitente ciudadDestinatario numPaquetes turno estadoPaquete');
+            .select('tipoBoleto pasajeroId remitente destinatario ciudadRemitente ciudadDestinatario numPaquetes turno estadoPaquete ');
 
         // Verificar si se encontraron boletos o encomiendas
         if (boletos.length > 0 || encomiendas.length > 0) {
@@ -237,7 +237,7 @@ const verViajesAsignadPrivados = async (req, res) => {
 
         // Obtener los boletos de tipo privado asignados al conductor cuyo estadoPax es 'Aprobado' y conductorAsignado coincide con idConductor
         const boletos = await BoletoPrivado.find({ conductorAsignado: conductorObjectId, estadoPax: 'Aprobado' })
-            .select('user ciudadSalida ciudadLlegada turno numPax precio estadoPax');
+            .select('user ciudadSalida ciudadLlegada turno numPax precio estadoPax distancia');
 
         // Verificar si se encontraron boletos de tipo privado
         if (boletos.length > 0) {
