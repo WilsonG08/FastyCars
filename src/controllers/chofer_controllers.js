@@ -205,12 +205,18 @@ const verViajesAsignados = async (req, res) => {
         })
         .select('tipoBoleto user ciudadSalida ciudadLlegada turno numPax precio estadoPax distancia');
 
-        // Verificar si se encontraron boletos
-        if (boletos.length > 0) {
-            // Enviar respuesta con los boletos asignados
-            res.status(200).json({ mensaje: 'Viajes Asignados', boletos });
+        // Obtener las encomiendas asignadas al conductor cuyo estadoPaquete es 'Aprobado' o 'En tránsito' y conductorAsignado coincide con idConductor
+        const encomiendas = await Encomienda.find({ 
+            conductorAsignado: conductorObjectId, 
+            estadoPaquete: { $in: ['Aprobado', 'En tránsito', 'Completado'] } 
+        });
+
+        // Verificar si se encontraron boletos o encomiendas
+        if (boletos.length > 0 || encomiendas.length > 0) {
+            // Enviar respuesta con los boletos y encomiendas asignados
+            res.status(200).json({ mensaje: 'Viajes Asignados', boletos, encomiendas });
         } else {
-            // Enviar respuesta de error si no se encontraron boletos
+            // Enviar respuesta de error si no se encontraron boletos ni encomiendas
             res.status(400).json({ error: 'No se encontraron viajes asignados' });
         }
     } catch (error) {
@@ -219,6 +225,7 @@ const verViajesAsignados = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+
 
 
 
