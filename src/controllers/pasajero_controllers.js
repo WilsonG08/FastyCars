@@ -4,6 +4,9 @@ import Conductor from '../models/conductorDB.js';
 import RutayHorario from '../models/ruta_horario.js';
 import Servicio from '../models/serviciosDb.js';
 import Boleto from '../models/reservaDB.js';
+import BoletoPrivado from '../models/viajePrivadoDB.js';
+import Encomienda from '../models/encomiendaDb.js';
+
 
 import { sendMailToUser, sendMailToRecoveryPassword } from "../config/nodemailer.js"
 import generarJWT from "../helpers/crearJWT.js"
@@ -222,6 +225,7 @@ const obtenerRutasHorarios = async (req, res) => {
 const verConductorAsignado = async (req, res) => {
     try {
         const { idBoleto } = req.body;
+        const clienteId = req.clienteBDD ? req.clienteBDD._id : null; // Obtén el ID del cliente que inició sesión
 
         // Validar si idBoleto es una cadena válida ObjectId
         if (!mongoose.Types.ObjectId.isValid(idBoleto)) {
@@ -231,27 +235,30 @@ const verConductorAsignado = async (req, res) => {
         // Convertir la cadena a ObjectId
         const boletoObjectId = new mongoose.Types.ObjectId(idBoleto);
 
-        // Obtener el boleto
-        const boleto = await Boleto.findById(boletoObjectId).populate('conductorAsignado');
+        // Obtener el boleto, boleto privado o la encomienda
+        const boleto = await Boleto.findOne({ _id: boletoObjectId, clienteId }).populate('conductorAsignado');
+        const boletoPrivado = await BoletoPrivado.findOne({ _id: boletoObjectId, clienteId }).populate('conductorAsignado');
+        const encomienda = await Encomienda.findOne({ _id: boletoObjectId, clienteId }).populate('conductorAsignado');
 
-        // Verificar si el boleto es válido y si el conductor ha sido asignado y el estado es 'Aprobado'
-        if (boleto && boleto.conductorAsignado && boleto.estado === 'Aprobado') {
+        // Verificar si el boleto, boleto privado o la encomienda es válido y si el conductor ha sido asignado y el estado es 'Aprobado', 'En tránsito' o 'Completado'
+        const item = boleto || boletoPrivado || encomienda;
+        if (item && item.conductorAsignado && ['Aprobado', 'En tránsito', 'Completado'].includes(item.estadoPaquete || item.estadoPax)) {
             // Crear un objeto con solo los detalles del conductor que necesitas
             const conductor = {
-                nombre: boleto.conductorAsignado.conductorNombre,
-                apellido: boleto.conductorAsignado.conductorApellido,
-                celular: boleto.conductorAsignado.phone,
-                marca: boleto.conductorAsignado.marcaVehiculo,
-                modelo: boleto.conductorAsignado.modeloVehiculo,
-                color: boleto.conductorAsignado.colorVehiculo,
-                placa: boleto.conductorAsignado.placaVehiculo
+                nombre: item.conductorAsignado.conductorNombre,
+                apellido: item.conductorAsignado.conductorApellido,
+                celular: item.conductorAsignado.phone,
+                marca: item.conductorAsignado.marcaVehiculo,
+                modelo: item.conductorAsignado.modeloVehiculo,
+                color: item.conductorAsignado.colorVehiculo,
+                placa: item.conductorAsignado.placaVehiculo
             };
 
             // Enviar respuesta con los detalles del conductor
             res.status(200).json({ mensaje: 'Conductor asignado', conductor });
         } else {
-            // Enviar respuesta de error si el boleto no es válido o si no se ha asignado un conductor o si el estado no es 'Aprobado'
-            res.status(400).json({ error: 'El boleto aún no tiene un conductor asignado o no está aprobado' });
+            // Enviar respuesta de error si el boleto, boleto privado o la encomienda no es válido o si no se ha asignado un conductor o si el estado no es 'Aprobado', 'En tránsito' o 'Completado'
+            res.status(400).json({ error: 'El boleto, boleto privado o la encomienda aún no tiene un conductor asignado o no está en un estado válido' });
         }
     } catch (error) {
         // Manejar errores
@@ -259,6 +266,8 @@ const verConductorAsignado = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+
+
 
 
 
