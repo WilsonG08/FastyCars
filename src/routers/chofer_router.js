@@ -18,6 +18,17 @@ import {
     actualizarEstadoEncomienda
 } from "../controllers/chofer_controllers.js"
 
+
+// PRA LA VALIDACION DE DATOS
+import { 
+    validaActualizarChofer,
+    validaActualizarEstadoCompartido,
+    validaActualizarEstadoPrivado,
+    validaActualizarEstadoEncomienda
+} from '../middlewares/validacionConductor.js';
+
+
+
 import verificarAutentificacion from "../middlewares/autenticacion.js";
 
 const router = Router();
@@ -39,7 +50,7 @@ router.put("/conductor/actualizarpassword", verificarAutenticacion, actualizarPa
 
 
 // ACTUALIZAR PERFIL
-router.put("/chofer/actualizarPerfil/:id", verificarAutentificacion, actualizarChofer);
+router.put("/chofer/actualizarPerfil/:id", validaActualizarChofer,  verificarAutentificacion, actualizarChofer);
 
 
 router.delete("/chofer/eliminar/:id", verificarAutentificacion, eliminarChofer);
@@ -54,9 +65,9 @@ router.post("/chofer/viajes-asigandosPriv",verificarAutenticacion, verViajesAsig
 
 
 // CAMBIAR EL ESTADO DE UN PASAJERO
-router.put("/chofer/actualizarECom", verificarAutentificacion, actualizarEstadoCompartido);
-router.put("/chofer/actualizarPriv", verificarAutentificacion, actualizarEstadoPrivado);
-router.put("/chofer/actualizarEncomienda", verificarAutentificacion, actualizarEstadoEncomienda);
+router.put("/chofer/actualizarECom", validaActualizarEstadoCompartido,  verificarAutentificacion, actualizarEstadoCompartido);
+router.put("/chofer/actualizarPriv", validaActualizarEstadoPrivado, verificarAutentificacion, actualizarEstadoPrivado);
+router.put("/chofer/actualizarEncomienda", validaActualizarEstadoEncomienda,  verificarAutentificacion, actualizarEstadoEncomienda);
 
 
 

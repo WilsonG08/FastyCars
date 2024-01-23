@@ -284,42 +284,45 @@ const actualizarEstadoCompartido = async (req, res) => {
         const boleto = await Boleto.findById(boletoObjectId);
         const conductor = await Conductor.findById(idConductor);
 
-        // Verificar si el boleto y el conductor son válidos
-        if (boleto && conductor) {
-            // Verificar si el estado del pasajero no está ya 'Completado'
-            if (boleto.estadoPax !== 'Completado') {
-                // Verificar si el nuevoEstado es 'En tránsito' o 'Completado'
-                if (['En tránsito', 'Completado'].includes(nuevoEstado)) {
-                    // Actualizar el estado del pasajero
-                    boleto.estadoPax = nuevoEstado;
-                    await boleto.save();
+        // Verificar si el boleto y el conductor fueron encontrados
+        if (!boleto) {
+            return res.status(404).json({ error: 'Boleto no encontrado' });
+        }
+        if (!conductor) {
+            return res.status(404).json({ error: 'Conductor no encontrado' });
+        }
 
-                    // Si el estado es 'Completado', actualizar los asientos ocupados del conductor
-                    if (nuevoEstado === 'Completado') {
-                        conductor.asientosOcupados -= boleto.numPax;
-                        await conductor.save();
-                    }
+        // Verificar si el estado del pasajero no está ya 'Completado'
+        if (boleto.estadoPax !== 'Completado') {
+            // Verificar si el nuevoEstado es 'En tránsito' o 'Completado'
+            if (['En tránsito', 'Completado'].includes(nuevoEstado)) {
+                // Actualizar el estado del pasajero
+                boleto.estadoPax = nuevoEstado;
+                await boleto.save();
 
-                    // Enviar respuesta exitosa
-                    res.status(200).json({ mensaje: 'Viaje actualizado con éxito' });
-                } else {
-                    // Enviar respuesta de error si el nuevoEstado no es 'En tránsito' o 'Completado'
-                    res.status(400).json({ error: 'Estado no permitido' });
+                // Si el estado es 'Completado', actualizar los asientos ocupados del conductor
+                if (nuevoEstado === 'Completado') {
+                    conductor.asientosOcupados -= boleto.numPax;
+                    await conductor.save();
                 }
+
+                // Enviar respuesta exitosa
+                res.status(200).json({ mensaje: 'Viaje actualizado con éxito' });
             } else {
-                // Enviar respuesta de error si el estado del pasajero ya está 'Completado'
-                res.status(400).json({ error: 'El viaje ya ha sido finalizado' });
+                // Enviar respuesta de error si el nuevoEstado no es 'En tránsito' o 'Completado'
+                res.status(400).json({ error: 'Estado no permitido' });
             }
         } else {
-            // Enviar respuesta de error si el boleto o el conductor no son válidos
-            res.status(400).json({ error: 'Error al actualizar el viaje' });
+            // Enviar respuesta de error si el estado del pasajero ya está 'Completado'
+            res.status(400).json({ error: 'El viaje ya ha sido finalizado' });
         }
     } catch (error) {
         // Manejar errores
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
-}
+};
+
 
 
 
@@ -340,36 +343,38 @@ const actualizarEstadoPrivado = async (req, res) => {
         const boleto = await BoletoPrivado.findById(boletoObjectId);
         const conductor = await Conductor.findById(idConductor);
 
-        // Verificar si el boleto y el conductor son válidos
-        if (boleto && conductor) {
-            // Verificar si el estado del pasajero no está ya 'Completado'
-            if (boleto.estadoPax !== 'Completado') {
-                // Verificar si el nuevoEstado es 'En tránsito' o 'Completado'
-                if (['En tránsito', 'Completado'].includes(nuevoEstado)) {
-                    // Actualizar el estado del pasajero
-                    boleto.estadoPax = nuevoEstado;
-                    await boleto.save();
+        // Verificar si el boleto y el conductor fueron encontrados
+        if (!boleto) {
+            return res.status(404).json({ error: 'Boleto no encontrado' });
+        }
+        if (!conductor) {
+            return res.status(404).json({ error: 'Conductor no encontrado' });
+        }
 
-                    // Si el estado es 'Completado', actualizar los asientos ocupados del conductor
-                    if (nuevoEstado === 'Completado') {
-                        conductor.asientosOcupados -= boleto.numPax;
-                        conductor.estado = 'Disponible'; // Cambiar el estado del conductor a 'Disponible'
-                        await conductor.save();
-                    }
+        // Verificar si el estado del pasajero no está ya 'Completado'
+        if (boleto.estadoPax !== 'Completado') {
+            // Verificar si el nuevoEstado es 'En tránsito' o 'Completado'
+            if (['En tránsito', 'Completado'].includes(nuevoEstado)) {
+                // Actualizar el estado del pasajero
+                boleto.estadoPax = nuevoEstado;
+                await boleto.save();
 
-                    // Enviar respuesta exitosa
-                    res.status(200).json({ mensaje: 'Viaje actualizado con éxito' });
-                } else {
-                    // Enviar respuesta de error si el nuevoEstado no es 'En tránsito' o 'Completado'
-                    res.status(400).json({ error: 'Estado no permitido' });
+                // Si el estado es 'Completado', actualizar los asientos ocupados del conductor
+                if (nuevoEstado === 'Completado') {
+                    conductor.asientosOcupados -= boleto.numPax;
+                    conductor.estado = 'Disponible'; // Cambiar el estado del conductor a 'Disponible'
+                    await conductor.save();
                 }
+
+                // Enviar respuesta exitosa
+                res.status(200).json({ mensaje: 'Viaje actualizado con éxito' });
             } else {
-                // Enviar respuesta de error si el estado del pasajero ya está 'Completado'
-                res.status(400).json({ error: 'El viaje ya ha sido finalizado' });
+                // Enviar respuesta de error si el nuevoEstado no es 'En tránsito' o 'Completado'
+                res.status(400).json({ error: 'Estado no permitido' });
             }
         } else {
-            // Enviar respuesta de error si el boleto o el conductor no son válidos
-            res.status(400).json({ error: 'Error al actualizar el viaje' });
+            // Enviar respuesta de error si el estado del pasajero ya está 'Completado'
+            res.status(400).json({ error: 'El viaje ya ha sido finalizado' });
         }
     } catch (error) {
         // Manejar errores
@@ -377,6 +382,7 @@ const actualizarEstadoPrivado = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+
 
 
 const actualizarEstadoEncomienda = async (req, res) => {
@@ -395,35 +401,37 @@ const actualizarEstadoEncomienda = async (req, res) => {
         const encomienda = await Encomienda.findById(encomiendaObjectId);
         const conductor = await Conductor.findById(idConductor);
 
-        // Verificar si la encomienda y el conductor son válidos
-        if (encomienda && conductor) {
-            // Verificar si el estado del paquete no está ya 'Completado'
-            if (encomienda.estadoPaquete !== 'Completado') {
-                // Verificar si el nuevoEstado es 'En tránsito' o 'Completado'
-                if (['En tránsito', 'Completado'].includes(nuevoEstado)) {
-                    // Actualizar el estado del paquete
-                    encomienda.estadoPaquete = nuevoEstado;
-                    await encomienda.save();
+        // Verificar si la encomienda y el conductor fueron encontrados
+        if (!encomienda) {
+            return res.status(404).json({ error: 'Encomienda no encontrada' });
+        }
+        if (!conductor) {
+            return res.status(404).json({ error: 'Conductor no encontrado' });
+        }
 
-                    // Si el estado es 'Completado', cambiar el estado del conductor a 'Disponible'
-                    if (nuevoEstado === 'Completado') {
-                        conductor.estado = 'Disponible';
-                        await conductor.save();
-                    }
+        // Verificar si el estado del paquete no está ya 'Completado'
+        if (encomienda.estadoPaquete !== 'Completado') {
+            // Verificar si el nuevoEstado es 'En tránsito' o 'Completado'
+            if (['En tránsito', 'Completado'].includes(nuevoEstado)) {
+                // Actualizar el estado del paquete
+                encomienda.estadoPaquete = nuevoEstado;
+                await encomienda.save();
 
-                    // Enviar respuesta exitosa
-                    res.status(200).json({ mensaje: 'Encomienda actualizada con éxito' });
-                } else {
-                    // Enviar respuesta de error si el nuevoEstado no es 'En tránsito' o 'Completado'
-                    res.status(400).json({ error: 'Estado no permitido' });
+                // Si el estado es 'Completado', cambiar el estado del conductor a 'Disponible'
+                if (nuevoEstado === 'Completado') {
+                    conductor.estado = 'Disponible';
+                    await conductor.save();
                 }
+
+                // Enviar respuesta exitosa
+                res.status(200).json({ mensaje: 'Encomienda actualizada con éxito' });
             } else {
-                // Enviar respuesta de error si el estado del paquete ya está 'Completado'
-                res.status(400).json({ error: 'La encomienda ya ha sido finalizada' });
+                // Enviar respuesta de error si el nuevoEstado no es 'En tránsito' o 'Completado'
+                res.status(400).json({ error: 'Estado no permitido' });
             }
         } else {
-            // Enviar respuesta de error si la encomienda o el conductor no son válidos
-            res.status(400).json({ error: 'Error al actualizar la encomienda' });
+            // Enviar respuesta de error si el estado del paquete ya está 'Completado'
+            res.status(400).json({ error: 'La encomienda ya ha sido finalizada' });
         }
     } catch (error) {
         // Manejar errores
@@ -431,6 +439,7 @@ const actualizarEstadoEncomienda = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+
 
 
 
