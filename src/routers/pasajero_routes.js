@@ -45,7 +45,8 @@ import {
     validacionBoletoAc,
     validacionPasajero,
     validacionInicioSesion,
-    validacionEncomienda
+    validacionEncomienda,
+    validateEncomiendaUpdate
 } from '../middlewares/validacionCliente.js'
 
 const router =  Router()
@@ -91,7 +92,7 @@ router.put("/actualizar-boleto-privado/:id", validacionBoletoAc, verificarAutent
 
 // RESERVA ENCOMIENDA
 router.post("/reserva-encomienda", validacionEncomienda, verificarAutenticacion, reservaEncomienda);
-router.put("/encomienda-actualizar/:id", verificarAutenticacion, actualizarEncomienda);
+router.put("/encomienda-actualizar/:id", validateEncomiendaUpdate, verificarAutenticacion, actualizarEncomienda);
 
 
 
