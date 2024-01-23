@@ -234,8 +234,8 @@ const verConductorAsignado = async (req, res) => {
         // Obtener el boleto
         const boleto = await Boleto.findById(boletoObjectId).populate('conductorAsignado');
 
-        // Verificar si el boleto es válido
-        if (boleto && boleto.conductorAsignado) {
+        // Verificar si el boleto es válido y si el conductor ha sido asignado y el estado es 'Aprobado'
+        if (boleto && boleto.conductorAsignado && boleto.estado === 'Aprobado') {
             // Crear un objeto con solo los detalles del conductor que necesitas
             const conductor = {
                 nombre: boleto.conductorAsignado.conductorNombre,
@@ -250,15 +250,16 @@ const verConductorAsignado = async (req, res) => {
             // Enviar respuesta con los detalles del conductor
             res.status(200).json({ mensaje: 'Conductor asignado', conductor });
         } else {
-            // Enviar respuesta de error si el boleto no es válido
-            res.status(400).json({ error: 'Error al obtener el conductor asignado' });
+            // Enviar respuesta de error si el boleto no es válido o si no se ha asignado un conductor o si el estado no es 'Aprobado'
+            res.status(400).json({ error: 'El boleto aún no tiene un conductor asignado o no está aprobado' });
         }
     } catch (error) {
         // Manejar errores
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
-}
+};
+
 
 
 const actualizarPerfil = async (req, res) => {
