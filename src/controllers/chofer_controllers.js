@@ -240,7 +240,7 @@ const verViajesAsignadPrivados = async (req, res) => {
             conductorAsignado: conductorObjectId, 
             estadoPax: { $in: ['Aprobado', 'En tránsito', 'Completado'] } 
         })
-        .select('user ciudadSalida ciudadLlegada turno numPax precio estadoPax distancia');
+        .select('tipoBoleto user ciudadSalida ciudadLlegada turno numPax precio estadoPax distancia');
 
         // Verificar si se encontraron boletos de tipo privado
         if (boletos.length > 0) {
