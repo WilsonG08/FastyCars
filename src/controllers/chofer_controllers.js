@@ -198,20 +198,19 @@ const verViajesAsignados = async (req, res) => {
         // Convertir la cadena a ObjectId
         const conductorObjectId = new mongoose.Types.ObjectId(idConductor);
 
-        // Obtener los boletos asignados al conductor cuyo estadoPax es 'Aprobado' y conductorAsignado coincide con idConductor
-        const boletos = await Boleto.find({ conductorAsignado: conductorObjectId, estadoPax: 'Aprobado' })
-            .select('tipoBoleto user ciudadSalida ciudadLlegada turno numPax precio estadoPax distancia');
+        // Obtener los boletos asignados al conductor cuyo estadoPax es 'Aprobado' o 'En tránsito' y conductorAsignado coincide con idConductor
+        const boletos = await Boleto.find({ 
+            conductorAsignado: conductorObjectId, 
+            estadoPax: { $in: ['Aprobado', 'En tránsito', 'Completado'] } 
+        })
+        .select('tipoBoleto user ciudadSalida ciudadLlegada turno numPax precio estadoPax distancia');
 
-        // Obtener las encomiendas asignadas al conductor cuyo estadoPaquete es 'Aprobado' y conductorAsignado coincide con idConductor
-        const encomiendas = await Encomienda.find({ conductorAsignado: conductorObjectId, estadoPaquete: 'Aprobado' })
-            .select('tipoBoleto pasajeroId remitente destinatario ciudadRemitente ciudadDestinatario numPaquetes turno estadoPaquete ');
-
-        // Verificar si se encontraron boletos o encomiendas
-        if (boletos.length > 0 || encomiendas.length > 0) {
-            // Enviar respuesta con los boletos y encomiendas asignados
-            res.status(200).json({ mensaje: 'Viajes Compartidos', boletos, encomiendas });
+        // Verificar si se encontraron boletos
+        if (boletos.length > 0) {
+            // Enviar respuesta con los boletos asignados
+            res.status(200).json({ mensaje: 'Viajes Asignados', boletos });
         } else {
-            // Enviar respuesta de error si no se encontraron boletos ni encomiendas
+            // Enviar respuesta de error si no se encontraron boletos
             res.status(400).json({ error: 'No se encontraron viajes asignados' });
         }
     } catch (error) {
@@ -220,6 +219,7 @@ const verViajesAsignados = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+
 
 
 
@@ -235,9 +235,12 @@ const verViajesAsignadPrivados = async (req, res) => {
         // Convertir la cadena a ObjectId
         const conductorObjectId = new mongoose.Types.ObjectId(idConductor);
 
-        // Obtener los boletos de tipo privado asignados al conductor cuyo estadoPax es 'Aprobado' y conductorAsignado coincide con idConductor
-        const boletos = await BoletoPrivado.find({ conductorAsignado: conductorObjectId, estadoPax: 'Aprobado' })
-            .select('user ciudadSalida ciudadLlegada turno numPax precio estadoPax distancia');
+        // Obtener los boletos de tipo privado asignados al conductor cuyo estadoPax es 'Aprobado' o 'En tránsito' y conductorAsignado coincide con idConductor
+        const boletos = await BoletoPrivado.find({ 
+            conductorAsignado: conductorObjectId, 
+            estadoPax: { $in: ['Aprobado', 'En tránsito', 'Completado'] } 
+        })
+        .select('user ciudadSalida ciudadLlegada turno numPax precio estadoPax distancia');
 
         // Verificar si se encontraron boletos de tipo privado
         if (boletos.length > 0) {
@@ -253,6 +256,7 @@ const verViajesAsignadPrivados = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+
 
 
 
