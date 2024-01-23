@@ -86,7 +86,7 @@ router.delete("/eliminar-boleto/:id", verificarAutenticacion, eliminarReservaCli
 
 // VIAJE PRIVADO
 router.post("/reserva-boleto-privado", validacionBoleto, verificarAutenticacion, reservaBoletoPriv);
-router.put("/actualizar-boleto-privado/:id", validacionBoleto, verificarAutenticacion, actualizarBoletoPriv);
+router.put("/actualizar-boleto-privado/:id", validacionBoletoAc, verificarAutenticacion, actualizarBoletoPriv);
 
 
 // RESERVA ENCOMIENDA
