@@ -46,7 +46,7 @@ import {
     validacionPasajero,
     validacionInicioSesion,
     validacionEncomienda
-} from '../middlewares/validacionRP.js'
+} from '../middlewares/validacionCliente.js'
 
 const router =  Router()
 

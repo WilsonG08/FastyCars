@@ -189,8 +189,9 @@ const asignarEncomienda = async (req, res) => {
         } else {
             // Verificar si el campo conductorAsignado de la encomienda está vacío
             if (!encomienda.conductorAsignado) {
-                // Actualizar la encomienda con el conductor asignado
+                // Actualizar la encomienda con el conductor asignado y cambiar el estado a 'Aprobado'
                 encomienda.conductorAsignado = conductor._id;
+                encomienda.estadoPaquete = 'Aprobado';
                 await encomienda.save();
 
                 // Enviar respuesta exitosa
@@ -209,6 +210,7 @@ const asignarEncomienda = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+
 
 
 

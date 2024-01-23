@@ -2,7 +2,7 @@ import Encomienda from '../models/encomiendaDb.js';
 
 const reservaEncomienda = async (req, res) => {
     try {
-        const { remitente, destinatario, ciudadRemitente, ciudadDestinatario, numPaquetes, turno, estadoPaquete, precio } = req.body;
+        const { remitente, destinatario, ciudadRemitente, ciudadDestinatario, numPaquetes, turno, precio } = req.body;
         const { _id: pasajeroId } = req.pasajeroBDD;
 
         // Valida si algún campo está vacío
@@ -32,7 +32,7 @@ const reservaEncomienda = async (req, res) => {
             numPaquetes,
             turno,
             precio,
-            estadoPaquete,
+            estadoPaquete: 'Pendiente', // Cambia el estado a 'Pendiente'
         });
 
         // Guarda la encomienda en la base de datos
@@ -44,6 +44,7 @@ const reservaEncomienda = async (req, res) => {
         res.status(500).json({ result:false, msg: "Error al realizar la reserva de encomienda" });
     }
 };
+
 
 
 const actualizarEncomienda = async (req, res) => {

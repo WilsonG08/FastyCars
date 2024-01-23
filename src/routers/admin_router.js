@@ -30,7 +30,7 @@ import {
     validacionRutaHorario,
     validacionServicio,
     conductorUpdateAdmin
-} from "../middlewares/validacionRP.js";
+} from "../middlewares/validacionCliente.js";
 
 
 // Para que el ADMIN pueda gestionar a los conductores
