@@ -142,7 +142,7 @@ const validacionBoletoAc = [
         .withMessage("El campo es obligatorio")
         .notEmpty()
         .withMessage("El campo no puede estar vacío")
-        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ" })
+        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ " })
         .withMessage("El campo debe ser una cadena de texto con solo letras"),
 
     check("ciudadSalida.direccion")
@@ -156,7 +156,7 @@ const validacionBoletoAc = [
         .withMessage("El campo es obligatorio")
         .notEmpty()
         .withMessage("El campo no puede estar vacío")
-        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ" })
+        .isAlpha("es-ES", { ignore: "áéíóúÁÉÍÓÚñÑ " })
         .withMessage("El campo debe ser una cadena de texto con solo letras"),
 
     check("ciudadLlegada.direccion")
