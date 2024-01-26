@@ -585,7 +585,7 @@ const validacionEncomienda = [
         .notEmpty().withMessage("El campo no puede estar vacío")
         .trim()
         .isLength({ min: 3, max: 200 }).withMessage('El campo "direccion" debe tener entre 3 y 200 caracteres')
-        .matches(/^[a-zA-Z0-9\s,.'-]+$/u)
+        .matches(/^[a-zA-Z0-9\s,.'-:]+$/u)
         .withMessage("El campo debe contener solo letras, números, espacios, comas, puntos, dos puntos y guiones"),
 
 
@@ -858,7 +858,7 @@ const validateEncomiendaUpdate = [
         .notEmpty().withMessage("El campo no puede estar vacío")
         .trim()
         .isLength({ min: 3, max: 200 }).withMessage('El campo "direccion" debe tener entre 3 y 200 caracteres')
-        .matches(/^[a-zA-Z0-9\s,.'-]+$/u)
+        .matches(/^[a-zA-Z0-9\s,.'-:]+$/u)
         .withMessage("El campo debe contener solo letras, números, espacios, comas, puntos, dos puntos y guiones"),
 
 
