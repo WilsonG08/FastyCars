@@ -588,16 +588,10 @@ const validacionEncomienda = [
         .matches(/^[a-zA-Z0-9\s,.'-:]+$/u)
         .withMessage("El campo debe contener solo letras, números, espacios, comas, puntos, dos puntos y guiones"),
 
-
-
     // Validaciones para ciudadDestinatario
     check("ciudadDestinatario.ciudad")
         .exists().withMessage("El campo es obligatorio")
-        .notEmpty().withMessage("El campo no puede estar vacío")
-        .trim() // Agregado para eliminar espacios al comienzo y al final
-        .isLength({ min: 3, max: 100 }).withMessage('El campo "ciudadDestinatario.ciudad" debe tener entre 3 y 100 caracteres')
-        .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras"),
-
+        .notEmpty().withMessage("El campo no puede estar vacío"),
 
     check("ciudadDestinatario.latitud")
         .exists().withMessage("El campo es obligatorio")
@@ -862,15 +856,10 @@ const validateEncomiendaUpdate = [
         .withMessage("El campo debe contener solo letras, números, espacios, comas, puntos, dos puntos y guiones"),
 
 
-
-
     // Validaciones para ciudadDestinatario
     check("ciudadDestinatario.ciudad")
         .exists().withMessage("El campo es obligatorio")
-        .notEmpty().withMessage("El campo no puede estar vacío")
-        .trim() // Agregado para eliminar espacios al comienzo y al final
-        .isLength({ min: 3, max: 100 }).withMessage('El campo "ciudadDestinatario.ciudad" debe tener entre 3 y 100 caracteres')
-        .matches(/^[a-zA-Z\s]*$/).withMessage("El campo debe contener solo letras"),
+        .notEmpty().withMessage("El campo no puede estar vacío"),
 
 
     check("ciudadDestinatario.latitud")
