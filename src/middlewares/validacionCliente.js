@@ -582,11 +582,7 @@ const validacionEncomienda = [
 
     check("ciudadRemitente.direccion")
         .exists().withMessage("El campo es obligatorio")
-        .notEmpty().withMessage("El campo no puede estar vacío")
-        .trim()
-        .isLength({ min: 3, max: 200 }).withMessage('El campo "direccion" debe tener entre 3 y 200 caracteres')
-        .matches(/^[a-zA-Z0-9\s,.'-:]+$/u)
-        .withMessage("El campo debe contener solo letras, números, espacios, comas, puntos, dos puntos y guiones"),
+        .notEmpty().withMessage("El campo no puede estar vacío"),
 
     // Validaciones para ciudadDestinatario
     check("ciudadDestinatario.ciudad")
@@ -849,11 +845,7 @@ const validateEncomiendaUpdate = [
 
     check("ciudadRemitente.direccion")
         .exists().withMessage("El campo es obligatorio")
-        .notEmpty().withMessage("El campo no puede estar vacío")
-        .trim()
-        .isLength({ min: 3, max: 200 }).withMessage('El campo "direccion" debe tener entre 3 y 200 caracteres')
-        .matches(/^[a-zA-Z0-9\s,.'-:]+$/u)
-        .withMessage("El campo debe contener solo letras, números, espacios, comas, puntos, dos puntos y guiones"),
+        .notEmpty().withMessage("El campo no puede estar vacío"),
 
 
     // Validaciones para ciudadDestinatario
