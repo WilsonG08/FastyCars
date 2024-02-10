@@ -135,7 +135,7 @@ const recuperarPassword = async (req, res) => {
 
     const choferBDD = await Conductor.findOne({ correo })
 
-    if (!choferBDD) return res.status(404).json({ msg: "Lo sentimos, el conductor no se encuentra registrado" })
+    if (!choferBDD) return res.status(404).json({ msg: "Lo sentimos, el usuario no se encuentra registrado" })
 
     const token = choferBDD.crearToken()
 
