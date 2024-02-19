@@ -2,6 +2,6 @@
 
 - Autor: Wilson Guayanay
 
-**Nota:**
+[!NOTE]
 Esto es una nota especial en el README.
 
