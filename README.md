@@ -2,5 +2,5 @@
 
 - Autor: Wilson Guayanay
 
- .[NOTE].
+ _[!NOTE]_
  No especial
