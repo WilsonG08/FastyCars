@@ -4,7 +4,7 @@ Este es un módulo de backend desarrollado con Node.js.
 
 ## Descripción
 
-Se ha desarrollado un backend el cual les permita a los clientes solicitar servicios de  reserva de encomiendas y transporte privado o compartido puerta a puerta, lo que lo hará más fácil, eficiente y seguro para los clientes.
+Se ha desarrollado un backend el cual les permita a los clientes solicitar servicios de reserva de encomiendas y transporte privado o compartido puerta a puerta, lo que lo hará más fácil, eficiente y seguro para los clientes
 
 ## Instalación
 
