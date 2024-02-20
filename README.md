@@ -1,32 +1,26 @@
-# Back
+# Backend para la empresa FastyCars
 
 Este es un módulo de backend desarrollado con Node.js.
 
 ## Descripción
 
-Se ha desarrollado un backend el cual les permita a los clientes solicitar servicios de reserva de encomiendas y transporte privado o compartido puerta a puerta, lo que lo hará más fácil, eficiente y seguro para los clientes
+Se ha desarrollado un backend el cual les permita a los clientes solicitar servicios de reserva de encomiendas y transporte privado o compartido puerta a puerta, lo que lo hará más fácil, eficiente y seguro para los clientes.
 
 ## Instalación
 
 Para instalar las dependencias del proyecto, ejecuta el siguiente comando:
 
-\`\`\`bash
-npm install
-\`\`\`
+`npm install`
 
 ## Uso
 
 Para iniciar el servidor en modo de producción, ejecuta:
 
-\`\`\`bash
-npm start
-\`\`\`
+`npm start`
 
 Para iniciar el servidor en modo de desarrollo, ejecuta:
 
-\`\`\`bash
-npm run dev
-\`\`\`
+`npm run dev`
 
 ## Dependencias
 
