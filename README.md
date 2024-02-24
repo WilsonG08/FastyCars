@@ -42,6 +42,8 @@ El proyecto utiliza las siguientes dependencias de desarrollo:
 
 - nodemon: ^3.0.1
 
-## Licencia
+## Documentos
 
-ISC
+- Manual de usuario : https://www.youtube.com/watch?v=nBlrWrw0oX4&list=PLJXyYT4z7UjUO-tBmoyabMxvLDVgpLQZ0&
+- Especificaciones técnicas
+
