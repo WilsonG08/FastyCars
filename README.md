@@ -47,6 +47,12 @@ El proyecto utiliza las siguientes dependencias de desarrollo:
 
 ## Documentos
 
+| Nombre del Documento | Enlace de Descarga |
+| --- | --- |
+| Plan GUAYANAy- LALANGUI Taxi Puerta-Puerta y Encomiendas BL | Descargar |
+| Tesis-Guayanay-Wilson | Descargar |
+
 - Manual de usuario : https://www.youtube.com/watch?v=nBlrWrw0oX4&list=PLJXyYT4z7UjUO-tBmoyabMxvLDVgpLQZ0&
 - Especificaciones técnicas
+
 
