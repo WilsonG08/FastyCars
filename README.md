@@ -47,12 +47,14 @@ El proyecto utiliza las siguientes dependencias de desarrollo:
 
 ## Documentos
 
-| Nombre del Documento | Enlace de Descarga |
+| Documento | Enlace de Descarga |
 | --- | --- |
-| Plan GUAYANAy- LALANGUI Taxi Puerta-Puerta y Encomiendas BL | Descargar |
-| Tesis-Guayanay-Wilson | Descargar |
+| F_AA_233A   | [Descargar](https://github.com/WilsonG08/FastyCars/blob/main/DOCUMENTOS/F_AA_233A-Plan_GUAYANAY-LALANGUI.pdf) |
+| Tesis Wilson Guayanay | [Descargar](https://github.com/WilsonG08/FastyCars/blob/main/DOCUMENTOS/Tesis-Guayanay-Wilson.pdf) |
 
-- Manual de usuario : https://www.youtube.com/watch?v=nBlrWrw0oX4&list=PLJXyYT4z7UjUO-tBmoyabMxvLDVgpLQZ0&
-- Especificaciones técnicas
+
+- Manual de usuario : 
+- https://www.youtube.com/watch?v=nBlrWrw0oX4&list=PLJXyYT4z7UjUO-tBmoyabMxvLDVgpLQZ0&
+
 
 
