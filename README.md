@@ -49,8 +49,8 @@ El proyecto utiliza las siguientes dependencias de desarrollo:
 
 | Documento | Enlace de Descarga |
 | --- | --- |
-| F_AA_233A   | [Descargar](https://github.com/WilsonG08/FastyCars/blob/main/DOCUMENTOS/F_AA_233A){:target="_blank"} |
-| Tesis Wilson Guayanay | [Descargar](https://github.com/WilsonG08/FastyCars/blob/main/DOCUMENTOS/tesis_wilson_guayanay){:target="_blank"} |
+| F_AA_233A   | [Descargar](https://github.com/WilsonG08/FastyCars/blob/main/DOCUMENTOS)|
+| Tesis Wilson Guayanay | [Descargar](https://github.com/WilsonG08/FastyCars/blob/main/DOCUMENTOS)|
 
 - Manual de usuario:
  - [Ver en YouTube](https://www.youtube.com/watch?v=nBlrWrw0oX4&list=PLJXyYT4z7UjUO-tBmoyabMxvLDVgpLQZ0) 
