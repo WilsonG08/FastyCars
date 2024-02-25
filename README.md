@@ -49,8 +49,8 @@ El proyecto utiliza las siguientes dependencias de desarrollo:
 
 | Documento | Enlace de Descarga |
 | --- | --- |
-| F_AA_233A   | [Descargar](https://github.com/WilsonG08/FastyCars/blob/main/DOCUMENTOS/F_AA_233A-Plan_GUAYANAY-LALANGUI.pdf) |
-| Tesis Wilson Guayanay | [Descargar](https://github.com/WilsonG08/FastyCars/blob/main/DOCUMENTOS/Tesis-Guayanay-Wilson.pdf) |
+| F_AA_233A   | [Descargar](https://github.com/WilsonG08/FastyCars/blob/main/DOCUMENTOS) |
+| Tesis Wilson Guayanay | [Descargar](https://github.com/WilsonG08/FastyCars/blob/main/DOCUMENTOS) |
 
 
 - Manual de usuario : 
